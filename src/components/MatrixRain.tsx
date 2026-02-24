@@ -15,15 +15,15 @@ export const MatrixRain: React.FC = () => {
     let width = (canvas.width = window.innerWidth);
     let height = (canvas.height = window.innerHeight);
 
-    // White theme configuration
+    // Character configuration
     const characters = ["0", "1"];
-    const fontSize = 14;
+    const fontSize = 16;
     const columns = Math.floor(width / fontSize);
-    const drops: number[] = new Array(columns).fill(1);
+    const drops: number[] = new Array(columns).fill(1).map(() => Math.floor(Math.random() * -100));
 
     const draw = () => {
-      // Semi-transparent black for the trailing effect
-      ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+      // Semi-transparent black for the trailing effect - ensures background stays dark
+      ctx.fillStyle = "rgba(0, 0, 0, 0.15)";
       ctx.fillRect(0, 0, width, height);
 
       ctx.font = `bold ${fontSize}px monospace`;
@@ -32,16 +32,16 @@ export const MatrixRain: React.FC = () => {
         const text = characters[Math.floor(Math.random() * characters.length)];
         
         // Randomly determine if this character is the "head" of the drop (brighter)
-        const isHead = Math.random() > 0.98;
+        const isHead = Math.random() > 0.95;
         
         if (isHead) {
           ctx.fillStyle = "#ffffff"; // Pure white head
-          ctx.shadowBlur = 15;
+          ctx.shadowBlur = 10;
           ctx.shadowColor = "#ffffff";
         } else {
-          // Varying shades of white/gray for the trail
-          const brightness = Math.floor(Math.random() * 100) + 155; // High brightness
-          ctx.fillStyle = `rgba(${brightness}, ${brightness}, ${brightness}, 0.8)`;
+          // Varying shades of white/light-gray for the trail
+          const brightness = Math.floor(Math.random() * 50) + 205; 
+          ctx.fillStyle = `rgba(${brightness}, ${brightness}, ${brightness}, 0.6)`;
           ctx.shadowBlur = 0;
         }
         
@@ -62,13 +62,13 @@ export const MatrixRain: React.FC = () => {
       
       const newColumns = Math.floor(width / fontSize);
       if (newColumns > drops.length) {
-        const extra = new Array(newColumns - drops.length).fill(1).map(() => Math.random() * (height / fontSize));
+        const extra = new Array(newColumns - drops.length).fill(1).map(() => Math.floor(Math.random() * -height / fontSize));
         drops.push(...extra);
       }
     };
 
     window.addEventListener("resize", handleResize);
-    const interval = setInterval(draw, 33);
+    const interval = setInterval(draw, 45);
 
     return () => {
       clearInterval(interval);
@@ -79,7 +79,7 @@ export const MatrixRain: React.FC = () => {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 -z-20 pointer-events-none opacity-40"
+      className="fixed inset-0 z-0 pointer-events-none opacity-25"
     />
   );
 };
