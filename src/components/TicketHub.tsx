@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useRef } from "react";
@@ -37,17 +36,13 @@ export default function TicketHub() {
     setGreeting("");
 
     try {
-      // Fetching all data to handle case-insensitive headers and values more reliably
       const apiUrl = `https://sheetdb.io/api/v1/m4xm36b3182sq`;
-      
       const response = await fetch(apiUrl);
       const data = await response.json();
 
-      // Debug log: Critical for seeing exactly what headers are in your Excel sheet
       console.log("Registry Data Received:", data);
 
       if (Array.isArray(data) && data.length > 0) {
-        // Attempt to find the attendee by checking any column that looks like 'email'
         const foundRow = data.find((row: any) => {
           return Object.entries(row).some(([key, value]) => {
             const isEmailKey = key.toLowerCase().includes('email');
@@ -57,7 +52,6 @@ export default function TicketHub() {
         });
 
         if (foundRow) {
-          // Normalize the data based on common header names
           const foundAttendee: Attendee = {
             Name: foundRow.Name || foundRow.name || foundRow.NAME || "Authorized Personnel",
             RegNo: foundRow.RegNo || foundRow.regno || foundRow.REGNO || foundRow['Reg No'] || "VERIFIED",
@@ -66,25 +60,24 @@ export default function TicketHub() {
           
           setAttendee(foundAttendee);
 
-          // Generate AI Greeting
           try {
             const aiResult = await generateCyberpunkGreeting({ attendeeName: foundAttendee.Name });
             setGreeting(aiResult.greeting);
           } catch (error) {
             console.error("AI Greeting error:", error);
-            setGreeting("Welcome to the Matrix, Operator.");
+            setGreeting("Access granted. Welcome to the Matrix.");
           }
         } else {
           toast({
             title: "Registry Mismatch",
-            description: `Email "${sanitizedEmail}" not found in our database. Please verify your registration.`,
+            description: `Email "${sanitizedEmail}" not found in our database.`,
             variant: "destructive",
           });
         }
       } else {
         toast({
           title: "Access Denied",
-          description: "The central registry is currently empty or inaccessible.",
+          description: "The registry is currently inaccessible.",
           variant: "destructive",
         });
       }
@@ -92,7 +85,7 @@ export default function TicketHub() {
       console.error("Fetch Error:", error);
       toast({
         title: "Network Failure",
-        description: "Could not connect to the central registry. Check your uplink.",
+        description: "Could not connect to the registry. Check your uplink.",
         variant: "destructive",
       });
     } finally {
@@ -118,12 +111,12 @@ export default function TicketHub() {
       
       toast({
         title: "Transmission Complete",
-        description: "Ticket downloaded successfully. See you at MadMatrix '26.",
+        description: "Ticket downloaded successfully.",
       });
     } catch (error) {
       toast({
         title: "Capture Error",
-        description: "Failed to generate high-resolution image. Try again.",
+        description: "Failed to generate high-resolution image.",
         variant: "destructive",
       });
     } finally {
@@ -134,12 +127,12 @@ export default function TicketHub() {
   return (
     <div className="flex flex-col items-center justify-center min-h-[80vh] p-4 max-w-4xl mx-auto space-y-12">
       {/* Header Section */}
-      <div className="text-center space-y-4 animate-in fade-in slide-in-from-top-4 duration-700">
+      <div className="text-center space-y-4 animate-in fade-in slide-in-from-top-4 duration-1000">
         <div className="flex items-center justify-center gap-2 mb-2">
-          <div className="h-2 w-2 rounded-full bg-primary animate-pulse shadow-[0_0_10px_#22c55e]" />
-          <span className="text-xs font-mono uppercase tracking-[0.3em] text-primary">System Online</span>
+          <div className="h-2 w-2 rounded-full bg-primary animate-pulse shadow-[0_0_12px_#ff0000]" />
+          <span className="text-xs font-mono uppercase tracking-[0.3em] text-primary drop-shadow-[0_0_5px_rgba(255,0,0,0.5)]">System Critical</span>
         </div>
-        <h1 className="text-5xl md:text-7xl font-headline font-black tracking-tighter text-white uppercase drop-shadow-[0_0_15px_rgba(34,197,94,0.3)]">
+        <h1 className="text-6xl md:text-8xl font-headline font-black tracking-tighter text-white uppercase drop-shadow-[0_0_20px_rgba(255,0,0,0.4)]">
           MadMatrix<span className="text-primary">'26</span>
         </h1>
         <p className="text-muted-foreground font-body text-sm md:text-base max-w-md mx-auto">
@@ -148,15 +141,15 @@ export default function TicketHub() {
       </div>
 
       {/* Search Section */}
-      <Card className="w-full bg-black/40 border-primary/20 backdrop-blur-md shadow-2xl overflow-hidden cyber-scanline">
-        <CardContent className="p-6">
+      <Card className="w-full bg-black/60 border-primary/30 backdrop-blur-xl shadow-[0_0_30px_rgba(255,0,0,0.1)] overflow-hidden cyber-scanline">
+        <CardContent className="p-8">
           <form onSubmit={handleSearch} className="flex flex-col md:flex-row gap-4">
             <div className="relative flex-1">
               <Terminal className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-primary opacity-50" />
               <Input
                 type="email"
                 placeholder="REGISTRY_EMAIL@DOMAIN.COM"
-                className="pl-10 h-12 bg-black/60 border-primary/30 text-primary placeholder:text-primary/30 font-mono focus-visible:ring-primary focus-visible:border-primary"
+                className="pl-10 h-14 bg-black/40 border-primary/20 text-primary placeholder:text-primary/30 font-mono focus-visible:ring-primary focus-visible:border-primary text-lg"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -164,17 +157,17 @@ export default function TicketHub() {
             <Button 
               type="submit" 
               disabled={loading || !email}
-              className="h-12 px-8 bg-primary text-black font-bold hover:bg-secondary transition-all duration-300 shadow-[0_0_20px_rgba(34,197,94,0.3)] disabled:opacity-50"
+              className="h-14 px-10 bg-primary text-white font-bold hover:bg-red-700 transition-all duration-300 shadow-[0_0_25px_rgba(255,0,0,0.4)] disabled:opacity-50 text-base tracking-widest uppercase"
             >
               {loading ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  INITIALIZING...
+                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                  ANALYZING...
                 </>
               ) : (
                 <>
-                  <Search className="mr-2 h-4 w-4" />
-                  SCAN REGISTRY
+                  <Search className="mr-2 h-5 w-5" />
+                  DECRYPT REGISTRY
                 </>
               )}
             </Button>
@@ -184,8 +177,8 @@ export default function TicketHub() {
 
       {/* Ticket Result Section */}
       {attendee && (
-        <div className="w-full space-y-8 animate-in zoom-in-95 fade-in duration-500">
-          <div className="flex flex-col items-center space-y-6">
+        <div className="w-full space-y-10 animate-in zoom-in-95 fade-in duration-700">
+          <div className="flex flex-col items-center space-y-8">
             <Ticket
               ref={ticketRef}
               id="madmatrix-ticket"
@@ -199,17 +192,17 @@ export default function TicketHub() {
                 onClick={handleDownload}
                 disabled={isCapturing}
                 size="lg"
-                className="bg-secondary text-black hover:bg-secondary/80 font-black tracking-widest uppercase shadow-[0_0_20px_rgba(201,232,48,0.3)]"
+                className="bg-secondary text-white hover:bg-secondary/80 font-black tracking-widest uppercase shadow-[0_0_25px_rgba(255,50,0,0.3)] h-14 px-12"
               >
                 {isCapturing ? (
                   <>
-                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                    ENCRYPTING PNG...
+                    <Loader2 className="mr-2 h-6 w-6 animate-spin" />
+                    ENCRYPTING...
                   </>
                 ) : (
                   <>
-                    <Download className="mr-2 h-5 w-5" />
-                    DOWNLOAD TICKET
+                    <Download className="mr-2 h-6 w-6" />
+                    DOWNLOAD PERMIT
                   </>
                 )}
               </Button>
@@ -217,26 +210,26 @@ export default function TicketHub() {
           </div>
           
           {/* Debug/Info panel */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-8">
-            <div className="p-4 bg-primary/5 border border-primary/10 rounded-lg flex items-center gap-3">
-              <User className="h-5 w-5 text-primary" />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-10">
+            <div className="p-5 bg-primary/10 border border-primary/20 rounded-xl flex items-center gap-4 backdrop-blur-sm shadow-inner">
+              <User className="h-6 w-6 text-primary" />
               <div>
-                <p className="text-[10px] uppercase text-primary/60 font-mono">Registry Name</p>
-                <p className="text-sm font-bold truncate">{attendee.Name}</p>
+                <p className="text-[10px] uppercase text-primary/70 font-mono tracking-tighter">Registry Subject</p>
+                <p className="text-sm font-bold truncate text-white">{attendee.Name}</p>
               </div>
             </div>
-            <div className="p-4 bg-primary/5 border border-primary/10 rounded-lg flex items-center gap-3">
-              <TicketIcon className="h-5 w-5 text-primary" />
+            <div className="p-5 bg-primary/10 border border-primary/20 rounded-xl flex items-center gap-4 backdrop-blur-sm shadow-inner">
+              <TicketIcon className="h-6 w-6 text-primary" />
               <div>
-                <p className="text-[10px] uppercase text-primary/60 font-mono">Permit ID</p>
-                <p className="text-sm font-bold">{attendee.RegNo}</p>
+                <p className="text-[10px] uppercase text-primary/70 font-mono tracking-tighter">Access Token</p>
+                <p className="text-sm font-bold text-white font-mono">{attendee.RegNo}</p>
               </div>
             </div>
-            <div className="p-4 bg-primary/5 border border-primary/10 rounded-lg flex items-center gap-3">
-              <AlertTriangle className="h-5 w-5 text-secondary" />
+            <div className="p-5 bg-primary/10 border border-primary/20 rounded-xl flex items-center gap-4 backdrop-blur-sm shadow-inner">
+              <AlertTriangle className="h-6 w-6 text-secondary" />
               <div>
-                <p className="text-[10px] uppercase text-secondary/60 font-mono">Status</p>
-                <p className="text-sm font-bold text-secondary">READY FOR ENTRY</p>
+                <p className="text-[10px] uppercase text-secondary/70 font-mono tracking-tighter">Clearance Status</p>
+                <p className="text-sm font-bold text-secondary">CLEAR FOR ENTRY</p>
               </div>
             </div>
           </div>
@@ -244,9 +237,9 @@ export default function TicketHub() {
       )}
 
       {/* Footer Branding */}
-      <div className="pt-12 pb-8 text-center">
-        <p className="text-[10px] font-mono text-primary/30 tracking-[0.5em] uppercase">
-          &copy; 2026 MadMatrix Cyber-Security Sub-Division
+      <div className="pt-16 pb-12 text-center opacity-40">
+        <p className="text-[10px] font-mono text-primary tracking-[0.6em] uppercase">
+          &copy; 2026 MadMatrix Cyber-Defense Protocol
         </p>
       </div>
     </div>

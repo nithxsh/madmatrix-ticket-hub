@@ -1,29 +1,28 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 105 15% 7%;
-    --foreground: 142 71% 95%;
-    --card: 105 15% 10%;
-    --card-foreground: 142 71% 95%;
-    --popover: 105 15% 7%;
-    --popover-foreground: 142 71% 95%;
-    --primary: 142 71% 45%;
-    --primary-foreground: 105 15% 5%;
-    --secondary: 70 80% 55%;
-    --secondary-foreground: 105 15% 5%;
-    --muted: 105 10% 15%;
-    --muted-foreground: 142 20% 70%;
-    --accent: 70 80% 55%;
-    --accent-foreground: 105 15% 5%;
+    --background: 350 50% 5%;
+    --foreground: 350 20% 95%;
+    --card: 350 50% 8%;
+    --card-foreground: 350 20% 95%;
+    --popover: 350 50% 5%;
+    --popover-foreground: 350 20% 95%;
+    --primary: 0 100% 50%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 10 80% 60%;
+    --secondary-foreground: 350 50% 5%;
+    --muted: 350 20% 15%;
+    --muted-foreground: 350 10% 70%;
+    --accent: 0 100% 50%;
+    --accent-foreground: 0 0% 100%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 142 30% 20%;
-    --input: 142 30% 20%;
-    --ring: 142 71% 45%;
+    --border: 350 30% 20%;
+    --input: 350 30% 20%;
+    --ring: 0 100% 50%;
     --radius: 0.5rem;
   }
 }
@@ -33,14 +32,8 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground selection:bg-primary selection:text-primary-foreground;
+    @apply bg-background text-foreground selection:bg-primary selection:text-primary-foreground font-body antialiased;
   }
-}
-
-.cyber-grid {
-  background-image: linear-gradient(to right, rgba(34, 197, 94, 0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(34, 197, 94, 0.05) 1px, transparent 1px);
-  background-size: 40px 40px;
 }
 
 .cyber-scanline {
@@ -56,9 +49,15 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(to bottom, transparent 50%, rgba(0, 0, 0, 0.1) 50.1%);
+  background: linear-gradient(to bottom, transparent 50%, rgba(0, 0, 0, 0.2) 50.1%);
   background-size: 100% 4px;
   pointer-events: none;
   z-index: 10;
-  opacity: 0.1;
+  opacity: 0.15;
+}
+
+@keyframes matrix-fade {
+  0% { opacity: 0; transform: translateY(-20px); }
+  50% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(20px); }
 }
