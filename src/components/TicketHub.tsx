@@ -14,7 +14,7 @@ import { generateCyberpunkGreeting } from "@/ai/flows/generate-cyberpunk-greetin
 interface Attendee {
   Name: string;
   RegNo: string;
-  Email: string;
+  email: string;
 }
 
 export default function TicketHub() {
@@ -28,16 +28,22 @@ export default function TicketHub() {
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email) return;
+    
+    // 1) Trim and lowercase the user input
+    const sanitizedEmail = email.trim().toLowerCase();
+    if (!sanitizedEmail) return;
 
     setLoading(true);
     setAttendee(null);
     setGreeting("");
 
     try {
-      // Fetch from SheetDB
-      const response = await fetch(`https://sheetdb.io/api/v1/m4xm36b3182sq?Email=${encodeURIComponent(email)}`);
+      // 2) Ensure the SheetDB query parameter matches header 'email'
+      const response = await fetch(`https://sheetdb.io/api/v1/m4xm36b3182sq?email=${encodeURIComponent(sanitizedEmail)}`);
       const data: Attendee[] = await response.json();
+
+      // 3) Add a console.log(data) for debugging
+      console.log("Registry Data Response:", data);
 
       if (data && data.length > 0) {
         const foundAttendee = data[0];
