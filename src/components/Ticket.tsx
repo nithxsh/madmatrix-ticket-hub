@@ -15,7 +15,7 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
     const [secureId, setSecureId] = useState("");
     const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent("https://www.madmatrix.site/")}&size=150x150&color=000000&bgcolor=ffffff`;
     
-    // Using stable URLs for branding logos
+    // Official branding logo from a stable source
     const simatsLogoUrl = "https://upload.wikimedia.org/wikipedia/en/5/52/Saveetha_Institute_of_Medical_and_Technical_Sciences_logo.png";
     const campusBgUrl = "https://www.saveetha.ac.in/images/saveetha/saveetha-engineering-college.jpg";
 
@@ -41,6 +41,17 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-black/80" />
         </div>
 
+        {/* Absolute Top-Right Corner Logo */}
+        <div className="absolute top-4 right-4 z-50 bg-white p-1 rounded-sm shadow-lg">
+          <img 
+            src={simatsLogoUrl} 
+            alt="Official Branding" 
+            className="h-12 w-12 object-contain"
+            crossOrigin="anonymous"
+            referrerPolicy="no-referrer"
+          />
+        </div>
+
         {/* Official Header Branding Bar */}
         <div className="relative h-[85px] bg-white z-30 flex items-center justify-between px-8 border-b-[4px] border-primary">
           {/* Left Side: SIMATS Engineering Section */}
@@ -57,8 +68,8 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
              </div>
           </div>
 
-          {/* Right Side: University Branding */}
-          <div className="flex items-center gap-4">
+          {/* Right Side: University Branding (Logo removed from here to top corner) */}
+          <div className="flex items-center gap-4 mr-16">
             <div className="flex flex-col items-end text-right">
                 <span className="text-[#0a2e5c] font-black text-3xl tracking-tighter leading-none uppercase">SIMATS</span>
                 <span className="text-[#0a2e5c] text-[7px] font-bold uppercase leading-tight max-w-[180px] mt-1 opacity-80">
@@ -68,12 +79,6 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
                   (DECLARED AS DEEMED TO BE UNIVERSITY UNDER SECTION 3 OF UGC ACT 1956)
                 </span>
              </div>
-             <img 
-              src={simatsLogoUrl} 
-              alt="SIMATS Seal" 
-              className="h-14 w-14 object-contain"
-              crossOrigin="anonymous"
-             />
           </div>
         </div>
 
