@@ -15,31 +15,33 @@ export const MatrixRain: React.FC = () => {
     let width = (canvas.width = window.innerWidth);
     let height = (canvas.height = window.innerHeight);
 
-    // Character configuration
-    const characters = ["0", "1"];
-    const fontSize = 16;
+    // Tamil characters from the provided alphabet grid
+    const characters = [
+      "க", "கா", "கி", "கீ", "கு", "கூ", "கெ", "கே", "கை", "கொ", "கோ", "கௌ",
+      "ங", "ச", "ஞ", "ட", "ண", "த", "ந", "ப", "ம", "ய", "ர", "ல", "வ", "ழ", "ள", "ற", "ன",
+      "0", "1"
+    ];
+    
+    const fontSize = 18;
     const columns = Math.floor(width / fontSize);
     const drops: number[] = new Array(columns).fill(1).map(() => Math.floor(Math.random() * -100));
 
     const draw = () => {
-      // Semi-transparent black for the trailing effect - ensures background stays dark
       ctx.fillStyle = "rgba(0, 0, 0, 0.15)";
       ctx.fillRect(0, 0, width, height);
 
-      ctx.font = `bold ${fontSize}px monospace`;
+      ctx.font = `bold ${fontSize}px 'Inter', sans-serif`;
 
       for (let i = 0; i < drops.length; i++) {
         const text = characters[Math.floor(Math.random() * characters.length)];
         
-        // Randomly determine if this character is the "head" of the drop (brighter)
         const isHead = Math.random() > 0.95;
         
         if (isHead) {
-          ctx.fillStyle = "#ffffff"; // Pure white head
+          ctx.fillStyle = "#ffffff";
           ctx.shadowBlur = 10;
           ctx.shadowColor = "#ffffff";
         } else {
-          // Varying shades of white/light-gray for the trail
           const brightness = Math.floor(Math.random() * 50) + 205; 
           ctx.fillStyle = `rgba(${brightness}, ${brightness}, ${brightness}, 0.6)`;
           ctx.shadowBlur = 0;
@@ -47,7 +49,6 @@ export const MatrixRain: React.FC = () => {
         
         ctx.fillText(text, i * fontSize, drops[i] * fontSize);
 
-        // Reset drop to top if it reaches the bottom, with random delay
         if (drops[i] * fontSize > height && Math.random() > 0.975) {
           drops[i] = 0;
         }
@@ -68,7 +69,7 @@ export const MatrixRain: React.FC = () => {
     };
 
     window.addEventListener("resize", handleResize);
-    const interval = setInterval(draw, 45);
+    const interval = setInterval(draw, 50);
 
     return () => {
       clearInterval(interval);
@@ -79,7 +80,7 @@ export const MatrixRain: React.FC = () => {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 z-0 pointer-events-none opacity-25"
+      className="fixed inset-0 z-0 pointer-events-none opacity-30"
     />
   );
 };
