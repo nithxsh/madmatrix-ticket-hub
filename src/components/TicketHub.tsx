@@ -29,8 +29,7 @@ export default function TicketHub() {
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Trim the user input. We'll handle case-insensitivity at the API level.
-    const sanitizedEmail = email.trim();
+    const sanitizedEmail = email.trim().toLowerCase();
     if (!sanitizedEmail) return;
 
     setLoading(true);
@@ -38,32 +37,54 @@ export default function TicketHub() {
     setGreeting("");
 
     try {
-      // Use casesensitive=false to ensure a match even if the user or the sheet has different capitalization.
-      // NOTE: The query parameter 'email' MUST match your Sheet column header exactly (case-sensitive for the header name itself).
-      const apiUrl = `https://sheetdb.io/api/v1/m4xm36b3182sq/search?email=${encodeURIComponent(sanitizedEmail)}&casesensitive=false`;
+      // Fetching all data to handle case-insensitive headers and values more reliably
+      const apiUrl = `https://sheetdb.io/api/v1/m4xm36b3182sq`;
       
       const response = await fetch(apiUrl);
       const data = await response.json();
 
-      // Debug log: Check the browser console to see exactly what SheetDB returns.
-      console.log("Registry Data Response:", data);
+      // Debug log: Critical for seeing exactly what headers are in your Excel sheet
+      console.log("Registry Data Received:", data);
 
       if (Array.isArray(data) && data.length > 0) {
-        const foundAttendee = data[0] as Attendee;
-        setAttendee(foundAttendee);
+        // Attempt to find the attendee by checking any column that looks like 'email'
+        const foundRow = data.find((row: any) => {
+          return Object.entries(row).some(([key, value]) => {
+            const isEmailKey = key.toLowerCase().includes('email');
+            const isEmailValue = typeof value === 'string' && value.trim().toLowerCase() === sanitizedEmail;
+            return isEmailKey && isEmailValue;
+          });
+        });
 
-        // Generate AI Greeting
-        try {
-          const aiResult = await generateCyberpunkGreeting({ attendeeName: foundAttendee.Name });
-          setGreeting(aiResult.greeting);
-        } catch (error) {
-          console.error("AI Greeting error:", error);
-          setGreeting("Welcome to the Matrix, Operator.");
+        if (foundRow) {
+          // Normalize the data based on common header names
+          const foundAttendee: Attendee = {
+            Name: foundRow.Name || foundRow.name || foundRow.NAME || "Authorized Personnel",
+            RegNo: foundRow.RegNo || foundRow.regno || foundRow.REGNO || foundRow['Reg No'] || "VERIFIED",
+            email: sanitizedEmail,
+          };
+          
+          setAttendee(foundAttendee);
+
+          // Generate AI Greeting
+          try {
+            const aiResult = await generateCyberpunkGreeting({ attendeeName: foundAttendee.Name });
+            setGreeting(aiResult.greeting);
+          } catch (error) {
+            console.error("AI Greeting error:", error);
+            setGreeting("Welcome to the Matrix, Operator.");
+          }
+        } else {
+          toast({
+            title: "Registry Mismatch",
+            description: `Email "${sanitizedEmail}" not found in our database. Please verify your registration.`,
+            variant: "destructive",
+          });
         }
       } else {
         toast({
-          title: "Registry Mismatch",
-          description: "No attendee found with that email. Ensure the column header in your Excel sheet is exactly 'email' (all lowercase).",
+          title: "Access Denied",
+          description: "The central registry is currently empty or inaccessible.",
           variant: "destructive",
         });
       }
@@ -71,7 +92,7 @@ export default function TicketHub() {
       console.error("Fetch Error:", error);
       toast({
         title: "Network Failure",
-        description: "Could not connect to the central registry. Please check your connection.",
+        description: "Could not connect to the central registry. Check your uplink.",
         variant: "destructive",
       });
     } finally {
@@ -86,7 +107,7 @@ export default function TicketHub() {
     try {
       const canvas = await html2canvas(ticketRef.current, {
         useCORS: true,
-        scale: 3, // High resolution
+        scale: 3, 
         backgroundColor: null,
       });
       
