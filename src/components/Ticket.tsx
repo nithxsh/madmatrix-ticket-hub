@@ -24,10 +24,16 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
         id={id}
         className="relative w-full max-w-[700px] aspect-[2.1/1] overflow-hidden rounded-sm shadow-[0_0_50px_rgba(139,0,0,0.3)] bg-black select-none border border-white/10"
       >
-        {/* Main Background Texture */}
+        {/* Main Background Texture - Fixed broken external image with CSS pattern */}
         <div className="absolute inset-0 z-0 bg-[#1a0505]">
-          <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
-          <div className="absolute inset-0 bg-gradient-to-r from-black via-transparent to-black opacity-40"></div>
+          <div 
+            className="absolute inset-0 opacity-10" 
+            style={{ 
+              backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.1) 1px, transparent 0)',
+              backgroundSize: '8px 8px' 
+            }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-black via-transparent to-black opacity-60"></div>
         </div>
 
         {/* Top Branding Bar (SIMATS) */}
@@ -49,40 +55,49 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
         <div className="absolute inset-0 z-20 pt-[18%] flex">
           {/* Left Section (Main Ticket) */}
           <div className="flex-[2.5] h-full relative p-6 flex flex-col items-center justify-center text-center">
-            <div className="space-y-0.5">
+            <div className="space-y-0.5 mb-2">
                <h3 className="text-primary font-black text-4xl md:text-5xl tracking-tighter drop-shadow-[0_0_15px_rgba(255,0,0,0.6)] uppercase italic">
                  MADMATRIX
                </h3>
                <p className="text-white font-bold text-[10px] tracking-[0.3em] uppercase opacity-90">NATIONAL LEVEL SYMPOSIUM</p>
             </div>
 
-            <div className="my-3 py-1 px-4 border-y border-white/20">
-               <span className="text-white/80 font-mono text-[10px] tracking-widest uppercase">Admit One:</span>
-               <span className="ml-2 text-white font-black text-lg tracking-wide uppercase">{name}</span>
+            <div className="w-full max-w-xs mx-auto my-3 py-1.5 border-y border-white/20">
+               <span className="text-white/60 font-mono text-[8px] tracking-widest uppercase block mb-1">AUTHORIZED PERSONNEL:</span>
+               <span className="text-white font-black text-xl tracking-wide uppercase leading-none">{name}</span>
             </div>
 
-            <div className="space-y-1">
+            <div className="space-y-2">
               <div className="flex items-center justify-center gap-3 text-white">
-                <p className="font-bold text-sm tracking-tighter">MAR 13th & 14th, 2026</p>
-                <div className="w-px h-3 bg-white/30"></div>
-                <p className="font-bold text-sm tracking-tighter">09:00 AM</p>
+                <div className="flex flex-col items-end">
+                   <p className="font-black text-sm tracking-tighter">MAR 13th & 14th</p>
+                   <p className="text-[8px] font-bold uppercase opacity-60">Year 2026</p>
+                </div>
+                <div className="w-px h-6 bg-white/30"></div>
+                <div className="flex flex-col items-start">
+                   <p className="font-black text-sm tracking-tighter">09:00 AM</p>
+                   <p className="text-[8px] font-bold uppercase opacity-60">Reporting</p>
+                </div>
               </div>
-              <p className="text-primary font-black text-[10px] tracking-widest uppercase">Venue: SIMATS Engineering Campus</p>
-              <p className="text-white/40 font-mono text-[8px] tracking-[0.4em]">MADMATRIX26.IN</p>
+              
+              <div className="space-y-0.5">
+                <p className="text-primary font-black text-[9px] tracking-widest uppercase">VENUE: SIMATS Engineering Campus</p>
+                <p className="text-white/40 font-mono text-[7px] tracking-[0.4em] uppercase">MADMATRIX26.IN</p>
+              </div>
             </div>
 
             {/* AI Greeting Overlay */}
             {greeting && (
-              <div className="absolute bottom-4 left-6 right-6">
+              <div className="absolute bottom-3 left-6 right-6">
                 <p className="text-[8px] text-secondary/70 italic line-clamp-1 font-mono">
-                  msg: {greeting}
+                  DECODED_MSG: {greeting}
                 </p>
               </div>
             )}
           </div>
 
           {/* Perforation Line */}
-          <div className="w-px h-full border-l-2 border-dashed border-white/20 z-40"></div>
+          <div className="w-px h-full border-l-2 border-dashed border-white/20 z-40 opacity-50"></div>
 
           {/* Right Section (Stub) */}
           <div className="flex-1 h-full bg-black/40 flex flex-col items-center justify-between p-4 py-8">
@@ -95,12 +110,12 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
                <img 
                 src={qrUrl} 
                 alt="Registration QR" 
-                className="w-20 h-20"
+                className="w-16 h-16 md:w-20 md:h-20"
               />
             </div>
 
             <div className="text-center">
-               <p className="text-[7px] text-white/60 font-mono uppercase tracking-tighter">Scan for Details</p>
+               <p className="text-[7px] text-white/60 font-mono uppercase tracking-tighter">Scan to Verify</p>
                <p className="text-[8px] text-primary font-bold font-mono mt-1">{regNo}</p>
             </div>
           </div>
@@ -109,7 +124,7 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
         {/* Secure ID footer */}
         <div className="absolute bottom-1 left-2 z-50">
           <p className="text-[6px] font-mono text-white/20 uppercase tracking-widest">
-            SEC_TOKEN: {secureId || "PENDING"}
+            NODE_SEC_ID: {secureId || "PENDING"}
           </p>
         </div>
       </div>
