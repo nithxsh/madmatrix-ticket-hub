@@ -15,15 +15,15 @@ export const MatrixRain: React.FC = () => {
     let width = (canvas.width = window.innerWidth);
     let height = (canvas.height = window.innerHeight);
 
-    // Deep red/maroon theme configuration
+    // White theme configuration
     const characters = ["0", "1"];
     const fontSize = 14;
     const columns = Math.floor(width / fontSize);
     const drops: number[] = new Array(columns).fill(1);
 
     const draw = () => {
-      // Semi-transparent black with a very faint maroon tint to create the trailing effect
-      ctx.fillStyle = "rgba(10, 2, 2, 0.1)";
+      // Semi-transparent black for the trailing effect
+      ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
       ctx.fillRect(0, 0, width, height);
 
       ctx.font = `bold ${fontSize}px monospace`;
@@ -35,13 +35,13 @@ export const MatrixRain: React.FC = () => {
         const isHead = Math.random() > 0.98;
         
         if (isHead) {
-          ctx.fillStyle = "#ff4d4d"; // Bright red head
-          ctx.shadowBlur = 10;
-          ctx.shadowColor = "#ff0000";
+          ctx.fillStyle = "#ffffff"; // Pure white head
+          ctx.shadowBlur = 15;
+          ctx.shadowColor = "#ffffff";
         } else {
-          // Varying shades of deep maroon/red for the trail
-          const redValue = Math.floor(Math.random() * 100) + 100;
-          ctx.fillStyle = `rgb(${redValue}, 0, 0)`;
+          // Varying shades of white/gray for the trail
+          const brightness = Math.floor(Math.random() * 100) + 155; // High brightness
+          ctx.fillStyle = `rgba(${brightness}, ${brightness}, ${brightness}, 0.8)`;
           ctx.shadowBlur = 0;
         }
         
@@ -61,7 +61,6 @@ export const MatrixRain: React.FC = () => {
       height = canvas.height = window.innerHeight;
       
       const newColumns = Math.floor(width / fontSize);
-      // Re-initialize or adjust drops array if width changes significantly
       if (newColumns > drops.length) {
         const extra = new Array(newColumns - drops.length).fill(1).map(() => Math.random() * (height / fontSize));
         drops.push(...extra);
@@ -69,7 +68,7 @@ export const MatrixRain: React.FC = () => {
     };
 
     window.addEventListener("resize", handleResize);
-    const interval = setInterval(draw, 33); // ~30fps for smooth digital flow
+    const interval = setInterval(draw, 33);
 
     return () => {
       clearInterval(interval);
@@ -80,7 +79,7 @@ export const MatrixRain: React.FC = () => {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 -z-20 pointer-events-none opacity-60"
+      className="fixed inset-0 -z-20 pointer-events-none opacity-40"
     />
   );
 };
