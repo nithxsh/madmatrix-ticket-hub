@@ -35,6 +35,8 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
             src={campusBgUrl} 
             alt="Campus Background" 
             className="w-full h-full object-cover opacity-50"
+            crossOrigin="anonymous"
+            referrerPolicy="no-referrer"
           />
           {/* Gradient Overlay for contrast */}
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-black/80" />
@@ -48,6 +50,8 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
               src={simatsLogoUrl} 
               alt="SE Logo" 
               className="h-14 w-14 object-contain"
+              crossOrigin="anonymous"
+              referrerPolicy="no-referrer"
              />
              <div className="flex flex-col justify-center border-l-2 border-[#0a2e5c]/20 pl-4">
                 <span className="text-[#0a2e5c] font-black text-3xl tracking-tighter leading-none uppercase">SIMATS</span>
@@ -70,6 +74,8 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
               src={simatsLogoUrl} 
               alt="SIMATS Seal" 
               className="h-14 w-14 object-contain"
+              crossOrigin="anonymous"
+              referrerPolicy="no-referrer"
              />
           </div>
         </div>
@@ -131,6 +137,8 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
                   src={qrUrl} 
                   alt="Registration QR" 
                   className="w-24 h-24"
+                  crossOrigin="anonymous"
+                  referrerPolicy="no-referrer"
                 />
               </div>
             </div>
