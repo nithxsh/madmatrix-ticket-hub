@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState, useRef } from "react";
-import { Search, Download, Terminal, Loader2, User, Ticket as TicketIcon, AlertTriangle } from "lucide-react";
+import { Search, Download, Terminal, Loader2, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -52,7 +52,7 @@ export default function TicketHub() {
 
         if (foundRow) {
           const foundAttendee: Attendee = {
-            Name: foundRow.Name || foundRow.name || foundRow.NAME || "Authorized Personnel",
+            Name: foundRow.Name || foundRow.name || foundRow.NAME || "WELCOME MADMATRIX !",
             RegNo: foundRow.RegNo || foundRow.regno || foundRow.REGNO || foundRow['Reg No'] || "VERIFIED",
             email: sanitizedEmail,
           };
@@ -89,28 +89,23 @@ export default function TicketHub() {
 
     setIsCapturing(true);
     try {
-      // Ensure element is in viewport and scroll is 0 for consistent capture
       window.scrollTo(0, 0);
-      
-      // Wait for all assets (QR, Logo, Background) to be ready
       await new Promise(resolve => setTimeout(resolve, 500));
 
       const canvas = await html2canvas(ticketRef.current, {
         useCORS: true,
-        scale: 3, // High enough for quality, low enough to prevent "zoom" artifacts
+        scale: 4,
         backgroundColor: "#050000",
         logging: false,
         width: 800,
         height: 380,
         scrollX: -window.scrollX,
         scrollY: -window.scrollY,
-        windowWidth: document.documentElement.offsetWidth,
-        windowHeight: document.documentElement.offsetHeight,
       });
       
       const link = document.createElement("a");
       link.download = `MadMatrix_Permit_${attendee?.RegNo || "2026"}.png`;
-      link.href = canvas.toDataURL("image/png", 0.9);
+      link.href = canvas.toDataURL("image/png", 1.0);
       link.click();
       
       toast({

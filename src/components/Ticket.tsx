@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 
 interface TicketProps {
   name: string;
@@ -11,9 +11,9 @@ interface TicketProps {
 }
 
 export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
-  ({ name, regNo, greeting, id }, ref) => {
+  ({ name, regNo, id }, ref) => {
     // QR points to the official site
-    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent("https://www.madmatrix.site/")}&size=150x150&color=000000&bgcolor=ffffff`;
+    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent("https://www.madmatrix.site/")}&size=200x200&color=000000&bgcolor=ffffff`;
     
     // Official branding assets
     const campusBgUrl = "https://www.saveetha.ac.in/images/saveetha/saveetha-engineering-college.jpg";
@@ -93,13 +93,13 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
 
           <div className="w-px h-full border-l border-dashed border-white/20 opacity-30"></div>
 
-          <div className="flex-1 bg-black/60 backdrop-blur-md flex flex-col items-center justify-between p-4 py-6 relative overflow-hidden">
+          <div className="flex-1 bg-black/60 backdrop-blur-md flex flex-col items-center justify-between p-4 py-8 relative overflow-hidden">
             <div className="w-full text-center space-y-1">
-              <p className="text-white font-black text-[10px] uppercase tracking-tighter leading-tight">SIMATS ENGINEERING</p>
-              <p className="text-primary font-black text-[12px] uppercase tracking-tight">MAR 13-14, 2026</p>
+              <p className="text-white font-black text-[11px] uppercase tracking-tighter leading-tight">SIMATS ENGINEERING</p>
+              <p className="text-primary font-black text-[13px] uppercase tracking-tight">MAR 13-14, 2026</p>
             </div>
 
-            <div className="flex items-center justify-center py-2">
+            <div className="flex items-center justify-center">
               <div className="bg-white p-2 rounded-sm shadow-[0_0_20px_rgba(255,255,255,0.1)]">
                  <img 
                   src={qrUrl} 
@@ -121,7 +121,7 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
             </div>
 
             <div className="text-center space-y-0.5 pb-2">
-               <p className="text-[9px] text-primary font-black font-mono tracking-tighter">{regNo}</p>
+               <p className="text-[10px] text-primary font-black font-mono tracking-tighter">{regNo}</p>
                <div className="flex items-center justify-center gap-1">
                  <div className="h-1 w-1 rounded-full bg-[#22c55e] animate-pulse"></div>
                  <p className="text-[8px] text-[#22c55e] font-black uppercase tracking-tighter">VERIFIED_ENTRY</p>
