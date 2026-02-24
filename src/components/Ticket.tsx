@@ -12,16 +12,11 @@ interface TicketProps {
 
 export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
   ({ name, regNo, greeting, id }, ref) => {
-    const [secureId, setSecureId] = useState("");
     // QR points to the official site
     const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent("https://www.madmatrix.site/")}&size=150x150&color=000000&bgcolor=ffffff`;
     
     // Official branding assets
     const campusBgUrl = "https://www.saveetha.ac.in/images/saveetha/saveetha-engineering-college.jpg";
-
-    useEffect(() => {
-      setSecureId(Math.random().toString(36).substring(7).toUpperCase());
-    }, []);
 
     return (
       <div
@@ -70,7 +65,7 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
             </div>
 
             <div className="w-full max-w-[85%] mx-auto py-3 border-y border-white/10 flex flex-col items-center gap-1 bg-black/40 backdrop-blur-sm rounded-md">
-               <span className="text-white/40 font-mono text-[9px] tracking-[0.3em] uppercase">WELCOME MADMATRIX !</span>
+               <span className="text-white/40 font-mono text-[9px] tracking-[0.3em] uppercase">AUTHORIZED PERSON</span>
                <span className="text-white font-black text-2xl tracking-tight uppercase leading-tight text-center">
                  {name}
                </span>
