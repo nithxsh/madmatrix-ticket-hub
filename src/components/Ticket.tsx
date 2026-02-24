@@ -13,6 +13,7 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
   ({ name, regNo, greeting, id }, ref) => {
     const [secureId, setSecureId] = useState("");
     const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(regNo)}&size=150x150&color=ffffff&bgcolor=000000`;
+    const simatsLogoUrl = "https://upload.wikimedia.org/wikipedia/en/5/52/Saveetha_Institute_of_Medical_and_Technical_Sciences_logo.png";
 
     useEffect(() => {
       setSecureId(Math.random().toString(36).substring(7).toUpperCase());
@@ -28,13 +29,18 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
         {/* Top Branding Bar */}
         <div className="relative h-[20%] bg-white z-30 flex items-center justify-between px-8 border-b-[4px] border-primary">
           <div className="flex items-center gap-4">
-             <div className="h-10 w-10 bg-primary rounded-sm flex items-center justify-center text-white font-black text-xl">SE</div>
+             {/* SIMATS Logo replacing the SE box */}
+             <img 
+              src={simatsLogoUrl} 
+              alt="SIMATS Logo" 
+              className="h-10 w-10 object-contain"
+             />
              <div className="flex flex-col">
                 <span className="text-[#0a2e5c] font-black text-xl tracking-tighter leading-none uppercase">SIMATS ENGINEERING</span>
                 <span className="text-[#0a2e5c] text-[8px] font-bold uppercase tracking-tight opacity-70">SYMPOSIUM PROTOCOL UNIT</span>
              </div>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-center">
             <div className="h-8 px-3 bg-[#f9c513] rounded-sm flex items-center justify-center text-[8px] font-black text-black uppercase">PLATINUM_G</div>
             <div className="h-8 px-3 bg-[#00a3e0] rounded-sm flex items-center justify-center text-[8px] font-black text-white uppercase">NBA_ACC</div>
           </div>
@@ -69,7 +75,7 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
                </span>
             </div>
 
-            {/* Venue & Date Footer (Properly Aligned) */}
+            {/* Venue & Date Footer */}
             <div className="w-full flex flex-col items-center z-10">
               <div className="flex items-center gap-6 text-white/90">
                 <div className="flex flex-col items-center">
@@ -97,13 +103,13 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
           {/* Right Stub (Verification & Receipt) */}
           <div className="flex-1 bg-black/40 flex flex-col items-center justify-between p-4 py-6 relative">
             {/* Top Right Branding/Date */}
-            <div className="w-full text-right mb-2">
+            <div className="w-full text-right mb-2 relative">
               <p className="text-white font-black text-[9px] uppercase tracking-tighter leading-none">SIMATS ENGINEERING</p>
               <p className="text-primary font-black text-[10px] uppercase">MAR 13-14, 2026</p>
             </div>
 
-            {/* QR Code - Moved Upward as requested */}
-            <div className="bg-white p-1 rounded-sm shadow-[0_0_15px_rgba(255,255,255,0.1)] -mt-2">
+            {/* QR Code - Positioned Upward */}
+            <div className="bg-white p-1 rounded-sm shadow-[0_0_15px_rgba(255,255,255,0.1)] -mt-4">
                <img 
                 src={qrUrl} 
                 alt="Registration QR" 
@@ -111,7 +117,7 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
               />
             </div>
 
-            {/* Confirmation Text - Added as requested */}
+            {/* Confirmation Text */}
             <div className="text-center px-1">
                <p className="text-[8px] text-white/80 font-bold uppercase leading-tight tracking-tight">
                  Your payment has been received.<br/>

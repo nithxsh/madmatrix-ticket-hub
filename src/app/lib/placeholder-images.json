@@ -1,0 +1,22 @@
+{
+  "placeholderImages": [
+    {
+      "id": "ticket-template",
+      "description": "Professional event ticket template background",
+      "imageUrl": "https://images.unsplash.com/photo-1711903668336-f3cbc48e94c5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHx0aWNrZXQlMjBiYWNrZ3JvdW5kfGVufDB8fHx8MTc3MTk1Nzc0OHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "ticket background"
+    },
+    {
+      "id": "madmatrix-ticket-bg",
+      "description": "Dark red industrial cyberpunk background",
+      "imageUrl": "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+      "imageHint": "dark red technology"
+    },
+    {
+      "id": "simats-logo",
+      "description": "Saveetha Institute of Medical and Technical Sciences Official Logo",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/en/5/52/Saveetha_Institute_of_Medical_and_Technical_Sciences_logo.png",
+      "imageHint": "simats logo"
+    }
+  ]
+}
