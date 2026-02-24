@@ -13,7 +13,7 @@ interface TicketProps {
 export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
   ({ name, regNo, greeting, id }, ref) => {
     const [secureId, setSecureId] = useState("");
-    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(regNo)}&size=150x150&color=ffffff&bgcolor=000000`;
+    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(regNo)}&size=150x150&color=000000&bgcolor=ffffff`;
     const simatsLogoUrl = "https://upload.wikimedia.org/wikipedia/en/5/52/Saveetha_Institute_of_Medical_and_Technical_Sciences_logo.png";
     const campusBgUrl = "https://www.saveetha.ac.in/images/saveetha/saveetha-engineering-college.jpg";
 
@@ -105,29 +105,29 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
 
           {/* Right Stub (Verification & Receipt) */}
           <div className="flex-1 bg-black/60 backdrop-blur-md flex flex-col items-center justify-between p-4 py-6 relative">
-            {/* Top Right Branding/Date */}
-            <div className="w-full text-right mb-2 relative">
-              <p className="text-white font-black text-[9px] uppercase tracking-tighter leading-none">SIMATS ENGINEERING</p>
-              <p className="text-primary font-black text-[10px] uppercase">MAR 13-14, 2026</p>
+            {/* Top Branding/Date - Centered and Larger for Clarity */}
+            <div className="w-full text-center mb-2 relative">
+              <p className="text-white font-black text-[11px] uppercase tracking-tighter leading-tight">SIMATS ENGINEERING</p>
+              <p className="text-primary font-black text-[12px] uppercase tracking-tight">MAR 13-14, 2026</p>
             </div>
 
-            {/* QR Code - Realigned for better aesthetics */}
+            {/* QR Code - Centered container */}
             <div className="flex-1 flex items-center justify-center w-full">
-              <div className="bg-white p-1.5 rounded-sm shadow-[0_0_20px_rgba(255,255,255,0.15)] border border-white/20">
+              <div className="bg-white p-2 rounded-sm shadow-[0_0_25px_rgba(255,255,255,0.2)] border border-white/20">
                  <img 
                   src={qrUrl} 
                   alt="Registration QR" 
-                  className="w-24 h-24"
+                  className="w-28 h-28"
                 />
               </div>
             </div>
 
-            {/* Confirmation Text */}
-            <div className="text-center px-1 mb-4">
-               <p className="text-[8px] text-white/80 font-bold uppercase leading-tight tracking-tight">
-                 Your payment has been received.<br/>
-                 Thanks for registering!<br/>
-                 <span className="text-primary font-black tracking-widest mt-1 block">GET INTO MATRIX !</span>
+            {/* Confirmation Text - Centered and clearer */}
+            <div className="text-center px-1 mt-4 mb-2">
+               <p className="text-[10px] text-white font-bold uppercase leading-tight tracking-tight">
+                 YOUR PAYMENT HAS BEEN RECEIVED.<br/>
+                 THANKS FOR REGISTERING!<br/>
+                 <span className="text-primary font-black tracking-widest mt-2 block text-[11px]">GET INTO MATRIX !</span>
                </p>
             </div>
 
