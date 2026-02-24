@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useRef } from "react";
@@ -39,8 +40,6 @@ export default function TicketHub() {
       const apiUrl = `https://sheetdb.io/api/v1/m4xm36b3182sq`;
       const response = await fetch(apiUrl);
       const data = await response.json();
-
-      console.log("Registry Data Received:", data);
 
       if (Array.isArray(data)) {
         const foundRow = data.find((row: any) => {
@@ -90,20 +89,28 @@ export default function TicketHub() {
 
     setIsCapturing(true);
     try {
-      // Small delay to ensure all assets (like QR code) are fully rendered
-      await new Promise(resolve => setTimeout(resolve, 300));
+      // Ensure element is in viewport and scroll is 0 for consistent capture
+      window.scrollTo(0, 0);
+      
+      // Wait for all assets (QR, Logo, Background) to be ready
+      await new Promise(resolve => setTimeout(resolve, 500));
 
       const canvas = await html2canvas(ticketRef.current, {
         useCORS: true,
-        scale: 4, // Higher scale for ultra-sharp prints
+        scale: 3, // High enough for quality, low enough to prevent "zoom" artifacts
         backgroundColor: "#050000",
         logging: false,
-        windowWidth: 800, // Force a stable width for capture
+        width: 800,
+        height: 380,
+        scrollX: -window.scrollX,
+        scrollY: -window.scrollY,
+        windowWidth: document.documentElement.offsetWidth,
+        windowHeight: document.documentElement.offsetHeight,
       });
       
       const link = document.createElement("a");
       link.download = `MadMatrix_Permit_${attendee?.RegNo || "2026"}.png`;
-      link.href = canvas.toDataURL("image/png", 1.0);
+      link.href = canvas.toDataURL("image/png", 0.9);
       link.click();
       
       toast({
@@ -123,7 +130,6 @@ export default function TicketHub() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[80vh] p-4 max-w-5xl mx-auto space-y-12">
-      {/* Header Section */}
       <div className="text-center space-y-4">
         <div className="flex items-center justify-center gap-2 mb-2">
           <div className="h-2 w-2 rounded-full bg-primary animate-pulse" />
@@ -137,7 +143,6 @@ export default function TicketHub() {
         </p>
       </div>
 
-      {/* Search Section */}
       <Card className="w-full bg-black/60 border-primary/30 backdrop-blur-xl shadow-[0_0_30px_rgba(255,0,0,0.1)] overflow-hidden cyber-scanline">
         <CardContent className="p-8">
           <form onSubmit={handleSearch} className="flex flex-col md:flex-row gap-4">
@@ -172,11 +177,10 @@ export default function TicketHub() {
         </CardContent>
       </Card>
 
-      {/* Ticket Result Section */}
       {attendee && (
         <div className="w-full space-y-10 animate-in zoom-in-95 duration-700">
           <div className="flex flex-col items-center space-y-8">
-            <div className="p-4 bg-white/5 rounded-lg border border-white/10 shadow-2xl">
+            <div className="p-4 bg-white/5 rounded-lg border border-white/10 shadow-2xl overflow-x-auto w-full flex justify-center">
               <Ticket
                 ref={ticketRef}
                 id="madmatrix-ticket"
@@ -206,7 +210,6 @@ export default function TicketHub() {
             </Button>
           </div>
           
-          {/* Clearance Badge */}
           <div className="max-w-md mx-auto p-6 bg-primary/5 border border-primary/20 rounded-xl flex flex-col items-center gap-4 text-center">
             <div className="h-12 w-12 rounded-full bg-primary/20 flex items-center justify-center">
               <AlertTriangle className="h-6 w-6 text-primary" />
@@ -219,7 +222,6 @@ export default function TicketHub() {
         </div>
       )}
 
-      {/* Footer */}
       <div className="pt-12 pb-8 text-center opacity-30">
         <p className="text-[10px] font-mono text-primary tracking-[0.5em] uppercase">
           &copy; 2026 MadMatrix Defense Protocol | Simats Engineering

@@ -25,8 +25,8 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
       <div
         ref={ref}
         id={id}
-        className="relative w-full max-w-[800px] flex flex-col overflow-hidden rounded-sm shadow-[0_0_60px_rgba(255,0,0,0.4)] bg-[#050000] select-none border border-white/10"
-        style={{ aspectRatio: "2.1/1" }}
+        className="relative w-[800px] flex flex-col overflow-hidden rounded-sm shadow-[0_0_60px_rgba(255,0,0,0.4)] bg-[#050000] select-none border border-white/10"
+        style={{ height: "380px" }}
       >
         {/* Campus Background Image with 0.5 opacity */}
         <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
@@ -40,7 +40,7 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
         </div>
 
         {/* Top Branding Bar */}
-        <div className="relative h-[20%] bg-white z-30 flex items-center justify-between px-8 border-b-[4px] border-primary">
+        <div className="relative h-[65px] bg-white z-30 flex items-center justify-between px-8 border-b-[4px] border-primary">
           <div className="flex items-center gap-4">
              <img 
               src={simatsLogoUrl} 
@@ -62,15 +62,13 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
         <div className="flex-1 flex overflow-hidden relative z-10">
           {/* Left Content (Primary Info) */}
           <div className="flex-[2.2] flex flex-col items-center justify-between p-6 py-8 relative">
-            {/* Symposium Title */}
             <div className="text-center z-10">
-               <h3 className="text-primary font-black text-5xl md:text-6xl tracking-tighter drop-shadow-[0_0_15px_rgba(255,0,0,0.5)] uppercase italic leading-none">
+               <h3 className="text-primary font-black text-6xl tracking-tighter drop-shadow-[0_0_15px_rgba(255,0,0,0.5)] uppercase italic leading-none">
                  MADMATRIX
                </h3>
                <p className="text-white font-bold text-[10px] tracking-[0.5em] uppercase opacity-70 mt-1">NATIONAL LEVEL SYMPOSIUM</p>
             </div>
 
-            {/* Personnel Info */}
             <div className="w-full max-w-[85%] mx-auto py-3 border-y border-white/10 flex flex-col items-center gap-1 z-10 bg-black/40 backdrop-blur-sm rounded-md">
                <span className="text-white/40 font-mono text-[9px] tracking-[0.3em] uppercase">AUTHORIZED PERSONNEL:</span>
                <span className="text-white font-black text-2xl tracking-tight uppercase leading-tight text-center">
@@ -78,7 +76,6 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
                </span>
             </div>
 
-            {/* Venue & Date Footer */}
             <div className="w-full flex flex-col items-center z-10">
               <div className="flex items-center gap-6 text-white/90">
                 <div className="flex flex-col items-center">
@@ -104,47 +101,46 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
           <div className="w-px h-full border-l border-dashed border-white/20 opacity-30"></div>
 
           {/* Right Stub (Verification & Receipt) */}
-          <div className="flex-1 bg-black/60 backdrop-blur-md flex flex-col items-center justify-between p-4 py-6 relative">
-            {/* Top Branding/Date - Centered and Larger for Clarity */}
-            <div className="w-full text-center mb-2 relative">
-              <p className="text-white font-black text-[11px] uppercase tracking-tighter leading-tight">SIMATS ENGINEERING</p>
-              <p className="text-primary font-black text-[12px] uppercase tracking-tight">MAR 13-14, 2026</p>
+          <div className="flex-1 bg-black/60 backdrop-blur-md flex flex-col items-center justify-between p-4 py-6 relative overflow-hidden">
+            {/* Top Branding/Date - Centered */}
+            <div className="w-full text-center mb-1">
+              <p className="text-white font-black text-[10px] uppercase tracking-tighter leading-tight">SIMATS ENGINEERING</p>
+              <p className="text-primary font-black text-[11px] uppercase tracking-tight">MAR 13-14, 2026</p>
             </div>
 
             {/* QR Code - Centered container */}
-            <div className="flex-1 flex items-center justify-center w-full">
-              <div className="bg-white p-2 rounded-sm shadow-[0_0_25px_rgba(255,255,255,0.2)] border border-white/20">
+            <div className="flex items-center justify-center">
+              <div className="bg-white p-1.5 rounded-sm shadow-[0_0_20px_rgba(255,255,255,0.1)]">
                  <img 
                   src={qrUrl} 
                   alt="Registration QR" 
-                  className="w-28 h-28"
+                  className="w-24 h-24"
                 />
               </div>
             </div>
 
-            {/* Confirmation Text - Centered and clearer */}
-            <div className="text-center px-1 mt-4 mb-2">
-               <p className="text-[10px] text-white font-bold uppercase leading-tight tracking-tight">
+            {/* Confirmation Text - Resized to fit perfectly */}
+            <div className="text-center px-1">
+               <p className="text-[9px] text-white font-bold uppercase leading-tight tracking-tight">
                  YOUR PAYMENT HAS BEEN RECEIVED.<br/>
-                 THANKS FOR REGISTERING!<br/>
-                 <span className="text-primary font-black tracking-widest mt-2 block text-[11px]">GET INTO MATRIX !</span>
+                 THANKS FOR REGISTERING!
                </p>
+               <span className="text-primary font-black tracking-[0.2em] mt-1 block text-[10px] uppercase">GET INTO MATRIX !</span>
             </div>
 
             {/* Verification Status */}
-            <div className="text-center space-y-1">
-               <p className="text-[8px] text-white/50 font-mono uppercase tracking-[0.2em]">SCAN_TO_VERIFY</p>
-               <p className="text-[10px] text-primary font-black font-mono">{regNo}</p>
+            <div className="text-center space-y-0.5">
+               <p className="text-[9px] text-primary font-black font-mono tracking-tighter">{regNo}</p>
                <div className="flex items-center justify-center gap-1">
                  <div className="h-1 w-1 rounded-full bg-[#22c55e] animate-pulse"></div>
-                 <p className="text-[9px] text-[#22c55e] font-black uppercase tracking-tighter">VERIFIED_ENTRY</p>
+                 <p className="text-[8px] text-[#22c55e] font-black uppercase tracking-tighter">VERIFIED_ENTRY</p>
                </div>
             </div>
 
             {/* Secure ID footer */}
             <div className="absolute bottom-1 left-0 right-0 text-center">
               <p className="text-[6px] font-mono text-white/10 uppercase tracking-widest">
-                NODE_HASH: {secureId || "PENDING"}
+                ID: {secureId || "PENDING"}
               </p>
             </div>
           </div>
