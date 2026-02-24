@@ -13,10 +13,10 @@ interface TicketProps {
 export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
   ({ name, regNo, greeting, id }, ref) => {
     const [secureId, setSecureId] = useState("");
+    // QR points to the official site
     const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent("https://www.madmatrix.site/")}&size=150x150&color=000000&bgcolor=ffffff`;
     
     // Official branding assets
-    const simatsLogoUrl = "https://upload.wikimedia.org/wikipedia/en/5/52/Saveetha_Institute_of_Medical_and_Technical_Sciences_logo.png";
     const campusBgUrl = "https://www.saveetha.ac.in/images/saveetha/saveetha-engineering-college.jpg";
 
     useEffect(() => {
@@ -41,15 +41,13 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-black/80" />
         </div>
 
-        {/* Official Header Branding Bar */}
+        {/* Official Header Branding Bar - Logos Removed, Text at Corners */}
         <div className="relative h-[85px] bg-white z-30 flex items-center justify-between px-6 border-b-[4px] border-primary">
-          {/* Left Side: SIMATS Engineering Section (Logo Removed) */}
           <div className="flex flex-col justify-center">
                 <span className="text-[#0a2e5c] font-black text-3xl tracking-tighter leading-none uppercase">SIMATS</span>
                 <span className="text-[#0a2e5c] text-[12px] font-bold tracking-[0.3em] uppercase leading-tight mt-1">ENGINEERING</span>
           </div>
 
-          {/* Right Side: University Branding (Moved to corner) */}
           <div className="flex flex-col items-end text-right">
                 <span className="text-[#0a2e5c] font-black text-3xl tracking-tighter leading-none uppercase">SIMATS</span>
                 <span className="text-[#0a2e5c] text-[7px] font-bold uppercase leading-tight max-w-[180px] mt-1 opacity-80">
@@ -72,7 +70,7 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
             </div>
 
             <div className="w-full max-w-[85%] mx-auto py-3 border-y border-white/10 flex flex-col items-center gap-1 bg-black/40 backdrop-blur-sm rounded-md">
-               <span className="text-white/40 font-mono text-[9px] tracking-[0.3em] uppercase">AUTHORIZED PERSONNEL:</span>
+               <span className="text-white/40 font-mono text-[9px] tracking-[0.3em] uppercase">WELCOME MADMATRIX !</span>
                <span className="text-white font-black text-2xl tracking-tight uppercase leading-tight text-center">
                  {name}
                </span>
