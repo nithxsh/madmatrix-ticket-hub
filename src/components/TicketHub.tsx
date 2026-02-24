@@ -42,7 +42,7 @@ export default function TicketHub() {
 
       console.log("Registry Data Received:", data);
 
-      if (Array.isArray(data) && data.length > 0) {
+      if (Array.isArray(data)) {
         const foundRow = data.find((row: any) => {
           return Object.entries(row).some(([key, value]) => {
             const isEmailKey = key.toLowerCase().includes('email');
@@ -64,28 +64,20 @@ export default function TicketHub() {
             const aiResult = await generateCyberpunkGreeting({ attendeeName: foundAttendee.Name });
             setGreeting(aiResult.greeting);
           } catch (error) {
-            console.error("AI Greeting error:", error);
-            setGreeting("Access granted. Welcome to the Matrix.");
+            setGreeting("Access granted. Protocol initiated.");
           }
         } else {
           toast({
             title: "Registry Mismatch",
-            description: `Email "${sanitizedEmail}" not found in our database.`,
+            description: `Email "${sanitizedEmail}" not found.`,
             variant: "destructive",
           });
         }
-      } else {
-        toast({
-          title: "Access Denied",
-          description: "The registry is currently inaccessible.",
-          variant: "destructive",
-        });
       }
     } catch (error) {
-      console.error("Fetch Error:", error);
       toast({
-        title: "Network Failure",
-        description: "Could not connect to the registry. Check your uplink.",
+        title: "Registry Offline",
+        description: "Could not connect to database.",
         variant: "destructive",
       });
     } finally {
@@ -98,25 +90,30 @@ export default function TicketHub() {
 
     setIsCapturing(true);
     try {
+      // Small delay to ensure all assets (like QR code) are fully rendered
+      await new Promise(resolve => setTimeout(resolve, 300));
+
       const canvas = await html2canvas(ticketRef.current, {
         useCORS: true,
-        scale: 3, 
-        backgroundColor: null,
+        scale: 4, // Higher scale for ultra-sharp prints
+        backgroundColor: "#050000",
+        logging: false,
+        windowWidth: 800, // Force a stable width for capture
       });
       
       const link = document.createElement("a");
-      link.download = `MadMatrix_Ticket_${attendee?.RegNo || "2026"}.png`;
-      link.href = canvas.toDataURL("image/png");
+      link.download = `MadMatrix_Permit_${attendee?.RegNo || "2026"}.png`;
+      link.href = canvas.toDataURL("image/png", 1.0);
       link.click();
       
       toast({
-        title: "Transmission Complete",
-        description: "Ticket downloaded successfully.",
+        title: "Download Successful",
+        description: "Your digital permit has been saved.",
       });
     } catch (error) {
       toast({
-        title: "Capture Error",
-        description: "Failed to generate high-resolution image.",
+        title: "Download Failed",
+        description: "Could not generate permit image.",
         variant: "destructive",
       });
     } finally {
@@ -125,18 +122,18 @@ export default function TicketHub() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[80vh] p-4 max-w-4xl mx-auto space-y-12">
+    <div className="flex flex-col items-center justify-center min-h-[80vh] p-4 max-w-5xl mx-auto space-y-12">
       {/* Header Section */}
-      <div className="text-center space-y-4 animate-in fade-in slide-in-from-top-4 duration-1000">
+      <div className="text-center space-y-4">
         <div className="flex items-center justify-center gap-2 mb-2">
-          <div className="h-2 w-2 rounded-full bg-primary animate-pulse shadow-[0_0_12px_#ff0000]" />
-          <span className="text-xs font-mono uppercase tracking-[0.3em] text-primary drop-shadow-[0_0_5px_rgba(255,0,0,0.5)]">System Critical</span>
+          <div className="h-2 w-2 rounded-full bg-primary animate-pulse" />
+          <span className="text-xs font-mono uppercase tracking-[0.3em] text-primary">Registry Retrieval Portal</span>
         </div>
-        <h1 className="text-6xl md:text-8xl font-headline font-black tracking-tighter text-white uppercase drop-shadow-[0_0_20px_rgba(255,0,0,0.4)]">
+        <h1 className="text-6xl md:text-8xl font-black tracking-tighter text-white uppercase drop-shadow-[0_0_20px_rgba(255,0,0,0.4)]">
           MadMatrix<span className="text-primary">'26</span>
         </h1>
         <p className="text-muted-foreground font-body text-sm md:text-base max-w-md mx-auto">
-          Authorized personnel only. Enter your registered email to retrieve your digital entry permit.
+          Enter your registered email to decrypt and retrieve your official entry permit.
         </p>
       </div>
 
@@ -162,12 +159,12 @@ export default function TicketHub() {
               {loading ? (
                 <>
                   <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                  ANALYZING...
+                  DECRYPTING...
                 </>
               ) : (
                 <>
                   <Search className="mr-2 h-5 w-5" />
-                  DECRYPT REGISTRY
+                  ACCESS REGISTRY
                 </>
               )}
             </Button>
@@ -177,69 +174,55 @@ export default function TicketHub() {
 
       {/* Ticket Result Section */}
       {attendee && (
-        <div className="w-full space-y-10 animate-in zoom-in-95 fade-in duration-700">
+        <div className="w-full space-y-10 animate-in zoom-in-95 duration-700">
           <div className="flex flex-col items-center space-y-8">
-            <Ticket
-              ref={ticketRef}
-              id="madmatrix-ticket"
-              name={attendee.Name}
-              regNo={attendee.RegNo}
-              greeting={greeting}
-            />
-            
-            <div className="flex flex-col md:flex-row gap-4 w-full justify-center">
-              <Button 
-                onClick={handleDownload}
-                disabled={isCapturing}
-                size="lg"
-                className="bg-secondary text-white hover:bg-secondary/80 font-black tracking-widest uppercase shadow-[0_0_25px_rgba(255,50,0,0.3)] h-14 px-12"
-              >
-                {isCapturing ? (
-                  <>
-                    <Loader2 className="mr-2 h-6 w-6 animate-spin" />
-                    ENCRYPTING...
-                  </>
-                ) : (
-                  <>
-                    <Download className="mr-2 h-6 w-6" />
-                    DOWNLOAD PERMIT
-                  </>
-                )}
-              </Button>
+            <div className="p-4 bg-white/5 rounded-lg border border-white/10 shadow-2xl">
+              <Ticket
+                ref={ticketRef}
+                id="madmatrix-ticket"
+                name={attendee.Name}
+                regNo={attendee.RegNo}
+                greeting={greeting}
+              />
             </div>
+            
+            <Button 
+              onClick={handleDownload}
+              disabled={isCapturing}
+              size="lg"
+              className="bg-white text-black hover:bg-white/90 font-black tracking-widest uppercase shadow-[0_0_30px_rgba(255,255,255,0.2)] h-16 px-16 text-lg"
+            >
+              {isCapturing ? (
+                <>
+                  <Loader2 className="mr-2 h-6 w-6 animate-spin" />
+                  PROCESSING...
+                </>
+              ) : (
+                <>
+                  <Download className="mr-2 h-6 w-6" />
+                  DOWNLOAD PERMIT
+                </>
+              )}
+            </Button>
           </div>
           
-          {/* Debug/Info panel */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-10">
-            <div className="p-5 bg-primary/10 border border-primary/20 rounded-xl flex items-center gap-4 backdrop-blur-sm shadow-inner">
-              <User className="h-6 w-6 text-primary" />
-              <div>
-                <p className="text-[10px] uppercase text-primary/70 font-mono tracking-tighter">Registry Subject</p>
-                <p className="text-sm font-bold truncate text-white">{attendee.Name}</p>
-              </div>
+          {/* Clearance Badge */}
+          <div className="max-w-md mx-auto p-6 bg-primary/5 border border-primary/20 rounded-xl flex flex-col items-center gap-4 text-center">
+            <div className="h-12 w-12 rounded-full bg-primary/20 flex items-center justify-center">
+              <AlertTriangle className="h-6 w-6 text-primary" />
             </div>
-            <div className="p-5 bg-primary/10 border border-primary/20 rounded-xl flex items-center gap-4 backdrop-blur-sm shadow-inner">
-              <TicketIcon className="h-6 w-6 text-primary" />
-              <div>
-                <p className="text-[10px] uppercase text-primary/70 font-mono tracking-tighter">Access Token</p>
-                <p className="text-sm font-bold text-white font-mono">{attendee.RegNo}</p>
-              </div>
-            </div>
-            <div className="p-5 bg-primary/10 border border-primary/20 rounded-xl flex items-center gap-4 backdrop-blur-sm shadow-inner">
-              <AlertTriangle className="h-6 w-6 text-secondary" />
-              <div>
-                <p className="text-[10px] uppercase text-secondary/70 font-mono tracking-tighter">Clearance Status</p>
-                <p className="text-sm font-bold text-secondary">CLEAR FOR ENTRY</p>
-              </div>
+            <div>
+              <h4 className="text-white font-black uppercase tracking-widest">Clearance Confirmed</h4>
+              <p className="text-xs text-muted-foreground mt-1 font-mono uppercase">Permit {attendee.RegNo} is authorized for entry into SIMATS campus.</p>
             </div>
           </div>
         </div>
       )}
 
-      {/* Footer Branding */}
-      <div className="pt-16 pb-12 text-center opacity-40">
-        <p className="text-[10px] font-mono text-primary tracking-[0.6em] uppercase">
-          &copy; 2026 MadMatrix Cyber-Defense Protocol
+      {/* Footer */}
+      <div className="pt-12 pb-8 text-center opacity-30">
+        <p className="text-[10px] font-mono text-primary tracking-[0.5em] uppercase">
+          &copy; 2026 MadMatrix Defense Protocol | Simats Engineering
         </p>
       </div>
     </div>
