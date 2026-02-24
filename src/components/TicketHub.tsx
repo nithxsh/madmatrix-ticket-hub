@@ -29,8 +29,8 @@ export default function TicketHub() {
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // 1) Trim and lowercase the user input
-    const sanitizedEmail = email.trim().toLowerCase();
+    // Trim the user input. We'll handle case-insensitivity at the API level.
+    const sanitizedEmail = email.trim();
     if (!sanitizedEmail) return;
 
     setLoading(true);
@@ -38,15 +38,18 @@ export default function TicketHub() {
     setGreeting("");
 
     try {
-      // 2) Ensure the SheetDB query parameter matches header 'email' and use /search endpoint
-      const response = await fetch(`https://sheetdb.io/api/v1/m4xm36b3182sq/search?email=${encodeURIComponent(sanitizedEmail)}`);
-      const data: Attendee[] = await response.json();
+      // Use casesensitive=false to ensure a match even if the user or the sheet has different capitalization.
+      // NOTE: The query parameter 'email' MUST match your Sheet column header exactly (case-sensitive for the header name itself).
+      const apiUrl = `https://sheetdb.io/api/v1/m4xm36b3182sq/search?email=${encodeURIComponent(sanitizedEmail)}&casesensitive=false`;
+      
+      const response = await fetch(apiUrl);
+      const data = await response.json();
 
-      // 3) Add a console.log(data) so I can debug the API response in the browser console
+      // Debug log: Check the browser console to see exactly what SheetDB returns.
       console.log("Registry Data Response:", data);
 
-      if (data && data.length > 0) {
-        const foundAttendee = data[0];
+      if (Array.isArray(data) && data.length > 0) {
+        const foundAttendee = data[0] as Attendee;
         setAttendee(foundAttendee);
 
         // Generate AI Greeting
@@ -60,7 +63,7 @@ export default function TicketHub() {
       } else {
         toast({
           title: "Registry Mismatch",
-          description: "No attendee found with that email. Please check your spelling or contact support.",
+          description: "No attendee found with that email. Ensure the column header in your Excel sheet is exactly 'email' (all lowercase).",
           variant: "destructive",
         });
       }
@@ -68,7 +71,7 @@ export default function TicketHub() {
       console.error("Fetch Error:", error);
       toast({
         title: "Network Failure",
-        description: "Could not connect to the central registry. Please try again.",
+        description: "Could not connect to the central registry. Please check your connection.",
         variant: "destructive",
       });
     } finally {
