@@ -1,3 +1,4 @@
+
 {
   "placeholderImages": [
     {
@@ -17,6 +18,12 @@
       "description": "Saveetha Institute of Medical and Technical Sciences Official Logo",
       "imageUrl": "https://upload.wikimedia.org/wikipedia/en/5/52/Saveetha_Institute_of_Medical_and_Technical_Sciences_logo.png",
       "imageHint": "simats logo"
+    },
+    {
+      "id": "campus-building",
+      "description": "Saveetha Engineering College Campus Building",
+      "imageUrl": "https://www.saveetha.ac.in/images/saveetha/saveetha-engineering-college.jpg",
+      "imageHint": "saveetha college building"
     }
   ]
 }

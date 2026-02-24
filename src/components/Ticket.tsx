@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -14,6 +15,7 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
     const [secureId, setSecureId] = useState("");
     const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(regNo)}&size=150x150&color=ffffff&bgcolor=000000`;
     const simatsLogoUrl = "https://upload.wikimedia.org/wikipedia/en/5/52/Saveetha_Institute_of_Medical_and_Technical_Sciences_logo.png";
+    const campusBgUrl = "https://www.saveetha.ac.in/images/saveetha/saveetha-engineering-college.jpg";
 
     useEffect(() => {
       setSecureId(Math.random().toString(36).substring(7).toUpperCase());
@@ -26,10 +28,20 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
         className="relative w-full max-w-[800px] flex flex-col overflow-hidden rounded-sm shadow-[0_0_60px_rgba(255,0,0,0.4)] bg-[#050000] select-none border border-white/10"
         style={{ aspectRatio: "2.1/1" }}
       >
+        {/* Campus Background Image with 0.5 opacity */}
+        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+          <img 
+            src={campusBgUrl} 
+            alt="Campus Background" 
+            className="w-full h-full object-cover opacity-50"
+          />
+          {/* Gradient Overlay to ensure text readability */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-black/80" />
+        </div>
+
         {/* Top Branding Bar */}
         <div className="relative h-[20%] bg-white z-30 flex items-center justify-between px-8 border-b-[4px] border-primary">
           <div className="flex items-center gap-4">
-             {/* SIMATS Logo replacing the SE box */}
              <img 
               src={simatsLogoUrl} 
               alt="SIMATS Logo" 
@@ -47,18 +59,9 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
         </div>
 
         {/* Main Body */}
-        <div className="flex-1 flex overflow-hidden">
+        <div className="flex-1 flex overflow-hidden relative z-10">
           {/* Left Content (Primary Info) */}
           <div className="flex-[2.2] flex flex-col items-center justify-between p-6 py-8 relative">
-            {/* Background Texture Overlay */}
-            <div 
-              className="absolute inset-0 opacity-5 pointer-events-none" 
-              style={{ 
-                backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.1) 1px, transparent 0)',
-                backgroundSize: '12px 12px' 
-              }}
-            />
-
             {/* Symposium Title */}
             <div className="text-center z-10">
                <h3 className="text-primary font-black text-5xl md:text-6xl tracking-tighter drop-shadow-[0_0_15px_rgba(255,0,0,0.5)] uppercase italic leading-none">
@@ -68,7 +71,7 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
             </div>
 
             {/* Personnel Info */}
-            <div className="w-full max-w-[85%] mx-auto py-3 border-y border-white/10 flex flex-col items-center gap-1 z-10">
+            <div className="w-full max-w-[85%] mx-auto py-3 border-y border-white/10 flex flex-col items-center gap-1 z-10 bg-black/40 backdrop-blur-sm rounded-md">
                <span className="text-white/40 font-mono text-[9px] tracking-[0.3em] uppercase">AUTHORIZED PERSONNEL:</span>
                <span className="text-white font-black text-2xl tracking-tight uppercase leading-tight text-center">
                  {name}
@@ -101,28 +104,30 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
           <div className="w-px h-full border-l border-dashed border-white/20 opacity-30"></div>
 
           {/* Right Stub (Verification & Receipt) */}
-          <div className="flex-1 bg-black/40 flex flex-col items-center justify-between p-4 py-6 relative">
+          <div className="flex-1 bg-black/60 backdrop-blur-md flex flex-col items-center justify-between p-4 py-6 relative">
             {/* Top Right Branding/Date */}
             <div className="w-full text-right mb-2 relative">
               <p className="text-white font-black text-[9px] uppercase tracking-tighter leading-none">SIMATS ENGINEERING</p>
               <p className="text-primary font-black text-[10px] uppercase">MAR 13-14, 2026</p>
             </div>
 
-            {/* QR Code - Positioned Upward */}
-            <div className="bg-white p-1 rounded-sm shadow-[0_0_15px_rgba(255,255,255,0.1)] -mt-4">
-               <img 
-                src={qrUrl} 
-                alt="Registration QR" 
-                className="w-20 h-20"
-              />
+            {/* QR Code - Realigned for better aesthetics */}
+            <div className="flex-1 flex items-center justify-center w-full">
+              <div className="bg-white p-1.5 rounded-sm shadow-[0_0_20px_rgba(255,255,255,0.15)] border border-white/20">
+                 <img 
+                  src={qrUrl} 
+                  alt="Registration QR" 
+                  className="w-24 h-24"
+                />
+              </div>
             </div>
 
             {/* Confirmation Text */}
-            <div className="text-center px-1">
+            <div className="text-center px-1 mb-4">
                <p className="text-[8px] text-white/80 font-bold uppercase leading-tight tracking-tight">
                  Your payment has been received.<br/>
                  Thanks for registering!<br/>
-                 <span className="text-primary font-black">GET INTO MATRIX !</span>
+                 <span className="text-primary font-black tracking-widest mt-1 block">GET INTO MATRIX !</span>
                </p>
             </div>
 
