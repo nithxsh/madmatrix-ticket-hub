@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { Search, Download, Terminal, Loader2, User, Ticket as TicketIcon, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -38,11 +38,11 @@ export default function TicketHub() {
     setGreeting("");
 
     try {
-      // 2) Ensure the SheetDB query parameter matches header 'email'
-      const response = await fetch(`https://sheetdb.io/api/v1/m4xm36b3182sq?email=${encodeURIComponent(sanitizedEmail)}`);
+      // 2) Ensure the SheetDB query parameter matches header 'email' and use /search endpoint
+      const response = await fetch(`https://sheetdb.io/api/v1/m4xm36b3182sq/search?email=${encodeURIComponent(sanitizedEmail)}`);
       const data: Attendee[] = await response.json();
 
-      // 3) Add a console.log(data) for debugging
+      // 3) Add a console.log(data) so I can debug the API response in the browser console
       console.log("Registry Data Response:", data);
 
       if (data && data.length > 0) {
@@ -65,6 +65,7 @@ export default function TicketHub() {
         });
       }
     } catch (error) {
+      console.error("Fetch Error:", error);
       toast({
         title: "Network Failure",
         description: "Could not connect to the central registry. Please try again.",

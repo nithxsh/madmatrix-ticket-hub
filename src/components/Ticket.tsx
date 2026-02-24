@@ -1,8 +1,7 @@
 
 "use client";
 
-import React from "react";
-import Image from "next/image";
+import React, { useState, useEffect } from "react";
 
 interface TicketProps {
   name: string;
@@ -13,7 +12,13 @@ interface TicketProps {
 
 export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
   ({ name, regNo, greeting, id }, ref) => {
+    const [secureId, setSecureId] = useState("");
     const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(regNo)}&size=150x150&color=22c55e&bgcolor=000000`;
+
+    useEffect(() => {
+      // Set secure ID on client side to avoid hydration mismatch
+      setSecureId(Math.random().toString(36).substring(7).toUpperCase());
+    }, []);
 
     return (
       <div
@@ -80,7 +85,9 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
             </div>
 
             <div className="text-right">
-              <p className="text-[10px] font-mono text-primary/50">SECURE_ID: {Math.random().toString(36).substring(7).toUpperCase()}</p>
+              <p className="text-[10px] font-mono text-primary/50">
+                SECURE_ID: {secureId || "INITIALIZING..."}
+              </p>
             </div>
           </div>
         </div>
