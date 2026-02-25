@@ -182,9 +182,9 @@ export default function TicketHub() {
       { url: "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=SPORTS%20FORM", name: "SPORTS FORM" }
     ];
 
+    let foundAttendee: Attendee | null = null;
+
     try {
-      let foundAttendee: Attendee | null = null;
-      
       for (let i = 0; i < endpoints.length; i++) {
         setLoadingProgress(Math.floor((i / endpoints.length) * 100));
         const response = await fetch(endpoints[i].url);
@@ -217,6 +217,7 @@ export default function TicketHub() {
           setAttendee(foundAttendee);
           setStep(2);
           setIsDecrypting(false);
+          setLoading(false);
           try {
             const aiResult = await generateCyberpunkGreeting({ attendeeName: foundAttendee!.Name });
             setGreeting(aiResult.greeting);
