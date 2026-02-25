@@ -12,6 +12,7 @@ import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
+import { Slider } from "@/components/ui/slider";
 
 interface Attendee {
   Name: string;
@@ -61,22 +62,43 @@ const DecryptText = ({ text, delay = 0, className = "" }: { text: string; delay?
   return <span className={cn("font-mono", className)}>{displayText}</span>;
 };
 
-const PersistentSupportMenu = () => (
-  <div className="fixed left-6 top-1/2 -translate-y-1/2 z-[100] hidden lg:flex flex-col gap-4">
-    <div className="flex flex-col gap-2 p-2 bg-black/60 border border-primary/30 backdrop-blur-xl rounded-full shadow-[0_0_30px_rgba(255,0,0,0.2)]">
-      <a href="mailto:support@madmatrix.site" title="HELP_DESK" className="h-10 w-10 flex items-center justify-center rounded-full bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all group">
-        <Mail className="h-5 w-5" />
-      </a>
-      <a href="mailto:organizer@madmatrix.site" title="SPONSORS" className="h-10 w-10 flex items-center justify-center rounded-full bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all group">
-        <MessageSquare className="h-5 w-5" />
-      </a>
-      <a href="mailto:madmatrix2026@gmail.com" title="SYSTEM_NODE" className="h-10 w-10 flex items-center justify-center rounded-full bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all group">
-        <Cpu className="h-5 w-5" />
-      </a>
+const PersistentSupportMenu = () => {
+  const scrollToAdmin = () => {
+    const adminSection = document.getElementById('admin-registry');
+    if (adminSection) {
+      adminSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  return (
+    <div className="fixed left-6 top-1/2 -translate-y-1/2 z-[100] hidden lg:flex flex-col gap-4">
+      <div className="flex flex-col gap-2 p-2 bg-black/60 border border-primary/30 backdrop-blur-xl rounded-full shadow-[0_0_30px_rgba(255,0,0,0.2)]">
+        <a 
+          href="mailto:support@madmatrix.site?subject=Technical_Support" 
+          title="HELP_DESK" 
+          className="h-10 w-10 flex items-center justify-center rounded-full bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all group"
+        >
+          <Mail className="h-5 w-5" />
+        </a>
+        <a 
+          href="mailto:organizer@madmatrix.site?subject=Sponsorship_Inquiry" 
+          title="SPONSORS" 
+          className="h-10 w-10 flex items-center justify-center rounded-full bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all group"
+        >
+          <ShieldAlert className="h-5 w-5" />
+        </a>
+        <button 
+          onClick={scrollToAdmin}
+          title="SYSTEM_NODE" 
+          className="h-10 w-10 flex items-center justify-center rounded-full bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all group"
+        >
+          <Cpu className="h-5 w-5" />
+        </button>
+      </div>
+      <div className="h-20 w-[1px] bg-gradient-to-b from-primary/50 to-transparent mx-auto" />
     </div>
-    <div className="h-20 w-[1px] bg-gradient-to-b from-primary/50 to-transparent mx-auto" />
-  </div>
-);
+  );
+};
 
 const AdminTiltGrid = () => {
   const admins = [
@@ -92,7 +114,7 @@ const AdminTiltGrid = () => {
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-5xl mx-auto py-12">
+    <div id="admin-registry" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-5xl mx-auto py-12">
       <div className="col-span-full mb-6">
         <div className="flex items-center gap-3 text-primary">
           <ShieldCheck className="h-5 w-5 animate-pulse" />
@@ -123,12 +145,26 @@ const AdminTiltGrid = () => {
   );
 };
 
+const GlitchOverlay = () => (
+  <div className="fixed inset-0 z-[200] pointer-events-none overflow-hidden bg-black/40">
+    <div className="absolute inset-0 animate-pulse opacity-20">
+      <div className="h-full w-full bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] z-10 bg-[length:100%_2px,3px_100%]" />
+    </div>
+    <div className="flex h-full w-full items-center justify-center">
+      <div className="font-mono text-primary text-4xl animate-bounce tracking-[1em] uppercase">
+        [LAUNCHING_NEURAL_INTERFACE]
+      </div>
+    </div>
+  </div>
+);
+
 export default function TicketHub() {
   const [step, setStep] = useState<1 | 2>(1);
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
-  const [loadingProgress, setLoadingProgress] = useState(0);
-  const [isDecypting, setIsDecrypting] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [showSlider, setShowSlider] = useState(false);
+  const [isLaunching, setIsLaunching] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const [attendee, setAttendee] = useState<Attendee | null>(null);
   const [greeting, setGreeting] = useState<string>("");
@@ -141,7 +177,6 @@ export default function TicketHub() {
     if (!sanitizedEmail) return;
 
     setLoading(true);
-    setLoadingProgress(0);
     let foundAttendee: Attendee | null = null;
 
     const endpoints = [
@@ -154,7 +189,6 @@ export default function TicketHub() {
 
     try {
       for (let i = 0; i < endpoints.length; i++) {
-        setLoadingProgress(Math.floor((i / endpoints.length) * 100));
         const response = await fetch(endpoints[i].url);
         if (!response.ok) continue;
         const data = await response.json();
@@ -179,26 +213,19 @@ export default function TicketHub() {
       }
 
       if (foundAttendee) {
-        setLoadingProgress(100);
-        setIsDecrypting(true);
-        setTimeout(async () => {
-          setAttendee(foundAttendee);
-          setStep(2);
-          setIsDecrypting(false);
+        setAttendee(foundAttendee);
+        setIsVerifying(true);
+        setTimeout(() => {
           setLoading(false);
-          try {
-            const aiResult = await generateCyberpunkGreeting({ attendeeName: foundAttendee!.Name });
-            setGreeting(aiResult.greeting);
-          } catch (error) {
-            setGreeting("Access permit retrieved. Welcome to the Matrix.");
-          }
-        }, 1500);
+          setShowSlider(true);
+        }, 1000);
       } else {
         toast({
           title: "Registry Mismatch",
           description: `Email not found in registries.`,
           variant: "destructive",
         });
+        setLoading(false);
       }
     } catch (error) {
       toast({
@@ -206,8 +233,23 @@ export default function TicketHub() {
         description: "Could not connect to database services.",
         variant: "destructive",
       });
-    } finally {
-      if (!foundAttendee) setLoading(false);
+      setLoading(false);
+    }
+  };
+
+  const handleLaunch = (value: number[]) => {
+    if (value[0] >= 95) {
+      setIsLaunching(true);
+      setTimeout(async () => {
+        setStep(2);
+        setIsLaunching(false);
+        try {
+          const aiResult = await generateCyberpunkGreeting({ attendeeName: attendee!.Name });
+          setGreeting(aiResult.greeting);
+        } catch (error) {
+          setGreeting("Access permit retrieved. Welcome to the Matrix.");
+        }
+      }, 1500);
     }
   };
 
@@ -272,12 +314,15 @@ export default function TicketHub() {
     setEmail("");
     setAttendee(null);
     setLoading(false);
-    setLoadingProgress(0);
+    setIsVerifying(false);
+    setShowSlider(false);
+    setIsLaunching(false);
   };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4 max-w-6xl mx-auto space-y-24">
       <PersistentSupportMenu />
+      {isLaunching && <GlitchOverlay />}
       
       {step === 1 && (
         <div className="w-full flex flex-col items-center space-y-12 animate-in fade-in zoom-in duration-700">
@@ -297,38 +342,50 @@ export default function TicketHub() {
           <Card className="w-full max-w-2xl bg-black/40 border-primary/20 backdrop-blur-3xl shadow-[0_0_50px_rgba(255,0,0,0.1)] overflow-hidden relative group">
             <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
             <CardContent className="p-10">
-              {!loading ? (
+              {!showSlider ? (
                 <form onSubmit={handleSearch} className="flex flex-col md:flex-row gap-6">
                   <div className="relative flex-1">
                     <Terminal className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-primary" />
                     <Input
                       type="email"
                       placeholder="ENTER_ENCRYPTED_ID"
-                      className="pl-12 h-16 bg-white/5 border-primary/10 text-primary placeholder:text-primary/20 font-mono focus-visible:ring-primary text-xl uppercase tracking-widest"
+                      className="pl-12 h-16 bg-white/5 border-primary/10 text-primary placeholder:text-primary/20 font-mono focus-visible:ring-primary text-xl uppercase tracking-widest disabled:opacity-50"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
+                      disabled={loading}
                     />
                   </div>
                   <button 
                     type="submit" 
-                    disabled={!email}
+                    disabled={!email || loading}
                     className="h-16 px-12 bg-primary text-white font-black hover:bg-red-700 transition-all rounded-lg shadow-xl disabled:opacity-30 text-sm tracking-[0.2em] uppercase flex items-center justify-center active:scale-95"
                   >
-                    <Search className="mr-2 h-5 w-5" />DECRYPT
+                    {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <><Search className="mr-2 h-5 w-5" />DECRYPT</>}
                   </button>
                 </form>
               ) : (
-                <div className="space-y-8 py-6">
-                  <div className="flex justify-between items-center text-[10px] font-mono text-primary uppercase">
-                    <span>[RETRIVING_DATA_FROM_EXCEL_DATABASE...]</span>
-                    <span>{loadingProgress}%</span>
+                <div className="space-y-8 py-6 animate-in slide-in-from-bottom-4 duration-500">
+                  <div className="flex justify-between items-center text-xs font-mono text-green-500 uppercase tracking-widest">
+                    <span className="flex items-center gap-2"><ShieldCheck className="h-4 w-4" /> [CREDENTIALS_VERIFIED]</span>
+                    <span className="animate-pulse">STABLE_CONNECTION</span>
                   </div>
-                  <Progress value={loadingProgress} className="h-1 bg-white/5" />
-                  {isDecypting && (
-                    <div className="flex items-center justify-center gap-3 text-green-500 font-mono text-sm animate-pulse tracking-[0.5em]">
-                      <ShieldCheck className="h-4 w-4" /> [ACCESS_GRANTED]
+                  <div className="space-y-4">
+                    <p className="text-[10px] font-mono text-primary/60 uppercase tracking-[0.3em] text-center">Slide to launch neural interface</p>
+                    <div className="p-4 bg-white/5 rounded-2xl border border-primary/20">
+                      <Slider
+                        defaultValue={[0]}
+                        max={100}
+                        step={1}
+                        className="cursor-pointer"
+                        onValueChange={handleLaunch}
+                      />
+                      <div className="mt-4 flex justify-between text-[8px] font-mono text-primary/40 uppercase">
+                        <span>INIT_SEQ</span>
+                        <span>&gt;&gt;&gt; SLIDE TO LAUNCH &gt;&gt;&gt;</span>
+                        <span>EXEC_NODE</span>
+                      </div>
                     </div>
-                  )}
+                  </div>
                 </div>
               )}
             </CardContent>
@@ -343,7 +400,7 @@ export default function TicketHub() {
             <Card className="bg-black/60 border-primary/30 backdrop-blur-2xl p-8 relative overflow-hidden group hover:shadow-[0_0_30px_rgba(255,0,0,0.15)] transition-all">
               <div className="absolute top-0 right-0 p-2 text-[8px] font-mono text-primary/30 tracking-widest">NODE_01</div>
               <p className="text-[10px] font-mono text-primary uppercase tracking-[0.4em] mb-4 flex items-center gap-2">
-                <User className="h-3 w-3" /> [IDENTITY]
+                <User className="h-3 w-3" /> [IDENT_VERIFICATION]
               </p>
               <h3 className="text-3xl font-black text-white uppercase tracking-tighter">
                 <DecryptText text={attendee.Name} />
@@ -353,7 +410,7 @@ export default function TicketHub() {
             <Card className="bg-black/60 border-primary/30 backdrop-blur-2xl p-8 relative overflow-hidden group hover:shadow-[0_0_30px_rgba(255,0,0,0.15)] transition-all">
               <div className="absolute top-0 right-0 p-2 text-[8px] font-mono text-primary/30 tracking-widest">NODE_02</div>
               <p className="text-[10px] font-mono text-primary uppercase tracking-[0.4em] mb-4 flex items-center gap-2">
-                <Activity className="h-3 w-3" /> [ASSIGNED_EVENT]
+                <Activity className="h-3 w-3" /> [SPORTS_FORM]
               </p>
               <h3 className="text-3xl font-black text-white uppercase tracking-tighter">
                 {attendee.Event}
@@ -363,13 +420,16 @@ export default function TicketHub() {
             <Card className="bg-black/60 border-primary/30 backdrop-blur-2xl p-8 relative overflow-hidden group hover:shadow-[0_0_30px_rgba(255,0,0,0.15)] transition-all">
               <div className="absolute top-0 right-0 p-2 text-[8px] font-mono text-primary/30 tracking-widest">NODE_03</div>
               <p className="text-[10px] font-mono text-primary uppercase tracking-[0.4em] mb-4 flex items-center gap-2">
-                <ShieldCheck className="h-3 w-3" /> [CLEARANCE]
+                <ShieldCheck className="h-3 w-3" /> [LOCATION_NODE]
               </p>
-              <div className="flex items-center gap-3">
-                <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_10px_#22c55e]" />
-                <h3 className="text-xl font-black text-green-500 uppercase tracking-[0.2em]">
-                  AUTHORIZED
-                </h3>
+              <div className="flex flex-col gap-1">
+                <div className="flex items-center gap-3">
+                  <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_10px_#22c55e]" />
+                  <h3 className="text-xl font-black text-green-500 uppercase tracking-[0.2em]">
+                    SCAD AUDITORIUM
+                  </h3>
+                </div>
+                <p className="text-[8px] font-mono text-primary/40 ml-5">COMMENCEMENT: 09:00 AM</p>
               </div>
             </Card>
           </div>
@@ -449,14 +509,14 @@ export default function TicketHub() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 font-mono">
                   <div className="space-y-4">
-                    <a href="mailto:support@madmatrix.site" className="flex items-center gap-5 p-5 bg-white/5 rounded-xl border border-white/5 hover:border-primary/40 transition-all group">
+                    <a href="mailto:support@madmatrix.site?subject=Technical_Support" className="flex items-center gap-5 p-5 bg-white/5 rounded-xl border border-white/5 hover:border-primary/40 transition-all group">
                       <Mail className="h-6 w-6 text-primary group-hover:scale-110 transition-transform" />
                       <div>
                         <p className="text-primary uppercase text-[10px] font-bold mb-1 tracking-widest">HELP_DESK</p>
                         <p className="text-white text-sm">support@madmatrix.site</p>
                       </div>
                     </a>
-                    <a href="mailto:organizer@madmatrix.site" className="flex items-center gap-5 p-5 bg-white/5 rounded-xl border border-white/5 hover:border-primary/40 transition-all group">
+                    <a href="mailto:organizer@madmatrix.site?subject=Sponsorship_Inquiry" className="flex items-center gap-5 p-5 bg-white/5 rounded-xl border border-white/5 hover:border-primary/40 transition-all group">
                       <MessageSquare className="h-6 w-6 text-primary group-hover:scale-110 transition-transform" />
                       <div>
                         <p className="text-primary uppercase text-[10px] font-bold mb-1 tracking-widest">SPONSOR_ENQUIRY</p>
