@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from "react";
@@ -53,42 +52,30 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
           />
         </div>
 
-        {/* 2. Absolute Header - Edge-Lock */}
+        {/* 2. Absolute Header - Edge-Lock with Responsive stacking classes */}
         <div 
+          className="flex flex-col md:flex-row items-center justify-between"
           style={{ 
             position: "absolute", 
             top: 0, 
             left: 0, 
             width: "1000px", 
-            height: "75px", 
+            minHeight: "75px", 
             backgroundColor: "white", 
             borderBottom: "3px solid #ff0000",
             zIndex: 10,
-            boxSizing: "border-box"
+            boxSizing: "border-box",
+            padding: "10px 30px"
           }}
         >
           {/* Left Branding */}
-          <div 
-            style={{ 
-              position: "absolute", 
-              left: "30px", 
-              top: "15px", 
-              textAlign: "left" 
-            }}
-          >
+          <div className="flex flex-col items-center md:items-start text-center md:text-left">
             <span style={{ color: "#0a2e5c", fontWeight: 900, fontSize: "28px", letterSpacing: "-0.05em", lineHeight: 1, display: "block" }}>SIMATS</span>
             <span style={{ color: "#0a2e5c", fontSize: "10px", fontWeight: 800, letterSpacing: "0.2em", textTransform: "uppercase", marginTop: "2px", display: "block" }}>ENGINEERING</span>
           </div>
 
           {/* Right Branding */}
-          <div 
-            style={{ 
-              position: "absolute", 
-              right: "30px", 
-              top: "15px", 
-              textAlign: "right" 
-            }}
-          >
+          <div className="flex flex-col items-center md:items-end text-center md:text-right mt-2 md:mt-0">
             <div style={{ display: "block" }}>
               <span style={{ color: "#0a2e5c", fontWeight: 900, fontSize: "24px", letterSpacing: "-0.05em", lineHeight: 1 }}>SIMATS</span>
               <span style={{ color: "#0a2e5c", fontSize: "9px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", marginLeft: "4px" }}>DEEMED TO BE UNIVERSITY</span>

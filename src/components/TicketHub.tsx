@@ -71,7 +71,7 @@ const PersistentSupportMenu = () => {
   };
 
   return (
-    <div className="fixed left-6 top-1/2 -translate-y-1/2 z-[100] hidden lg:flex flex-col gap-4">
+    <div className="fixed lg:left-6 lg:top-1/2 lg:-translate-y-1/2 left-4 bottom-6 lg:bottom-auto lg:translate-y-[-50%] z-[100] flex flex-col gap-4">
       <div className="flex flex-col gap-2 p-2 bg-black/60 border border-primary/30 backdrop-blur-xl rounded-full shadow-[0_0_30px_rgba(255,0,0,0.2)]">
         <a 
           href="mailto:support@madmatrix.site?subject=Neural_Link_Support" 
@@ -95,7 +95,7 @@ const PersistentSupportMenu = () => {
           <Cpu className="h-5 w-5" />
         </button>
       </div>
-      <div className="h-20 w-[1px] bg-gradient-to-b from-primary/50 to-transparent mx-auto" />
+      <div className="hidden lg:block h-20 w-[1px] bg-gradient-to-b from-primary/50 to-transparent mx-auto" />
     </div>
   );
 };
@@ -114,7 +114,7 @@ const AdminTiltGrid = () => {
   ];
 
   return (
-    <div id="admin-registry" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-5xl mx-auto py-12">
+    <div id="admin-registry" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-5xl mx-auto py-12 px-4">
       <div className="col-span-full mb-6 text-center">
         <div className="flex items-center justify-center gap-3 text-primary">
           <ShieldCheck className="h-5 w-5 animate-pulse" />
@@ -321,7 +321,7 @@ export default function TicketHub() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4 max-w-6xl mx-auto space-y-24">
+    <div className="flex flex-col items-center justify-center min-h-screen p-4 max-w-6xl mx-auto space-y-12 lg:space-y-24">
       <PersistentSupportMenu />
       {isLaunching && <GlitchOverlay />}
       
@@ -332,25 +332,25 @@ export default function TicketHub() {
               <div className="h-2 w-2 rounded-full bg-primary animate-ping" />
               <span className="text-xs font-mono uppercase tracking-[0.4em] text-primary/80">Neural Authorization Portal</span>
             </div>
-            <h1 className="text-6xl md:text-9xl font-black tracking-tighter text-white uppercase leading-none">
+            <h1 className="text-5xl md:text-9xl font-black tracking-tighter text-white uppercase leading-none">
               MadMatrix<span className="text-primary italic animate-pulse">'26</span>
             </h1>
-            <p className="text-muted-foreground font-mono text-xs md:text-sm max-w-lg mx-auto leading-relaxed uppercase">
+            <p className="text-muted-foreground font-mono text-[10px] md:text-sm max-w-lg mx-auto leading-relaxed uppercase px-4">
               USE THE MAIL ID WHICH YOU USED IN REGISTRATION ( GOOGLE FORMS )
             </p>
           </div>
 
           <Card className="w-full max-w-2xl bg-black/40 border-primary/20 backdrop-blur-3xl shadow-[0_0_50px_rgba(255,0,0,0.1)] overflow-hidden relative group">
             <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
-            <CardContent className="p-10">
+            <CardContent className="p-6 md:p-10">
               {!showSlider ? (
-                <form onSubmit={handleSearch} className="flex flex-col md:flex-row gap-6">
+                <form onSubmit={handleSearch} className="flex flex-col md:flex-row gap-4 md:gap-6">
                   <div className="relative flex-1">
                     <Terminal className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-primary" />
                     <Input
                       type="email"
                       placeholder="ENTER_ENCRYPTED_ID"
-                      className="pl-12 h-16 bg-white/5 border-primary/10 text-primary placeholder:text-primary/20 font-mono focus-visible:ring-primary text-xl uppercase tracking-widest disabled:opacity-50"
+                      className="pl-12 h-14 md:h-16 bg-white/5 border-primary/10 text-primary placeholder:text-primary/20 font-mono focus-visible:ring-primary text-lg md:text-xl uppercase tracking-widest disabled:opacity-50"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       disabled={loading}
@@ -359,31 +359,32 @@ export default function TicketHub() {
                   <button 
                     type="submit" 
                     disabled={!email || loading}
-                    className="h-16 px-12 bg-primary text-white font-black hover:bg-red-700 transition-all rounded-lg shadow-xl disabled:opacity-30 text-sm tracking-[0.2em] uppercase flex items-center justify-center active:scale-95"
+                    className="h-14 md:h-16 px-12 bg-primary text-white font-black hover:bg-red-700 transition-all rounded-lg shadow-xl disabled:opacity-30 text-xs md:text-sm tracking-[0.2em] uppercase flex items-center justify-center active:scale-95"
                   >
                     {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <><Search className="mr-2 h-5 w-5" />DECRYPT</>}
                   </button>
                 </form>
               ) : (
                 <div className="space-y-10 py-6 animate-in slide-in-from-bottom-4 duration-500 flex flex-col items-center">
-                  <div className="w-full flex justify-between items-center text-[10px] font-mono text-green-500 uppercase tracking-widest px-4">
+                  <div className="w-full flex justify-between items-center text-[8px] md:text-[10px] font-mono text-green-500 uppercase tracking-widest px-4">
                     <span className="flex items-center gap-2"><ShieldCheck className="h-4 w-4" /> [BIO_SYNC_COMPLETE]</span>
                     <span className="animate-pulse">CORE_NEURAL_UPLINK</span>
                   </div>
                   <div className="w-full max-w-md space-y-6">
                     <p className="text-[10px] font-mono text-primary/60 uppercase tracking-[0.3em] text-center">Slide rocket to initiate launch</p>
-                    <div className="p-6 bg-white/5 rounded-2xl border border-primary/20 relative overflow-hidden w-full mx-auto md:w-3/4">
+                    <div className="p-6 bg-white/5 rounded-2xl border border-primary/20 relative overflow-hidden w-[80%] md:w-full mx-auto">
                       <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-transparent pointer-events-none" />
                       <Slider
                         defaultValue={[0]}
                         max={100}
                         step={1}
-                        className="cursor-pointer"
+                        className="cursor-pointer py-4"
                         onValueChange={handleLaunch}
                       />
                       <div className="mt-6 flex justify-between text-[8px] font-mono text-primary/40 uppercase tracking-widest px-4">
                         <span>INIT_SEQ</span>
-                        <span>&gt;&gt;&gt; SLIDE TO LAUNCH &gt;&gt;&gt;</span>
+                        <span className="hidden md:inline">&gt;&gt;&gt; SLIDE TO LAUNCH &gt;&gt;&gt;</span>
+                        <span className="md:hidden">SLIDE</span>
                         <span>EXEC_NODE</span>
                       </div>
                     </div>
@@ -396,41 +397,41 @@ export default function TicketHub() {
       )}
 
       {step === 2 && attendee && (
-        <div className="w-full space-y-24 animate-in slide-in-from-bottom-12 duration-1000">
+        <div className="w-full space-y-12 lg:space-y-24 animate-in slide-in-from-bottom-12 duration-1000">
           <div className="w-full max-w-4xl mx-auto space-y-8 animate-in slide-in-from-bottom-8 duration-700">
-             <div className="bg-black/60 border border-primary/30 backdrop-blur-2xl p-10 rounded-3xl relative overflow-hidden group hover:shadow-[0_0_40px_rgba(255,0,0,0.15)] transition-all cyber-scanline">
-                <div className="absolute top-0 right-0 p-4 text-[8px] font-mono text-primary/30 tracking-[0.5em] uppercase">SYSTEM_LOG_v2.0</div>
+             <div className="bg-black/60 border border-primary/30 backdrop-blur-2xl p-6 md:p-10 rounded-3xl relative overflow-hidden group hover:shadow-[0_0_40px_rgba(255,0,0,0.15)] transition-all cyber-scanline">
+                <div className="absolute top-0 right-0 p-4 text-[8px] font-mono text-primary/30 tracking-[0.5em] uppercase hidden md:block">SYSTEM_LOG_v2.0</div>
                 
                 <div className="space-y-6 font-mono text-left">
-                  <div className="flex flex-col gap-2 border-l-2 border-green-500 pl-6 py-2">
-                    <span className="text-green-500/60 text-xs tracking-widest uppercase">[IDENT_SYNC]:</span>
-                    <h3 className="text-3xl md:text-5xl font-black text-green-500 uppercase tracking-tighter">
+                  <div className="flex flex-col gap-2 border-l-2 border-green-500 pl-4 md:pl-6 py-2">
+                    <span className="text-green-500/60 text-[10px] md:text-xs tracking-widest uppercase">[IDENT_SYNC]:</span>
+                    <h3 className="text-[5vw] md:text-5xl font-black text-green-500 uppercase tracking-tighter">
                       <DecryptText text={attendee.Name} />
                     </h3>
                   </div>
 
-                  <div className="flex flex-col gap-2 border-l-2 border-primary pl-6 py-2">
-                    <span className="text-primary/60 text-xs tracking-widest uppercase">[ASSIGNED_PROTOCOL]:</span>
-                    <h3 className="text-2xl md:text-4xl font-black text-primary uppercase tracking-tighter">
+                  <div className="flex flex-col gap-2 border-l-2 border-primary pl-4 md:pl-6 py-2">
+                    <span className="text-primary/60 text-[10px] md:text-xs tracking-widest uppercase">[ASSIGNED_PROTOCOL]:</span>
+                    <h3 className="text-[4.5vw] md:text-4xl font-black text-primary uppercase tracking-tighter">
                       {attendee.Event}
                     </h3>
                   </div>
 
-                  <div className="flex flex-col gap-2 border-l-2 border-white/20 pl-6 py-2">
-                    <span className="text-white/40 text-xs tracking-widest uppercase">[DEPLOYMENT_ZONE]:</span>
+                  <div className="flex flex-col gap-2 border-l-2 border-white/20 pl-4 md:pl-6 py-2">
+                    <span className="text-white/40 text-[10px] md:text-xs tracking-widest uppercase">[DEPLOYMENT_ZONE]:</span>
                     <div className="flex flex-col">
                       <div className="flex items-center gap-3">
                         <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_10px_#22c55e]" />
-                        <h3 className="text-xl md:text-2xl font-black text-white uppercase tracking-[0.2em]">
+                        <h3 className="text-[4vw] md:text-2xl font-black text-white uppercase tracking-[0.2em]">
                           SIMATS ENGINEERING
                         </h3>
                       </div>
-                      <p className="text-[10px] text-primary/60 mt-1">SCAD AUDITORIUM // COMMENCEMENT: 09:00 AM</p>
+                      <p className="text-[8px] md:text-[10px] text-primary/60 mt-1">SCAD AUDITORIUM // COMMENCEMENT: 09:00 AM</p>
                     </div>
                   </div>
                 </div>
 
-                <div className="mt-8 flex justify-between items-center text-[10px] font-mono text-primary/40 uppercase tracking-widest px-2">
+                <div className="mt-8 flex justify-between items-center text-[8px] md:text-[10px] font-mono text-primary/40 uppercase tracking-widest px-2">
                   <span className="flex items-center gap-2 text-green-500"><ShieldCheck className="h-4 w-4" /> [BIO_SYNC_COMPLETE]</span>
                   <span className="animate-pulse">CORE_NEURAL_UPLINK</span>
                 </div>
@@ -440,9 +441,9 @@ export default function TicketHub() {
           <div className="w-full space-y-16 pt-12">
             <div className="flex flex-col items-center gap-4">
                <span className="text-[10px] font-mono text-primary/40 tracking-[1em] uppercase">PERMIT_ENCRYPTION_LAYER</span>
-               <div className="p-8 bg-white/5 rounded-3xl border border-white/10 overflow-x-auto w-full flex justify-center shadow-inner relative group">
+               <div className="p-4 md:p-8 bg-white/5 rounded-3xl border border-white/10 overflow-x-auto w-full flex justify-start md:justify-center shadow-inner relative group">
                 <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity blur-3xl pointer-events-none" />
-                <div className="p-4 bg-black/60 rounded-xl backdrop-blur-md relative z-10 border border-white/5">
+                <div className="p-2 md:p-4 bg-black/60 rounded-xl backdrop-blur-md relative z-10 border border-white/5">
                   <Ticket
                     ref={ticketRef}
                     id="madmatrix-ticket"
@@ -453,16 +454,16 @@ export default function TicketHub() {
               </div>
             </div>
 
-            <div className="flex flex-wrap items-center justify-center gap-6 w-full max-w-4xl mx-auto">
+            <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-6 w-full max-w-4xl mx-auto px-4">
               <Button
                 onClick={handleDownload}
                 disabled={downloading}
-                className="flex-1 min-w-[280px] h-20 bg-primary text-white font-black hover:bg-red-700 shadow-[0_0_40px_rgba(255,0,0,0.3)] uppercase tracking-[0.3em] text-xs transition-all active:scale-95 rounded-xl"
+                className="w-full md:flex-1 h-16 md:h-20 bg-primary text-white font-black hover:bg-red-700 shadow-[0_0_40px_rgba(255,0,0,0.3)] uppercase tracking-[0.2em] md:tracking-[0.3em] text-[10px] md:text-xs transition-all active:scale-95 rounded-xl"
               >
                 {downloading ? (
-                  <><Loader2 className="mr-3 h-6 w-6 animate-spin" />RENDERING_HD_PERMIT_3X...</>
+                  <><Loader2 className="mr-3 h-5 w-5 md:h-6 md:w-6 animate-spin" />RENDERING_HD...</>
                 ) : (
-                  <><Download className="mr-3 h-6 w-6" />DOWNLOAD_PERMIT_v1.0</>
+                  <><Download className="mr-3 h-5 w-5 md:h-6 md:w-6" />DOWNLOAD_PERMIT_v1.0</>
                 )}
               </Button>
               <Button
@@ -470,9 +471,9 @@ export default function TicketHub() {
                   const text = `I've secured my official permit for MadMatrix '26! Authorized entry for ${attendee.Name}. Retrieve yours at: https://www.madmatrix.site/`;
                   window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
                 }}
-                className="flex-1 min-w-[280px] h-20 bg-[#25D366] text-white font-black hover:bg-[#128C7E] shadow-[0_0_30px_rgba(37,211,102,0.2)] uppercase tracking-[0.3em] text-xs transition-all rounded-xl"
+                className="w-full md:flex-1 h-16 md:h-20 bg-[#25D366] text-white font-black hover:bg-[#128C7E] shadow-[0_0_30px_rgba(37,211,102,0.2)] uppercase tracking-[0.2em] md:tracking-[0.3em] text-[10px] md:text-xs transition-all rounded-xl"
               >
-                <Share2 className="mr-3 h-6 w-6" />UPLINK_TO_WHATSAPP
+                <Share2 className="mr-3 h-5 w-5 md:h-6 md:w-6" />UPLINK_TO_WHATSAPP
               </Button>
               <Button
                 variant="ghost"
@@ -484,13 +485,13 @@ export default function TicketHub() {
             </div>
 
             {greeting && (
-              <div className="max-w-2xl mx-auto p-10 bg-white/5 border border-primary/20 rounded-3xl flex flex-col items-center gap-6 text-center shadow-xl">
-                <div className="h-14 w-14 rounded-full bg-primary/20 flex items-center justify-center border border-primary/40 text-primary">
-                  <UserCheck className="h-7 w-7" />
+              <div className="max-w-2xl mx-auto p-6 md:p-10 bg-white/5 border border-primary/20 rounded-3xl flex flex-col items-center gap-6 text-center shadow-xl mx-4">
+                <div className="h-12 w-12 md:h-14 md:w-14 rounded-full bg-primary/20 flex items-center justify-center border border-primary/40 text-primary">
+                  <UserCheck className="h-6 w-6 md:h-7 md:w-7" />
                 </div>
                 <div className="space-y-3">
                   <p className="text-[10px] text-primary font-mono uppercase tracking-[0.4em]">Personalized_Neuro_Greeting</p>
-                  <p className="text-sm md:text-base text-muted-foreground font-mono leading-relaxed italic opacity-80">
+                  <p className="text-xs md:text-base text-muted-foreground font-mono leading-relaxed italic opacity-80">
                     "{greeting}"
                   </p>
                 </div>
@@ -500,53 +501,53 @@ export default function TicketHub() {
           
           <AdminTiltGrid />
 
-          <footer className="w-full max-w-5xl mx-auto pb-24 space-y-12">
-             <div className="bg-black/80 border border-primary/30 p-12 rounded-3xl cyber-scanline relative overflow-hidden shadow-[0_0_60px_rgba(255,0,0,0.1)]">
+          <footer className="w-full max-w-5xl mx-auto pb-24 space-y-12 px-4">
+             <div className="bg-black/80 border border-primary/30 p-6 md:p-12 rounded-3xl cyber-scanline relative overflow-hidden shadow-[0_0_60px_rgba(255,0,0,0.1)]">
                 <div className="flex items-center gap-4 mb-10 text-primary">
                   <Terminal className="h-6 w-6 animate-pulse" />
                   <span className="font-mono text-sm tracking-tighter uppercase font-bold">CONTACT US</span>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 font-mono">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 font-mono">
                   <div className="space-y-4">
-                    <a href="mailto:support@madmatrix.site?subject=Neural_Support_Ticket" className="flex items-center gap-5 p-5 bg-white/5 rounded-xl border border-white/5 hover:border-primary/40 transition-all group">
-                      <Mail className="h-6 w-6 text-primary group-hover:scale-110 transition-transform" />
-                      <div>
-                        <p className="text-primary uppercase text-[10px] font-bold mb-1 tracking-widest">HELP_DESK</p>
-                        <p className="text-white text-sm">support@madmatrix.site</p>
+                    <a href="mailto:support@madmatrix.site?subject=Neural_Support_Ticket" className="flex items-center gap-5 p-4 md:p-5 bg-white/5 rounded-xl border border-white/5 hover:border-primary/40 transition-all group">
+                      <Mail className="h-5 w-5 md:h-6 md:w-6 text-primary group-hover:scale-110 transition-transform" />
+                      <div className="overflow-hidden">
+                        <p className="text-primary uppercase text-[8px] md:text-[10px] font-bold mb-1 tracking-widest">HELP_DESK</p>
+                        <p className="text-white text-xs md:text-sm truncate">support@madmatrix.site</p>
                       </div>
                     </a>
-                    <a href="mailto:organizer@madmatrix.site?subject=Sponsorship_Link_Request" className="flex items-center gap-5 p-5 bg-white/5 rounded-xl border border-white/5 hover:border-primary/40 transition-all group">
-                      <MessageSquare className="h-6 w-6 text-primary group-hover:scale-110 transition-transform" />
-                      <div>
-                        <p className="text-primary uppercase text-[10px] font-bold mb-1 tracking-widest">SPONSOR_ENQUIRY</p>
-                        <p className="text-white text-sm">organizer@madmatrix.site</p>
+                    <a href="mailto:organizer@madmatrix.site?subject=Sponsorship_Link_Request" className="flex items-center gap-5 p-4 md:p-5 bg-white/5 rounded-xl border border-white/5 hover:border-primary/40 transition-all group">
+                      <MessageSquare className="h-5 w-5 md:h-6 md:w-6 text-primary group-hover:scale-110 transition-transform" />
+                      <div className="overflow-hidden">
+                        <p className="text-primary uppercase text-[8px] md:text-[10px] font-bold mb-1 tracking-widest">SPONSOR_ENQUIRY</p>
+                        <p className="text-white text-xs md:text-sm truncate">organizer@madmatrix.site</p>
                       </div>
                     </a>
                   </div>
                   <div className="space-y-4">
-                    <a href="mailto:madmatrix2026@gmail.com" className="flex items-center gap-5 p-5 bg-white/5 rounded-xl border border-white/5 hover:border-primary/40 transition-all group">
-                      <Cpu className="h-6 w-6 text-primary group-hover:scale-110 transition-transform" />
-                      <div>
-                        <p className="text-primary uppercase text-[10px] font-bold mb-1 tracking-widest">PRIMARY_NODE</p>
-                        <p className="text-white text-sm">madmatrix2026@gmail.com</p>
+                    <a href="mailto:madmatrix2026@gmail.com" className="flex items-center gap-5 p-4 md:p-5 bg-white/5 rounded-xl border border-white/5 hover:border-primary/40 transition-all group">
+                      <Cpu className="h-5 w-5 md:h-6 md:w-6 text-primary group-hover:scale-110 transition-transform" />
+                      <div className="overflow-hidden">
+                        <p className="text-primary uppercase text-[8px] md:text-[10px] font-bold mb-1 tracking-widest">PRIMARY_NODE</p>
+                        <p className="text-white text-xs md:text-sm truncate">madmatrix2026@gmail.com</p>
                       </div>
                     </a>
-                    <a href="https://www.madmatrix.site" target="_blank" className="flex items-center gap-5 p-5 bg-white/5 rounded-xl border border-white/5 hover:border-primary/40 transition-all group">
-                      <Globe className="h-6 w-6 text-primary group-hover:scale-110 transition-transform" />
-                      <div>
-                        <p className="text-primary uppercase text-[10px] font-bold mb-1 tracking-widest">OFFICIAL_UPLINK</p>
-                        <span className="text-white text-sm hover:text-primary transition-colors underline underline-offset-4">www.madmatrix.site</span>
+                    <a href="https://www.madmatrix.site" target="_blank" className="flex items-center gap-5 p-4 md:p-5 bg-white/5 rounded-xl border border-white/5 hover:border-primary/40 transition-all group">
+                      <Globe className="h-5 w-5 md:h-6 md:w-6 text-primary group-hover:scale-110 transition-transform" />
+                      <div className="overflow-hidden">
+                        <p className="text-primary uppercase text-[8px] md:text-[10px] font-bold mb-1 tracking-widest">OFFICIAL_UPLINK</p>
+                        <span className="text-white text-xs md:text-sm hover:text-primary transition-colors underline underline-offset-4 truncate">www.madmatrix.site</span>
                       </div>
                     </a>
                   </div>
                 </div>
 
                 <div className="mt-16 text-center border-t border-primary/10 pt-10">
-                  <p className="text-[10px] font-mono text-primary/30 tracking-[1.5em] uppercase">
+                  <p className="text-[8px] md:text-[10px] font-mono text-primary/30 tracking-[1em] md:tracking-[1.5em] uppercase">
                     &copy; 2026_ESTABLISHMENT_NODE // MAD_MATRIX_ROOT
                   </p>
-                  <p className="text-[8px] font-mono text-primary/20 mt-4 uppercase">
+                  <p className="text-[7px] md:text-[8px] font-mono text-primary/20 mt-4 uppercase">
                     Conducted by: Dept. of Pure & Applied Mathematics | SIMATS Engineering
                   </p>
                 </div>
