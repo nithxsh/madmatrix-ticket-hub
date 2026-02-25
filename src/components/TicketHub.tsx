@@ -103,8 +103,8 @@ const PersistentSupportMenu = () => {
 const AdminTiltGrid = () => {
   const admins = [
     { role: "Faculty Convenor", name: "Dr. K. Sudar Mozhi", phone: "9080730749", color: "border-blue-500/30" },
-    { role: "Lead Admin", name: "Nithishwaran", phone: "8754330333", color: "border-primary/40" },
     { role: "Student Admin", name: "Dhanush R", phone: "9025718226", color: "border-white/10" },
+    { role: "Lead Admin", name: "Nithishwaran", phone: "8754330333", color: "border-primary/40" },
     { role: "Student Admin", name: "Kevin Mathew", phone: "8610871590", color: "border-white/10" },
     { role: "Student Admin", name: "Infant A", phone: "7548855208", color: "border-white/10" },
     { role: "Student Admin", name: "Prasithi Kumaran", phone: "8248372122", color: "border-white/10" },
@@ -118,7 +118,7 @@ const AdminTiltGrid = () => {
       <div className="col-span-full mb-6">
         <div className="flex items-center gap-3 text-primary">
           <ShieldCheck className="h-5 w-5 animate-pulse" />
-          <span className="font-mono text-sm tracking-widest uppercase">[SYSTEM_ADMIN_REGISTRY]</span>
+          <span className="font-mono text-sm tracking-widest uppercase">ORGANIZING TEAM</span>
         </div>
       </div>
       {admins.map((admin, idx) => (
@@ -137,7 +137,7 @@ const AdminTiltGrid = () => {
             href={`tel:+91${admin.phone}`} 
             className="inline-flex items-center gap-2 text-primary/60 font-mono text-xs mt-4 group-hover:text-primary transition-colors border border-primary/20 px-3 py-2 rounded-md hover:bg-primary/10 w-full justify-center"
           >
-            <Phone className="h-3 w-3" /> UPLINK: {admin.phone}
+            <Phone className="h-3 w-3" /> CONTACT: {admin.phone}
           </a>
         </div>
       ))}
