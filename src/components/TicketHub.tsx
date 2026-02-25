@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useRef } from "react";
@@ -96,60 +95,51 @@ export default function TicketHub() {
 
     setDownloading(true);
     try {
-      // Hard-Lock Phase 1: Wait for Fonts
+      // Step 1: Force wait for Font loading
       await document.fonts.ready;
 
-      // Hard-Lock Phase 2: Asset Dimension Verification
-      const validateAssets = async () => {
-        const images = Array.from(ticketRef.current!.querySelectorAll('img'));
-        await Promise.all(images.map(img => {
-          return new Promise((resolve) => {
-            const check = () => {
-              if (img.complete && img.naturalWidth > 0) {
-                resolve(true);
-              } else {
-                img.onload = () => resolve(true);
-                img.onerror = () => resolve(true);
-                setTimeout(check, 50);
-              }
-            };
-            check();
-          });
-        }));
-        
-        // Ensure image decoding for pattern generation stability
-        await Promise.all(images.map(img => {
+      // Step 2: Ensure all images are dimensioned and decoded
+      const images = Array.from(ticketRef.current.querySelectorAll('img'));
+      await Promise.all(images.map(img => {
+        return new Promise((resolve) => {
+          if (img.complete && img.naturalWidth > 0) {
+            resolve(true);
+          } else {
+            img.onload = () => resolve(true);
+            img.onerror = () => resolve(true);
+          }
+        }).then(() => {
           if ('decode' in img) return (img as any).decode().catch(() => {});
           return Promise.resolve();
-        }));
-      };
+        });
+      }));
 
-      await validateAssets();
-      
-      // Hard-Lock Phase 3: Forced Stabilization Timeout
+      // Step 3: Mandatory Hard-Lock Delay for Layout Stabilization
       await new Promise(r => setTimeout(r, 600));
 
-      // Hard-Lock Phase 4: Capture with High-Precision Settings
+      // Step 4: Capture using Rigid Options
       const canvas = await html2canvas(ticketRef.current, {
         useCORS: true,
         allowTaint: false,
-        scale: 2, 
+        scale: 2,
         backgroundColor: "#000000",
-        logging: false,
+        logging: true,
         width: 850,
         height: 330,
+        scrollX: 0,
+        scrollY: 0,
         onclone: (clonedDoc) => {
-          const clonedTicket = clonedDoc.getElementById("madmatrix-ticket");
-          if (clonedTicket) {
-            clonedTicket.style.position = "fixed";
-            clonedTicket.style.top = "0";
-            clonedTicket.style.left = "0";
-            clonedTicket.style.margin = "0";
-            clonedTicket.style.transform = "none";
+          const ticketElement = clonedDoc.getElementById("madmatrix-ticket");
+          if (ticketElement) {
+            ticketElement.style.position = "fixed";
+            ticketElement.style.top = "0";
+            ticketElement.style.left = "0";
+            ticketElement.style.transform = "none";
           }
         }
       });
 
+      // Step 5: Convert to high-quality JPEG for the PDF
       const imgData = canvas.toDataURL("image/jpeg", 1.0);
       const pdf = new jsPDF({
         orientation: "landscape",
@@ -161,13 +151,14 @@ export default function TicketHub() {
       pdf.save(`MadMatrix_Permit_${attendee.RegNo}.pdf`);
 
       toast({
-        title: "PDF Saved",
+        title: "PDF Generated",
         description: "Your official entry permit has been downloaded.",
       });
     } catch (error: any) {
+      console.error("Capture Error:", error);
       toast({
-        title: "Rendering Error",
-        description: "Failed to capture ticket. Please reload and try again.",
+        title: "Download Failed",
+        description: "Rendering error detected. Please try refreshing the portal.",
         variant: "destructive",
       });
     } finally {
@@ -240,7 +231,7 @@ export default function TicketHub() {
                 disabled={downloading}
                 className="flex-1 min-w-[200px] h-14 bg-primary text-white font-bold hover:bg-red-700 shadow-lg"
               >
-                {downloading ? <><Loader2 className="mr-2 h-5 w-5 animate-spin" />PREPARING PDF...</> : <><Download className="mr-2 h-5 w-5" />DOWNLOAD PERMIT</>}
+                {downloading ? <><Loader2 className="mr-2 h-5 w-5 animate-spin" />STABILIZING LAYOUT...</> : <><Download className="mr-2 h-5 w-5" />DOWNLOAD PDF PERMIT</>}
               </Button>
               <Button
                 onClick={handleShareWhatsApp}
