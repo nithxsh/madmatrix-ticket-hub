@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useRef, useEffect, useCallback } from "react";
-import { Search, Terminal, Loader2, Download, Share2, UserCheck, ShieldCheck, Phone, Globe, User, Cpu, Activity, Zap, ShieldAlert, Mail, MessageSquare, Info, ChevronRight, ChevronLeft, LayoutDashboard, Database } from "lucide-react";
+import React, { useState, useRef, useEffect } from "react";
+import { Search, Terminal, Loader2, Download, Share2, UserCheck, ShieldCheck, Phone, Globe, User, Cpu, Activity, Zap, Mail, MessageSquare, ChevronRight, ChevronLeft, LayoutDashboard, Database, ShieldAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -12,7 +12,6 @@ import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
-import useEmblaCarousel from "embla-carousel-react";
 
 interface Attendee {
   Name: string;
@@ -134,23 +133,7 @@ export default function TicketHub() {
   const [attendee, setAttendee] = useState<Attendee | null>(null);
   const [greeting, setGreeting] = useState<string>("");
   const ticketRef = useRef<HTMLDivElement>(null);
-  const ticketSectionRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
-
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false });
-
-  const onSelect = useCallback(() => {
-    if (!emblaApi) return;
-    if (emblaApi.selectedScrollSnap() === emblaApi.scrollSnapList().length - 1) {
-      setTimeout(() => {
-        ticketSectionRef.current?.scrollIntoView({ behavior: "smooth" });
-      }, 1200);
-    }
-  }, [emblaApi]);
-
-  useEffect(() => {
-    if (emblaApi) emblaApi.on("select", onSelect);
-  }, [emblaApi, onSelect]);
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -296,13 +279,6 @@ export default function TicketHub() {
     <div className="flex flex-col items-center justify-center min-h-screen p-4 max-w-6xl mx-auto space-y-24">
       <PersistentSupportMenu />
       
-      {/* Help Uplink FAB for mobile */}
-      <div className="fixed bottom-6 right-6 z-[100] lg:hidden">
-        <a href="tel:+918754330333" className="h-14 w-14 bg-primary flex items-center justify-center rounded-full shadow-lg border border-white/20">
-          <Phone className="h-6 w-6 text-white" />
-        </a>
-      </div>
-
       {step === 1 && (
         <div className="w-full flex flex-col items-center space-y-12 animate-in fade-in zoom-in duration-700">
           <div className="text-center space-y-6">
@@ -362,78 +338,44 @@ export default function TicketHub() {
 
       {step === 2 && attendee && (
         <div className="w-full space-y-24 animate-in slide-in-from-bottom-12 duration-1000">
-          {/* Neural Swipe Gallery */}
-          <div className="w-full max-w-4xl mx-auto space-y-8">
-            <div className="flex items-center gap-3 text-primary justify-center mb-8">
-              <LayoutDashboard className="h-4 w-4" />
-              <span className="font-mono text-xs tracking-[0.5em] uppercase">[NEURAL_SWIPE_INTERFACE]</span>
-            </div>
-            
-            <div className="overflow-hidden" ref={emblaRef}>
-              <div className="flex gap-6">
-                {/* Card 1: Identity */}
-                <div className="flex-[0_0_100%] md:flex-[0_0_40%] min-w-0">
-                  <Card className="bg-white/5 border-primary/20 backdrop-blur-2xl h-64 flex flex-col justify-between p-8 relative overflow-hidden group hover:border-primary/50 transition-all">
-                    <div className="absolute top-0 right-0 p-2 text-[8px] font-mono text-primary/30">NODE_01</div>
-                    <div className="space-y-4">
-                      <p className="text-[10px] font-mono text-primary uppercase tracking-[0.2em] flex items-center gap-2">
-                        <User className="h-3 w-3" /> [IDENT_VERIFICATION]
-                      </p>
-                      <h3 className="text-3xl font-black text-white uppercase tracking-tighter">
-                        <DecryptText text={attendee.Name} delay={200} />
-                      </h3>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_10px_#22c55e]" />
-                      <span className="text-[10px] font-mono text-green-500 uppercase">AUTHORIZED</span>
-                    </div>
-                  </Card>
-                </div>
+          {/* Identity Node Dashboard */}
+          <div className="w-full max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 animate-in slide-in-from-bottom-8 duration-700">
+            <Card className="bg-black/60 border-primary/30 backdrop-blur-2xl p-8 relative overflow-hidden group hover:shadow-[0_0_30px_rgba(255,0,0,0.15)] transition-all">
+              <div className="absolute top-0 right-0 p-2 text-[8px] font-mono text-primary/30 tracking-widest">NODE_01</div>
+              <p className="text-[10px] font-mono text-primary uppercase tracking-[0.4em] mb-4 flex items-center gap-2">
+                <User className="h-3 w-3" /> [IDENTITY]
+              </p>
+              <h3 className="text-3xl font-black text-white uppercase tracking-tighter">
+                <DecryptText text={attendee.Name} />
+              </h3>
+            </Card>
 
-                {/* Card 2: Mission */}
-                <div className="flex-[0_0_100%] md:flex-[0_0_40%] min-w-0">
-                  <Card className="bg-white/5 border-primary/20 backdrop-blur-2xl h-64 flex flex-col justify-between p-8 relative overflow-hidden group hover:border-primary/50 transition-all">
-                    <div className="absolute top-0 right-0 p-2 text-[8px] font-mono text-primary/30">NODE_02</div>
-                    <div className="space-y-4">
-                      <p className="text-[10px] font-mono text-primary uppercase tracking-[0.2em] flex items-center gap-2">
-                        <Zap className="h-3 w-3" /> [MISSION_ASSIGNMENT]
-                      </p>
-                      <h3 className="text-3xl font-black text-white uppercase tracking-tighter">
-                        {attendee.Event}
-                      </h3>
-                    </div>
-                    <span className="text-[10px] font-mono text-primary/40 uppercase tracking-widest">{attendee.Dept}</span>
-                  </Card>
-                </div>
+            <Card className="bg-black/60 border-primary/30 backdrop-blur-2xl p-8 relative overflow-hidden group hover:shadow-[0_0_30px_rgba(255,0,0,0.15)] transition-all">
+              <div className="absolute top-0 right-0 p-2 text-[8px] font-mono text-primary/30 tracking-widest">NODE_02</div>
+              <p className="text-[10px] font-mono text-primary uppercase tracking-[0.4em] mb-4 flex items-center gap-2">
+                <Activity className="h-3 w-3" /> [ASSIGNED_EVENT]
+              </p>
+              <h3 className="text-3xl font-black text-white uppercase tracking-tighter">
+                {attendee.Event}
+              </h3>
+            </Card>
 
-                {/* Card 3: Location */}
-                <div className="flex-[0_0_100%] md:flex-[0_0_40%] min-w-0">
-                  <Card className="bg-white/5 border-primary/20 backdrop-blur-2xl h-64 flex flex-col justify-between p-8 relative overflow-hidden group hover:border-primary/50 transition-all">
-                    <div className="absolute top-0 right-0 p-2 text-[8px] font-mono text-primary/30">NODE_03</div>
-                    <div className="space-y-4">
-                      <p className="text-[10px] font-mono text-primary uppercase tracking-[0.2em] flex items-center gap-2">
-                        <Globe className="h-3 w-3" /> [LOCATION_NODE]
-                      </p>
-                      <h3 className="text-2xl font-black text-white uppercase tracking-tighter">
-                        SCAD Auditorium, SIMATS
-                      </h3>
-                    </div>
-                    <div className="flex items-center justify-between">
-                       <span className="text-[10px] font-mono text-white/60">09:00 AM COMMENCEMENT</span>
-                       <div className="h-1.5 w-1.5 rounded-full bg-primary animate-ping" />
-                    </div>
-                  </Card>
-                </div>
+            <Card className="bg-black/60 border-primary/30 backdrop-blur-2xl p-8 relative overflow-hidden group hover:shadow-[0_0_30px_rgba(255,0,0,0.15)] transition-all">
+              <div className="absolute top-0 right-0 p-2 text-[8px] font-mono text-primary/30 tracking-widest">NODE_03</div>
+              <p className="text-[10px] font-mono text-primary uppercase tracking-[0.4em] mb-4 flex items-center gap-2">
+                <ShieldCheck className="h-3 w-3" /> [CLEARANCE]
+              </p>
+              <div className="flex items-center gap-3">
+                <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_10px_#22c55e]" />
+                <h3 className="text-xl font-black text-green-500 uppercase tracking-[0.2em]">
+                  AUTHORIZED
+                </h3>
               </div>
-            </div>
-            
-            <div className="flex justify-center gap-4 text-primary/30 font-mono text-[10px] uppercase">
-              <ChevronLeft className="h-3 w-3" /> SWIPE_TO_UNLOCK_PERMIT <ChevronRight className="h-3 w-3" />
-            </div>
+            </Card>
           </div>
 
           {/* Ticket Section */}
-          <div ref={ticketSectionRef} className="w-full space-y-16 pt-12">
+          <div className="w-full space-y-16 pt-12">
             <div className="flex flex-col items-center gap-4">
                <span className="text-[10px] font-mono text-primary/40 tracking-[1em] uppercase">PERMIT_ENCRYPTION_LAYER</span>
                <div className="p-8 bg-white/5 rounded-3xl border border-white/10 overflow-x-auto w-full flex justify-center shadow-inner relative group">
