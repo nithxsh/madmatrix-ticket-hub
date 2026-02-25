@@ -107,29 +107,25 @@ export default function TicketHub() {
 
     setDownloading(true);
     try {
-      // 1. Force layout scroll reset for accurate coordinates
-      window.scrollTo(0, 0);
-
-      // 2. Comprehensive Asset Verification (Fixes InvalidStateError)
+      // 1. Precise stabilization wait
       const images = ticketRef.current.querySelectorAll('img');
       await Promise.all(Array.from(images).map(img => {
         return new Promise((resolve) => {
-          if (img.complete && img.naturalWidth > 0) {
-            img.decode().then(resolve).catch(resolve);
-          } else {
-            img.onload = () => img.decode().then(resolve).catch(resolve);
-            img.onerror = resolve;
+          if (img.complete && img.naturalWidth > 0) resolve(true);
+          else {
+            img.onload = () => resolve(true);
+            img.onerror = () => resolve(true);
           }
         });
       }));
 
-      // Extra stabilization wait
-      await new Promise(r => setTimeout(r, 800));
+      // Extra delay for font/layout engine to settle
+      await new Promise(r => setTimeout(r, 500));
 
       const canvas = await html2canvas(ticketRef.current, {
         useCORS: true,
         allowTaint: false,
-        scale: 2,
+        scale: 3, // Higher scale for extreme clarity
         backgroundColor: "#000000",
         logging: false,
         width: 850,
@@ -138,34 +134,32 @@ export default function TicketHub() {
           const clonedTicket = clonedDoc.getElementById("madmatrix-ticket");
           if (clonedTicket) {
             clonedTicket.style.transform = "none";
-            clonedTicket.style.position = "fixed";
-            clonedTicket.style.top = "0px";
-            clonedTicket.style.left = "0px";
-            clonedTicket.style.margin = "0px";
+            clonedTicket.style.margin = "0";
             clonedTicket.style.boxShadow = "none";
+            clonedTicket.style.border = "none";
           }
         }
       });
 
-      const imgData = canvas.toDataURL("image/jpeg", 0.95);
+      const imgData = canvas.toDataURL("image/jpeg", 1.0);
       const pdf = new jsPDF({
         orientation: "landscape",
         unit: "px",
-        format: [canvas.width / 2, canvas.height / 2]
+        format: [850, 480]
       });
 
-      pdf.addImage(imgData, "JPEG", 0, 0, canvas.width / 2, canvas.height / 2);
-      pdf.save(`MadMatrix_Ticket_${attendee.RegNo}.pdf`);
+      pdf.addImage(imgData, "JPEG", 0, 0, 850, 480);
+      pdf.save(`MadMatrix_Permit_${attendee.RegNo}.pdf`);
 
       toast({
         title: "Download Successful",
-        description: "Digital entry permit saved as PDF.",
+        description: "Your official entry permit has been saved.",
       });
     } catch (error) {
-      console.error("Capture Error:", error);
+      console.error("PDF Capture Error:", error);
       toast({
-        title: "Download Error",
-        description: "System stabilized. Please retry the download.",
+        title: "Download Stability Issue",
+        description: "System recalibrating. Please try once more.",
         variant: "destructive",
       });
     } finally {
@@ -248,7 +242,7 @@ export default function TicketHub() {
                 {downloading ? (
                   <>
                     <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                    PREPARING PDF...
+                    GENERATING PERMIT...
                   </>
                 ) : (
                   <>
