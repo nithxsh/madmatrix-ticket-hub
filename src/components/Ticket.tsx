@@ -39,18 +39,18 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
         {/* Official Header Branding Bar - Logos Removed, Text at Corners */}
         <div className="relative h-[85px] bg-white z-30 flex items-center justify-between px-6 border-b-[4px] border-primary">
           <div className="flex flex-col justify-center">
-                <span className="text-[#0a2e5c] font-black text-3xl tracking-tighter leading-none uppercase">SIMATS</span>
-                <span className="text-[#0a2e5c] text-[12px] font-bold tracking-[0.3em] uppercase leading-tight mt-1">ENGINEERING</span>
+            <span className="text-[#0a2e5c] font-black text-3xl tracking-tighter leading-none uppercase">SIMATS</span>
+            <span className="text-[#0a2e5c] text-[12px] font-bold tracking-[0.3em] uppercase leading-tight mt-1">ENGINEERING</span>
           </div>
 
           <div className="flex flex-col items-end text-right">
-                <span className="text-[#0a2e5c] font-black text-3xl tracking-tighter leading-none uppercase">SIMATS</span>
-                <span className="text-[#0a2e5c] text-[7px] font-bold uppercase leading-tight max-w-[180px] mt-1 opacity-80">
-                  SAVEETHA INSTITUTE OF MEDICAL AND TECHNICAL SCIENCES
-                </span>
-                <span className="text-[#0a2e5c] text-[5px] font-medium uppercase opacity-60 mt-0.5">
-                  (DECLARED AS DEEMED TO BE UNIVERSITY UNDER SECTION 3 OF UGC ACT 1956)
-                </span>
+            <span className="text-[#0a2e5c] font-black text-3xl tracking-tighter leading-none uppercase">SIMATS</span>
+            <span className="text-[#0a2e5c] text-[7px] font-bold uppercase leading-tight max-w-[180px] mt-1 opacity-80">
+              SAVEETHA INSTITUTE OF MEDICAL AND TECHNICAL SCIENCES
+            </span>
+            <span className="text-[#0a2e5c] text-[5px] font-medium uppercase opacity-60 mt-0.5">
+              (DECLARED AS DEEMED TO BE UNIVERSITY UNDER SECTION 3 OF UGC ACT 1956)
+            </span>
           </div>
         </div>
 

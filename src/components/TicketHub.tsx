@@ -55,18 +55,18 @@ export default function TicketHub() {
           const data = await response.json();
 
           if (Array.isArray(data)) {
+            // Robust search: Check every value in every row for a match with the email
             const foundRow = data.find((row: any) => {
-              return Object.entries(row).some(([key, value]) => {
-                const isEmailKey = key.toLowerCase().includes('email');
-                const isEmailValue = typeof value === 'string' && value.trim().toLowerCase() === sanitizedEmail;
-                return isEmailKey && isEmailValue;
+              return Object.values(row).some((value) => {
+                return typeof value === 'string' && value.trim().toLowerCase() === sanitizedEmail;
               });
             });
 
             if (foundRow) {
               foundAttendee = {
-                Name: foundRow.Name || foundRow.name || foundRow.NAME || "WELCOME MADMATRIX !",
-                RegNo: foundRow.RegNo || foundRow.regno || foundRow.REGNO || foundRow['Reg No'] || "VERIFIED",
+                // Use a fallback if the name or regNo columns have different titles in different sheets
+                Name: foundRow.Name || foundRow.name || foundRow.NAME || foundRow['Name'] || "WELCOME MADMATRIX !",
+                RegNo: foundRow.RegNo || foundRow.regno || foundRow.REGNO || foundRow['Reg No'] || foundRow['RegNo'] || "VERIFIED",
                 email: sanitizedEmail,
               };
               break; // Stop searching if found
@@ -74,7 +74,6 @@ export default function TicketHub() {
           }
         } catch (err) {
           console.error(`Error searching in ${url}:`, err);
-          // Continue to next endpoint even if one fails
         }
       }
 
@@ -89,7 +88,7 @@ export default function TicketHub() {
       } else {
         toast({
           title: "Registry Mismatch",
-          description: `Email "${sanitizedEmail}" not found in any registry.`,
+          description: `Email "${sanitizedEmail}" not found in any registry. Please check your credentials.`,
           variant: "destructive",
         });
       }
@@ -109,18 +108,16 @@ export default function TicketHub() {
 
     setIsCapturing(true);
     try {
-      window.scrollTo(0, 0);
-      await new Promise(resolve => setTimeout(resolve, 500));
+      // Small delay to ensure rendering is complete
+      await new Promise(resolve => setTimeout(resolve, 300));
 
       const canvas = await html2canvas(ticketRef.current, {
         useCORS: true,
-        scale: 4,
+        scale: 3, // High quality but balanced for file size
         backgroundColor: "#050000",
         logging: false,
         width: 800,
         height: 380,
-        scrollX: -window.scrollX,
-        scrollY: -window.scrollY,
       });
       
       const link = document.createElement("a");
