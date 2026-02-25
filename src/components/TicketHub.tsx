@@ -87,15 +87,23 @@ const MatrixTerminalFooter = () => {
               <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
               <p className="text-[10px] font-mono text-primary/40 uppercase mb-1">NODE_{idx + 1}</p>
               <h4 className="text-white font-bold uppercase tracking-tight group-hover:cyber-glitch">{coord.name}</h4>
-              <p className="text-primary/60 font-mono text-xs mt-2 group-hover:text-primary transition-colors">
-                UPLINK: {coord.phone}
-              </p>
+              <a 
+                href={`tel:+91${coord.phone}`} 
+                className="inline-flex items-center gap-2 text-primary/60 font-mono text-xs mt-3 group-hover:text-primary transition-colors border border-primary/20 px-2 py-1 rounded hover:bg-primary/10"
+              >
+                <Phone className="h-3 w-3" /> UPLINK: {coord.phone}
+              </a>
             </div>
           ))}
           <div className="group relative bg-primary/10 border-2 border-primary/40 p-4 rounded-lg backdrop-blur-md">
              <p className="text-[10px] font-mono text-primary uppercase mb-1">FACULTY_CONVENOR</p>
              <h4 className="text-white font-bold uppercase tracking-tight">Dr. K. Sudar Mozhi</h4>
-             <p className="text-primary font-mono text-xs mt-2">UPLINK: 9080730749</p>
+             <a 
+              href="tel:+919080730749" 
+              className="inline-flex items-center gap-2 text-primary font-mono text-xs mt-3 border border-primary/40 px-2 py-1 rounded hover:bg-primary/20 transition-all"
+             >
+              <Phone className="h-3 w-3" /> UPLINK: 9080730749
+             </a>
           </div>
         </div>
       </div>
@@ -109,36 +117,50 @@ const MatrixTerminalFooter = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 font-mono text-xs md:text-sm">
           <div className="space-y-4">
-            <div className="flex items-start gap-4 p-4 bg-white/5 rounded border border-white/5 hover:border-primary/20 transition-all">
-              <Mail className="h-5 w-5 text-primary shrink-0" />
+            <a 
+              href="mailto:support@madmatrix.site" 
+              className="flex items-start gap-4 p-4 bg-white/5 rounded border border-white/5 hover:border-primary/20 transition-all cursor-pointer group"
+            >
+              <Mail className="h-5 w-5 text-primary shrink-0 group-hover:scale-110 transition-transform" />
               <div>
                 <p className="text-primary uppercase text-[10px] font-bold mb-1">HELP_DESK</p>
                 <p className="text-white">support@madmatrix.site</p>
               </div>
-            </div>
-            <div className="flex items-start gap-4 p-4 bg-white/5 rounded border border-white/5 hover:border-primary/20 transition-all">
-              <MessageSquare className="h-5 w-5 text-primary shrink-0" />
+            </a>
+            <a 
+              href="mailto:organizer@madmatrix.site" 
+              className="flex items-start gap-4 p-4 bg-white/5 rounded border border-white/5 hover:border-primary/20 transition-all cursor-pointer group"
+            >
+              <MessageSquare className="h-5 w-5 text-primary shrink-0 group-hover:scale-110 transition-transform" />
               <div>
                 <p className="text-primary uppercase text-[10px] font-bold mb-1">SPONSOR_ENQUIRY</p>
                 <p className="text-white">organizer@madmatrix.site</p>
               </div>
-            </div>
+            </a>
           </div>
           <div className="space-y-4">
-            <div className="flex items-start gap-4 p-4 bg-white/5 rounded border border-white/5 hover:border-primary/20 transition-all">
-              <Cpu className="h-5 w-5 text-primary shrink-0" />
+            <a 
+              href="mailto:madmatrix2026@gmail.com" 
+              className="flex items-start gap-4 p-4 bg-white/5 rounded border border-white/5 hover:border-primary/20 transition-all cursor-pointer group"
+            >
+              <Cpu className="h-5 w-5 text-primary shrink-0 group-hover:scale-110 transition-transform" />
               <div>
                 <p className="text-primary uppercase text-[10px] font-bold mb-1">PRIMARY_NODE</p>
                 <p className="text-white">madmatrix2026@gmail.com</p>
               </div>
-            </div>
-            <div className="flex items-start gap-4 p-4 bg-white/5 rounded border border-white/5 hover:border-primary/20 transition-all">
-              <Globe className="h-5 w-5 text-primary shrink-0" />
+            </a>
+            <a 
+              href="https://www.madmatrix.site" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="flex items-start gap-4 p-4 bg-white/5 rounded border border-white/5 hover:border-primary/20 transition-all cursor-pointer group"
+            >
+              <Globe className="h-5 w-5 text-primary shrink-0 group-hover:scale-110 transition-transform" />
               <div>
                 <p className="text-primary uppercase text-[10px] font-bold mb-1">OFFICIAL_UPLINK</p>
-                <a href="https://www.madmatrix.site" className="text-white hover:text-primary transition-colors underline underline-offset-4">www.madmatrix.site</a>
+                <span className="text-white hover:text-primary transition-colors underline underline-offset-4">www.madmatrix.site</span>
               </div>
-            </div>
+            </a>
           </div>
         </div>
 
@@ -174,6 +196,8 @@ export default function TicketHub() {
     setAttendee(null);
     setGreeting("");
 
+    let foundAttendee: Attendee | null = null;
+
     const endpoints = [
       { url: "https://sheetdb.io/api/v1/06ca0hvc7hw5j", name: "MAIN VAULT" },
       { url: "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=onstage", name: "ONSTAGE EVENTS" },
@@ -181,8 +205,6 @@ export default function TicketHub() {
       { url: "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=MOBILE%20GAMES%20%26%20mad%20sports", name: "MOBILE GAMES" },
       { url: "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=SPORTS%20FORM", name: "SPORTS FORM" }
     ];
-
-    let foundAttendee: Attendee | null = null;
 
     try {
       for (let i = 0; i < endpoints.length; i++) {
