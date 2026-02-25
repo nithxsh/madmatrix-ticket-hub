@@ -36,47 +36,67 @@ export default function TicketHub() {
     setAttendee(null);
     setGreeting("");
 
+    // List of all 5 API endpoints to search across different sheets
+    const endpoints = [
+      "https://sheetdb.io/api/v1/06ca0hvc7hw5j",
+      "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=MOBILE GAMES %26 mad sports",
+      "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=OFF STAGE",
+      "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=ON STAGE",
+      "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=SPORTS FORM"
+    ];
+
     try {
-      const apiUrl = `https://sheetdb.io/api/v1/06ca0hvc7hw5j`;
-      const response = await fetch(apiUrl);
-      const data = await response.json();
+      let foundAttendee: Attendee | null = null;
 
-      if (Array.isArray(data)) {
-        const foundRow = data.find((row: any) => {
-          return Object.entries(row).some(([key, value]) => {
-            const isEmailKey = key.toLowerCase().includes('email');
-            const isEmailValue = typeof value === 'string' && value.trim().toLowerCase() === sanitizedEmail;
-            return isEmailKey && isEmailValue;
-          });
-        });
+      // Iterate through endpoints until a match is found
+      for (const url of endpoints) {
+        try {
+          const response = await fetch(url);
+          const data = await response.json();
 
-        if (foundRow) {
-          const foundAttendee: Attendee = {
-            Name: foundRow.Name || foundRow.name || foundRow.NAME || "WELCOME MADMATRIX !",
-            RegNo: foundRow.RegNo || foundRow.regno || foundRow.REGNO || foundRow['Reg No'] || "VERIFIED",
-            email: sanitizedEmail,
-          };
-          
-          setAttendee(foundAttendee);
+          if (Array.isArray(data)) {
+            const foundRow = data.find((row: any) => {
+              return Object.entries(row).some(([key, value]) => {
+                const isEmailKey = key.toLowerCase().includes('email');
+                const isEmailValue = typeof value === 'string' && value.trim().toLowerCase() === sanitizedEmail;
+                return isEmailKey && isEmailValue;
+              });
+            });
 
-          try {
-            const aiResult = await generateCyberpunkGreeting({ attendeeName: foundAttendee.Name });
-            setGreeting(aiResult.greeting);
-          } catch (error) {
-            setGreeting("Access granted. Protocol initiated.");
+            if (foundRow) {
+              foundAttendee = {
+                Name: foundRow.Name || foundRow.name || foundRow.NAME || "WELCOME MADMATRIX !",
+                RegNo: foundRow.RegNo || foundRow.regno || foundRow.REGNO || foundRow['Reg No'] || "VERIFIED",
+                email: sanitizedEmail,
+              };
+              break; // Stop searching if found
+            }
           }
-        } else {
-          toast({
-            title: "Registry Mismatch",
-            description: `Email "${sanitizedEmail}" not found.`,
-            variant: "destructive",
-          });
+        } catch (err) {
+          console.error(`Error searching in ${url}:`, err);
+          // Continue to next endpoint even if one fails
         }
+      }
+
+      if (foundAttendee) {
+        setAttendee(foundAttendee);
+        try {
+          const aiResult = await generateCyberpunkGreeting({ attendeeName: foundAttendee.Name });
+          setGreeting(aiResult.greeting);
+        } catch (error) {
+          setGreeting("Access granted. Protocol initiated.");
+        }
+      } else {
+        toast({
+          title: "Registry Mismatch",
+          description: `Email "${sanitizedEmail}" not found in any registry.`,
+          variant: "destructive",
+        });
       }
     } catch (error) {
       toast({
         title: "Registry Offline",
-        description: "Could not connect to database.",
+        description: "Could not connect to database services.",
         variant: "destructive",
       });
     } finally {
