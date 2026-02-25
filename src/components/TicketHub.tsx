@@ -107,39 +107,56 @@ export default function TicketHub() {
 
     setDownloading(true);
     try {
-      // 1. Critical asset verification to prevent InvalidStateError
+      // 1. Rigorous asset validation to eliminate InvalidStateError
       const images = Array.from(ticketRef.current.querySelectorAll('img'));
-      await Promise.all(images.map(img => {
-        return new Promise((resolve) => {
-          if (img.complete && img.naturalWidth > 0) resolve(true);
-          else {
-            img.onload = () => resolve(true);
-            img.onerror = () => resolve(true);
-            // Force browser to process image if decode API is available
-            if ('decode' in img) {
-              (img as any).decode().then(resolve).catch(resolve);
+      
+      const checkImages = () => {
+        return Promise.all(images.map(img => {
+          return new Promise((resolve) => {
+            const isReady = () => img.complete && img.naturalWidth > 0 && img.naturalHeight > 0;
+            
+            if (isReady()) {
+              resolve(true);
+            } else {
+              img.onload = () => resolve(true);
+              img.onerror = () => resolve(true); // Don't block forever if one fails
+              // Re-check periodically
+              const interval = setInterval(() => {
+                if (isReady()) {
+                  clearInterval(interval);
+                  resolve(true);
+                }
+              }, 100);
             }
-          }
-        });
+          });
+        }));
+      };
+
+      await checkImages();
+      
+      // Additional decoding step for cross-origin stability
+      await Promise.all(images.map(img => {
+        if ('decode' in img) return (img as any).decode().catch(() => {});
+        return Promise.resolve();
       }));
 
-      // Extra delay for layout engine stabilization
-      await new Promise(r => setTimeout(r, 600));
+      // 2. Delay for browser layout engine to fully realize the pixel-fixed dimensions
+      await new Promise(r => setTimeout(r, 800));
 
       const canvas = await html2canvas(ticketRef.current, {
         useCORS: true,
         allowTaint: false,
-        scale: 3, // High scale for clarity
+        scale: 3, // High scale for PDF clarity
         backgroundColor: "#000000",
         logging: false,
         width: 850,
         height: 480,
-        scrollX: 0,
-        scrollY: 0,
+        x: 0,
+        y: 0,
         onclone: (clonedDoc) => {
           const clonedTicket = clonedDoc.getElementById("madmatrix-ticket");
           if (clonedTicket) {
-            // Force precise dimensions and reset transformations on the clone
+            // Force absolute stability on the clone to prevent alignment drifting
             clonedTicket.style.transform = "none";
             clonedTicket.style.position = "fixed";
             clonedTicket.style.top = "0";
@@ -169,7 +186,7 @@ export default function TicketHub() {
       console.error("PDF Capture Error:", error);
       toast({
         title: "Download Stability Issue",
-        description: "System recalibrating. Please try once more.",
+        description: "The system encountered a rendering error. Please try again.",
         variant: "destructive",
       });
     } finally {
