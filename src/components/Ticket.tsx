@@ -6,7 +6,6 @@ import React from "react";
 interface TicketProps {
   name: string;
   regNo: string;
-  greeting?: string;
   id: string;
 }
 
@@ -17,16 +16,15 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
     
     // Official branding assets
     const campusBgUrl = "https://www.saveetha.ac.in/images/saveetha/saveetha-engineering-college.jpg";
-    const simatsLogo = "https://upload.wikimedia.org/wikipedia/en/5/52/Saveetha_Institute_of_Medical_and_Technical_Sciences_logo.png";
 
     return (
       <div
         ref={ref}
         id={id}
-        className="relative flex flex-col overflow-hidden bg-black select-none border border-white/10"
+        className="relative flex flex-col overflow-hidden bg-black select-none border border-white/10 shadow-2xl"
         style={{ width: "850px", height: "480px" }}
       >
-        {/* Campus Background Image with low opacity */}
+        {/* Campus Background Image */}
         <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
           <img 
             src={campusBgUrl} 
@@ -37,24 +35,16 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
           <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/40 to-black/90" />
         </div>
 
-        {/* Official Header Branding Bar */}
-        <div className="relative h-[95px] bg-white z-30 flex items-center justify-between px-8">
-          <div className="flex items-center">
-            <img src={simatsLogo} alt="SIMATS Engineering" className="h-14 object-contain" crossOrigin="anonymous" />
-            <div className="ml-3 flex flex-col">
-              <span className="text-[#0a2e5c] font-black text-2xl tracking-tighter leading-none">SIMATS</span>
-              <span className="text-[#0a2e5c] text-[10px] font-bold tracking-[0.2em] uppercase">ENGINEERING</span>
-            </div>
+        {/* Header Branding Bar - Text moved to corners, no logos */}
+        <div className="relative h-[95px] bg-white z-30 flex items-center justify-between px-10">
+          <div className="flex flex-col">
+            <span className="text-[#0a2e5c] font-black text-2xl tracking-tighter leading-none">SIMATS</span>
+            <span className="text-[#0a2e5c] text-[10px] font-bold tracking-[0.2em] uppercase">ENGINEERING</span>
           </div>
 
           <div className="flex flex-col items-end text-right">
-            <div className="flex items-center gap-3">
-               <div className="flex flex-col">
-                  <span className="text-[#0a2e5c] font-black text-2xl tracking-tighter leading-none">SIMATS</span>
-                  <span className="text-[#0a2e5c] text-[8px] font-bold uppercase opacity-80">DEEMED TO BE UNIVERSITY</span>
-               </div>
-               <img src={simatsLogo} alt="SIMATS Logo" className="h-12 object-contain" crossOrigin="anonymous" />
-            </div>
+            <span className="text-[#0a2e5c] font-black text-2xl tracking-tighter leading-none">SIMATS</span>
+            <span className="text-[#0a2e5c] text-[8px] font-bold uppercase opacity-80">DEEMED TO BE UNIVERSITY</span>
             <span className="text-[#0a2e5c] text-[6px] font-medium uppercase mt-1 opacity-60">
               SAVEETHA INSTITUTE OF MEDICAL AND TECHNICAL SCIENCES
             </span>
@@ -78,7 +68,7 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
                <span className="text-white/40 font-mono text-[10px] tracking-[0.4em] uppercase">AUTHORIZED PERSON</span>
                <div className="w-[85%] h-px bg-gradient-to-r from-transparent via-white/20 to-transparent my-1"></div>
                <span className="text-white font-black text-4xl tracking-tight uppercase leading-tight text-center">
-                 {name}
+                 {name || "WELCOME MADMATRIX !"}
                </span>
                <div className="w-[85%] h-px bg-gradient-to-r from-transparent via-white/20 to-transparent my-1"></div>
             </div>

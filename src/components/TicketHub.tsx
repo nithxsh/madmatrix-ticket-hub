@@ -36,8 +36,9 @@ export default function TicketHub() {
     setAttendee(null);
     setGreeting("");
 
+    // Precisely encoded endpoints for all 5 sheets
     const endpoints = [
-      "https://sheetdb.io/api/v1/06ca0hvc7hw5j",
+      "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=track%201.0",
       "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=MOBILE%20GAMES%20%26%20mad%20sports",
       "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=OFF%20STAGE",
       "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=ON%20STAGE",
@@ -69,7 +70,7 @@ export default function TicketHub() {
             }
           }
         } catch (err) {
-          console.error(`Error searching in ${url}:`, err);
+          console.error(`Error searching in sheet:`, err);
         }
       }
 
@@ -84,7 +85,7 @@ export default function TicketHub() {
       } else {
         toast({
           title: "Registry Mismatch",
-          description: `Email "${sanitizedEmail}" not found in any registry.`,
+          description: `Email "${sanitizedEmail}" not found in any of the 5 registries.`,
           variant: "destructive",
         });
       }
@@ -105,19 +106,22 @@ export default function TicketHub() {
     setIsCapturing(true);
     try {
       // Small delay to ensure rendering is complete
-      await new Promise(resolve => setTimeout(resolve, 500));
+      await new Promise(resolve => setTimeout(resolve, 300));
 
       const canvas = await html2canvas(ticketRef.current, {
         useCORS: true,
-        scale: 2, // Use 2 for high quality without excessive file size
+        scale: 3, // High quality
         backgroundColor: "#000000",
         logging: false,
         width: 850,
         height: 480,
-        scrollX: 0,
-        scrollY: -window.scrollY, // Correct offset for viewport position
-        windowWidth: document.documentElement.offsetWidth,
-        windowHeight: document.documentElement.offsetHeight,
+        onclone: (clonedDoc) => {
+          const element = clonedDoc.getElementById("madmatrix-ticket");
+          if (element) {
+            element.style.transform = "none";
+            element.style.position = "relative";
+          }
+        }
       });
       
       const link = document.createElement("a");
@@ -145,13 +149,13 @@ export default function TicketHub() {
       <div className="text-center space-y-4">
         <div className="flex items-center justify-center gap-2 mb-2">
           <div className="h-2 w-2 rounded-full bg-primary animate-pulse" />
-          <span className="text-xs font-mono uppercase tracking-[0.3em] text-primary">Registry Retrieval Portal</span>
+          <span className="text-xs font-mono uppercase tracking-[0.3em] text-primary">Official Retrieval Portal</span>
         </div>
         <h1 className="text-6xl md:text-8xl font-black tracking-tighter text-white uppercase drop-shadow-[0_0_20px_rgba(255,0,0,0.4)]">
           MadMatrix<span className="text-primary">'26</span>
         </h1>
         <p className="text-muted-foreground font-body text-sm md:text-base max-w-md mx-auto">
-          Enter your registered email to decrypt and retrieve your official entry permit.
+          Searching across 5 Registry Sheets: track 1.0, MOBILE GAMES, OFF STAGE, ON STAGE, SPORTS.
         </p>
       </div>
 
@@ -176,7 +180,7 @@ export default function TicketHub() {
               {loading ? (
                 <>
                   <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                  DECRYPTING...
+                  SEARCHING...
                 </>
               ) : (
                 <>
@@ -199,7 +203,6 @@ export default function TicketHub() {
                   id="madmatrix-ticket"
                   name={attendee.Name}
                   regNo={attendee.RegNo}
-                  greeting={greeting}
                 />
               </div>
             </div>
@@ -213,7 +216,7 @@ export default function TicketHub() {
               {isCapturing ? (
                 <>
                   <Loader2 className="mr-2 h-6 w-6 animate-spin" />
-                  PROCESSING...
+                  GENERATING...
                 </>
               ) : (
                 <>
@@ -229,8 +232,8 @@ export default function TicketHub() {
               <AlertTriangle className="h-6 w-6 text-primary" />
             </div>
             <div>
-              <h4 className="text-white font-black uppercase tracking-widest">Clearance Confirmed</h4>
-              <p className="text-xs text-muted-foreground mt-1 font-mono uppercase">Permit {attendee.RegNo} is authorized for entry into SIMATS campus.</p>
+              <h4 className="text-white font-black uppercase tracking-widest">Registry Match Found</h4>
+              <p className="text-xs text-muted-foreground mt-1 font-mono uppercase">Permit {attendee.RegNo} is ready for deployment.</p>
             </div>
           </div>
         </div>
@@ -238,7 +241,7 @@ export default function TicketHub() {
 
       <div className="pt-12 pb-8 text-center opacity-30">
         <p className="text-[10px] font-mono text-primary tracking-[0.5em] uppercase">
-          &copy; 2026 MadMatrix Defense Protocol | Simats Engineering
+          &copy; 2026 MadMatrix Defense Protocol | SIMATS Engineering
         </p>
       </div>
     </div>
