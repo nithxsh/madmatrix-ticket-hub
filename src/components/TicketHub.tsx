@@ -335,8 +335,8 @@ export default function TicketHub() {
             <h1 className="text-6xl md:text-9xl font-black tracking-tighter text-white uppercase leading-none">
               MadMatrix<span className="text-primary italic animate-pulse">'26</span>
             </h1>
-            <p className="text-muted-foreground font-mono text-xs md:text-sm max-w-lg mx-auto leading-relaxed">
-              [INIT_SEQUENCE]: VERIFY CREDENTIALS VIA ENCRYPTED UPLINK. AUTHORIZED ACCESS ONLY.
+            <p className="text-muted-foreground font-mono text-xs md:text-sm max-w-lg mx-auto leading-relaxed uppercase">
+              USE THE MAIL ID WHICH YOU USED IN REGISTRATION ( GOOGLE FORMS )
             </p>
           </div>
 
@@ -397,7 +397,6 @@ export default function TicketHub() {
 
       {step === 2 && attendee && (
         <div className="w-full space-y-24 animate-in slide-in-from-bottom-12 duration-1000">
-          {/* Vertical Neural Data-Stream */}
           <div className="w-full max-w-4xl mx-auto space-y-8 animate-in slide-in-from-bottom-8 duration-700">
              <div className="bg-black/60 border border-primary/30 backdrop-blur-2xl p-10 rounded-3xl relative overflow-hidden group hover:shadow-[0_0_40px_rgba(255,0,0,0.15)] transition-all cyber-scanline">
                 <div className="absolute top-0 right-0 p-4 text-[8px] font-mono text-primary/30 tracking-[0.5em] uppercase">SYSTEM_LOG_v2.0</div>
@@ -438,7 +437,6 @@ export default function TicketHub() {
              </div>
           </div>
 
-          {/* Ticket Section */}
           <div className="w-full space-y-16 pt-12">
             <div className="flex flex-col items-center gap-4">
                <span className="text-[10px] font-mono text-primary/40 tracking-[1em] uppercase">PERMIT_ENCRYPTION_LAYER</span>
@@ -500,15 +498,13 @@ export default function TicketHub() {
             )}
           </div>
           
-          {/* Admin Registry Grid */}
           <AdminTiltGrid />
 
-          {/* Support Terminal */}
           <footer className="w-full max-w-5xl mx-auto pb-24 space-y-12">
              <div className="bg-black/80 border border-primary/30 p-12 rounded-3xl cyber-scanline relative overflow-hidden shadow-[0_0_60px_rgba(255,0,0,0.1)]">
                 <div className="flex items-center gap-4 mb-10 text-primary">
                   <Terminal className="h-6 w-6 animate-pulse" />
-                  <span className="font-mono text-sm tracking-tighter uppercase font-bold">[SUPPORT_&_INQUIRY_TERMINAL_v2.0]</span>
+                  <span className="font-mono text-sm tracking-tighter uppercase font-bold">CONTACT US</span>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 font-mono">
