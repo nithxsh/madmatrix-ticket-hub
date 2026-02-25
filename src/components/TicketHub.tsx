@@ -2,13 +2,14 @@
 "use client";
 
 import React, { useState, useRef } from "react";
-import { Search, Download, Terminal, Loader2, AlertTriangle } from "lucide-react";
+import { Search, FileDown, Terminal, Loader2, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Ticket } from "@/components/Ticket";
 import { useToast } from "@/hooks/use-toast";
 import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 import { generateCyberpunkGreeting } from "@/ai/flows/generate-cyberpunk-greeting";
 
 interface Attendee {
@@ -36,7 +37,6 @@ export default function TicketHub() {
     setAttendee(null);
     setGreeting("");
 
-    // Consolidated 5 primary registry sheet endpoints
     const endpoints = [
       "https://sheetdb.io/api/v1/06ca0hvc7hw5j",
       "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=MOBILE%20GAMES%20%26%20mad%20sports",
@@ -107,40 +107,36 @@ export default function TicketHub() {
 
     setIsCapturing(true);
     try {
-      // PHASE 1: Deep Asset Validation
-      // Ensure all images are fully decoded and have non-zero dimensions
+      // PHASE 1: Asset Decoding & Dimension Validation
       const images = Array.from(ticketRef.current.getElementsByTagName('img'));
       await Promise.all(
         images.map(async (img) => {
           if ('decode' in img) {
-            await img.decode();
+            await img.decode().catch(() => {}); 
           }
-          // Explicitly wait if the layout hasn't calculated dimensions yet
+          // Aggressive dimension polling to prevent InvalidStateError (createPattern on 0-size canvas)
           let attempts = 0;
-          while ((img.naturalWidth === 0 || img.naturalHeight === 0) && attempts < 20) {
+          while ((img.naturalWidth === 0 || img.naturalHeight === 0) && attempts < 40) {
             await new Promise(resolve => setTimeout(resolve, 50));
             attempts++;
-          }
-          if (img.naturalWidth === 0) {
-            throw new Error(`Asset ${img.src} has zero dimensions`);
           }
         })
       );
 
-      // Brief layout settling time
-      await new Promise(resolve => setTimeout(resolve, 500));
+      // Brief settling time for layout engine
+      await new Promise(resolve => setTimeout(resolve, 600));
 
-      // PHASE 2: Stabilized Capture
+      // PHASE 2: Stabilized Canvas Capture
       const canvas = await html2canvas(ticketRef.current, {
         useCORS: true,
         allowTaint: false,
-        scale: 2,
+        scale: 3, // High resolution
         backgroundColor: "#000000",
         logging: false,
         width: 850,
         height: 480,
         onclone: (clonedDoc, element) => {
-          // Deep stabilization: Pin the element to a clean viewport
+          // Deep stabilization: Reset all dynamic styles that could interfere with capture
           element.style.transform = "none";
           element.style.transition = "none";
           element.style.display = "flex";
@@ -151,8 +147,11 @@ export default function TicketHub() {
           element.style.margin = "0";
           element.style.zIndex = "99999";
           element.style.opacity = "1";
+          element.style.width = "850px";
+          element.style.height = "480px";
+          element.style.minWidth = "850px";
+          element.style.minHeight = "480px";
           
-          // Ensure background container isn't clipping
           const bgContainer = element.querySelector('.absolute.inset-0');
           if (bgContainer instanceof HTMLElement) {
             bgContainer.style.width = "850px";
@@ -161,14 +160,20 @@ export default function TicketHub() {
         }
       });
       
-      const link = document.createElement("a");
-      link.download = `MadMatrix_Permit_${attendee?.RegNo || "2026"}.png`;
-      link.href = canvas.toDataURL("image/png", 1.0);
-      link.click();
+      // PHASE 3: PDF Generation
+      const imgData = canvas.toDataURL("image/png", 1.0);
+      const pdf = new jsPDF({
+        orientation: "landscape",
+        unit: "px",
+        format: [850, 480]
+      });
+      
+      pdf.addImage(imgData, 'PNG', 0, 0, 850, 480);
+      pdf.save(`MadMatrix_Permit_${attendee?.RegNo || "2026"}.pdf`);
       
       toast({
         title: "Download Successful",
-        description: "Your digital permit has been saved.",
+        description: "Your digital permit PDF has been generated.",
       });
     } catch (error) {
       console.error("Capture Error:", error);
@@ -254,12 +259,12 @@ export default function TicketHub() {
               {isCapturing ? (
                 <>
                   <Loader2 className="mr-2 h-6 w-6 animate-spin" />
-                  GENERATING...
+                  PREPARING PDF...
                 </>
               ) : (
                 <>
-                  <Download className="mr-2 h-6 w-6" />
-                  DOWNLOAD PERMIT
+                  <FileDown className="mr-2 h-6 w-6" />
+                  DOWNLOAD PERMIT PDF
                 </>
               )}
             </Button>
