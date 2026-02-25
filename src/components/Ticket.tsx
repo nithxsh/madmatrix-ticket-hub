@@ -28,7 +28,8 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
           fontFamily: "'Inter', sans-serif",
           boxSizing: "border-box",
           position: "relative",
-          zIndex: 1
+          zIndex: 1,
+          backgroundColor: "#000000"
         }}
       >
         {/* 1. Background Layer */}
@@ -51,7 +52,7 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
           />
         </div>
 
-        {/* 2. White Header Bar - Absolute Positioning */}
+        {/* 2. Absolute Header Bar */}
         <div 
           style={{ 
             position: "absolute", 
@@ -64,7 +65,7 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
             zIndex: 10
           }}
         >
-          {/* Left Branding */}
+          {/* Left Branding - SIMATS Engineering */}
           <div 
             style={{ 
               position: "absolute", 
@@ -77,7 +78,7 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
             <span style={{ color: "#0a2e5c", fontSize: "9px", fontWeight: 800, letterSpacing: "0.2em", textTransform: "uppercase", marginTop: "2px", display: "block" }}>ENGINEERING</span>
           </div>
 
-          {/* Right Branding */}
+          {/* Right Branding - Deemed University */}
           <div 
             style={{ 
               position: "absolute", 
@@ -96,7 +97,7 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
           </div>
         </div>
 
-        {/* 3. Main Content Branding - MadMatrix Logo */}
+        {/* 3. Main Body - MadMatrix Branding */}
         <div 
           style={{ 
             position: "absolute", 
@@ -113,7 +114,7 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
            <p style={{ color: "rgba(255,255,255,0.6)", fontWeight: 700, fontSize: "8px", letterSpacing: "0.5em", textTransform: "uppercase", margin: "8px 0 0 0" }}>NATIONAL LEVEL SYMPOSIUM</p>
         </div>
 
-        {/* 4. Name Layer - High Z-Index Hard-Lock */}
+        {/* 4. Name Layer - High Z-Index & Absolute Center */}
         <div style={{ 
           position: "absolute", 
           top: "190px", 
@@ -130,7 +131,7 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
            </div>
         </div>
 
-        {/* 5. Bottom Info Labels - Absolute Pixel Pinned */}
+        {/* 5. Bottom Info Pinned Coordinates */}
         <div style={{ position: "absolute", bottom: "40px", left: "120px", width: "150px", textAlign: "center", color: "white", zIndex: 15 }}>
            <span style={{ fontWeight: 900, fontSize: "24px", letterSpacing: "-0.05em", lineHeight: 1, display: "block" }}>MAR 13-14</span>
            <span style={{ fontSize: "7px", fontWeight: 700, textTransform: "uppercase", opacity: 0.5, letterSpacing: "0.2em", display: "block" }}>EVENT DATES</span>
@@ -147,37 +148,48 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
            </p>
         </div>
 
-        {/* 6. Vertical Divider */}
+        {/* 6. Vertical Dashed Divider */}
         <div style={{ position: "absolute", left: "600px", top: "65px", width: "2px", height: "265px", borderLeft: "2px dashed rgba(255,255,255,0.2)", zIndex: 10 }}></div>
 
-        {/* 7. Stub Section - Right Side */}
-        <div style={{ position: "absolute", left: "602px", top: "65px", width: "248px", height: "265px", background: "rgba(0,0,0,0.4)", zIndex: 10 }}>
-          <div style={{ textAlign: "center", marginTop: "30px" }}>
-            <p style={{ color: "rgba(255,255,255,0.4)", fontWeight: 900, fontSize: "7px", textTransform: "uppercase", margin: 0 }}>SIMATS ENGINEERING</p>
-            <p style={{ color: "hsl(var(--primary))", fontWeight: 900, fontSize: "11px", textTransform: "uppercase", margin: "2px 0 0 0" }}>MARCH 13-14, 2026</p>
-          </div>
-
-          <div style={{ background: "white", padding: "8px", borderRadius: "2px", margin: "24px auto", width: "80px", height: "80px" }}>
+        {/* 7. Right Panel (QR Stub) - Absolute Right-Pin Group */}
+        <div 
+          id="qr-panel"
+          style={{ 
+            position: "absolute", 
+            right: "40px", 
+            top: "50%", 
+            transform: "translateY(-30%)", 
+            width: "200px", 
+            textAlign: "center",
+            zIndex: 20
+          }}
+        >
+          {/* QR Code with Fixed Size */}
+          <div style={{ background: "white", padding: "10px", borderRadius: "4px", margin: "0 auto", width: "150px", height: "150px", boxShadow: "0 10px 30px rgba(0,0,0,0.5)" }}>
              <img 
               src={qrUrl} 
               alt="QR" 
               crossOrigin="anonymous"
-              style={{ width: "80px", height: "80px", display: "block" }}
+              style={{ width: "130px", height: "130px", display: "block" }}
             />
           </div>
 
-          <div style={{ textAlign: "center" }}>
-             <p style={{ fontSize: "9px", color: "white", fontWeight: 900, textTransform: "uppercase", margin: 0, letterSpacing: "0.1em" }}>
+          {/* Entry Text with Fixed Margins */}
+          <div style={{ marginTop: "15px" }}>
+             <p style={{ fontSize: "10px", color: "white", fontWeight: 900, textTransform: "uppercase", margin: 0, letterSpacing: "0.15em" }}>
                ENTRY GRANTED
              </p>
-             <span style={{ color: "hsl(var(--primary))", fontWeight: 900, fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.15em" }}>GET INTO MATRIX !</span>
+             <p style={{ color: "hsl(var(--primary))", fontWeight: 900, fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.2em", marginTop: "4px" }}>
+               GET INTO MATRIX !
+             </p>
           </div>
 
-          <div style={{ position: "absolute", bottom: "20px", left: "0", width: "248px", textAlign: "center" }}>
+          {/* Secure Status Indicator */}
+          <div style={{ marginTop: "15px", display: "flex", flexDirection: "column", alignItems: "center", gap: "6px" }}>
              <p style={{ fontSize: "14px", color: "hsl(var(--primary))", fontWeight: 900, fontFamily: "monospace", margin: 0 }}>{regNo}</p>
-             <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "6px", marginTop: "4px" }}>
-               <div style={{ height: "6px", width: "6px", borderRadius: "50%", background: "#22c55e" }}></div>
-               <p style={{ fontSize: "7px", color: "#22c55e", fontWeight: 900, textTransform: "uppercase", margin: 0 }}>SECURED_CREDENTIAL</p>
+             <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+               <div style={{ height: "6px", width: "6px", borderRadius: "50%", background: "#22c55e", boxShadow: "0 0 5px #22c55e" }}></div>
+               <p style={{ fontSize: "7px", color: "#22c55e", fontWeight: 900, textTransform: "uppercase", margin: 0, letterSpacing: "0.1em" }}>SECURED_CREDENTIAL</p>
              </div>
           </div>
         </div>

@@ -114,14 +114,14 @@ export default function TicketHub() {
         });
       }));
 
-      // 3. Stabilization Buffer - Wait for any pending paint operations
+      // 3. Stabilization Buffer - Force browser to paint all layers
       await new Promise(r => setTimeout(r, 600));
 
       // 4. Precision Capture with Virtual Viewport
       const canvas = await html2canvas(ticketRef.current, {
         useCORS: true,
         allowTaint: false,
-        scale: 3, // High quality 
+        scale: 3, // High-quality print resolution
         backgroundColor: "#000000",
         width: 850,
         height: 330,
@@ -129,7 +129,8 @@ export default function TicketHub() {
         scrollY: 0,
         windowWidth: 850,
         windowHeight: 330,
-        logging: false
+        logging: true,
+        letterRendering: true
       });
 
       // 5. Final PDF Assembly
@@ -222,13 +223,13 @@ export default function TicketHub() {
               <Button
                 onClick={handleDownload}
                 disabled={downloading}
-                className="flex-1 min-w-[200px] h-14 bg-primary text-white font-bold hover:bg-red-700 shadow-lg"
+                className="flex-1 min-w-[200px] h-14 bg-primary text-white font-bold hover:bg-red-700 shadow-lg uppercase tracking-widest text-xs"
               >
-                {downloading ? <><Loader2 className="mr-2 h-5 w-5 animate-spin" />PREPARING PDF...</> : <><Download className="mr-2 h-5 w-5" />DOWNLOAD PDF PERMIT</>}
+                {downloading ? <><Loader2 className="mr-2 h-5 w-5 animate-spin" />VERIFYING_ASSETS...</> : <><Download className="mr-2 h-5 w-5" />DOWNLOAD PDF PERMIT</>}
               </Button>
               <Button
                 onClick={handleShareWhatsApp}
-                className="flex-1 min-w-[200px] h-14 bg-[#25D366] text-white font-bold hover:bg-[#128C7E] shadow-lg"
+                className="flex-1 min-w-[200px] h-14 bg-[#25D366] text-white font-bold hover:bg-[#128C7E] shadow-lg uppercase tracking-widest text-xs"
               >
                 <Share2 className="mr-2 h-5 w-5" />WHATSAPP SHARE
               </Button>
