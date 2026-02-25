@@ -107,36 +107,46 @@ export default function TicketHub() {
 
     setDownloading(true);
     try {
-      // 1. Precise stabilization wait
-      const images = ticketRef.current.querySelectorAll('img');
-      await Promise.all(Array.from(images).map(img => {
+      // 1. Critical asset verification to prevent InvalidStateError
+      const images = Array.from(ticketRef.current.querySelectorAll('img'));
+      await Promise.all(images.map(img => {
         return new Promise((resolve) => {
           if (img.complete && img.naturalWidth > 0) resolve(true);
           else {
             img.onload = () => resolve(true);
             img.onerror = () => resolve(true);
+            // Force browser to process image if decode API is available
+            if ('decode' in img) {
+              (img as any).decode().then(resolve).catch(resolve);
+            }
           }
         });
       }));
 
-      // Extra delay for font/layout engine to settle
-      await new Promise(r => setTimeout(r, 500));
+      // Extra delay for layout engine stabilization
+      await new Promise(r => setTimeout(r, 600));
 
       const canvas = await html2canvas(ticketRef.current, {
         useCORS: true,
         allowTaint: false,
-        scale: 3, // Higher scale for extreme clarity
+        scale: 3, // High scale for clarity
         backgroundColor: "#000000",
         logging: false,
         width: 850,
         height: 480,
+        scrollX: 0,
+        scrollY: 0,
         onclone: (clonedDoc) => {
           const clonedTicket = clonedDoc.getElementById("madmatrix-ticket");
           if (clonedTicket) {
+            // Force precise dimensions and reset transformations on the clone
             clonedTicket.style.transform = "none";
+            clonedTicket.style.position = "fixed";
+            clonedTicket.style.top = "0";
+            clonedTicket.style.left = "0";
             clonedTicket.style.margin = "0";
-            clonedTicket.style.boxShadow = "none";
             clonedTicket.style.border = "none";
+            clonedTicket.style.boxShadow = "none";
           }
         }
       });
