@@ -64,8 +64,8 @@ export default function TicketHub() {
 
             if (foundRow) {
               foundAttendee = {
-                Name: foundRow.Name || foundRow.name || foundRow.NAME || foundRow['Name'] || "WELCOME MADMATRIX !",
-                RegNo: foundRow.RegNo || foundRow.regno || foundRow.REGNO || foundRow['Reg No'] || "VERIFIED",
+                Name: foundRow.Name || foundRow.name || foundRow.NAME || "WELCOME MADMATRIX !",
+                RegNo: foundRow.RegNo || foundRow.regno || foundRow.REGNO || "VERIFIED",
                 email: sanitizedEmail,
               };
               break;
@@ -87,7 +87,7 @@ export default function TicketHub() {
       } else {
         toast({
           title: "Registry Mismatch",
-          description: `Email "${sanitizedEmail}" not found in any of the 5 event registries.`,
+          description: `Email "${sanitizedEmail}" not found in any event registries.`,
           variant: "destructive",
         });
       }
@@ -107,18 +107,24 @@ export default function TicketHub() {
 
     setDownloading(true);
     try {
-      // Ensure all images are loaded and have dimensions before capture
+      // 1. Force layout scroll reset for accurate coordinates
+      window.scrollTo(0, 0);
+
+      // 2. Comprehensive Asset Verification (Fixes InvalidStateError)
       const images = ticketRef.current.querySelectorAll('img');
       await Promise.all(Array.from(images).map(img => {
-        if (img.complete && img.naturalWidth > 0) return Promise.resolve();
         return new Promise((resolve) => {
-          img.onload = resolve;
-          img.onerror = resolve;
+          if (img.complete && img.naturalWidth > 0) {
+            img.decode().then(resolve).catch(resolve);
+          } else {
+            img.onload = () => img.decode().then(resolve).catch(resolve);
+            img.onerror = resolve;
+          }
         });
       }));
 
-      // Extra stabilization delay
-      await new Promise(r => setTimeout(r, 500));
+      // Extra stabilization wait
+      await new Promise(r => setTimeout(r, 800));
 
       const canvas = await html2canvas(ticketRef.current, {
         useCORS: true,
@@ -126,16 +132,22 @@ export default function TicketHub() {
         scale: 2,
         backgroundColor: "#000000",
         logging: false,
+        width: 850,
+        height: 480,
         onclone: (clonedDoc) => {
           const clonedTicket = clonedDoc.getElementById("madmatrix-ticket");
           if (clonedTicket) {
             clonedTicket.style.transform = "none";
-            clonedTicket.style.position = "static";
+            clonedTicket.style.position = "fixed";
+            clonedTicket.style.top = "0px";
+            clonedTicket.style.left = "0px";
+            clonedTicket.style.margin = "0px";
+            clonedTicket.style.boxShadow = "none";
           }
         }
       });
 
-      const imgData = canvas.toDataURL("image/jpeg", 1.0);
+      const imgData = canvas.toDataURL("image/jpeg", 0.95);
       const pdf = new jsPDF({
         orientation: "landscape",
         unit: "px",
@@ -147,13 +159,13 @@ export default function TicketHub() {
 
       toast({
         title: "Download Successful",
-        description: "Your digital entry permit has been saved as a PDF.",
+        description: "Digital entry permit saved as PDF.",
       });
     } catch (error) {
       console.error("Capture Error:", error);
       toast({
         title: "Download Error",
-        description: "A system error occurred during ticket generation. Please try again.",
+        description: "System stabilized. Please retry the download.",
         variant: "destructive",
       });
     } finally {
@@ -163,7 +175,7 @@ export default function TicketHub() {
 
   const handleShareWhatsApp = () => {
     if (!attendee) return;
-    const text = `I've secured my digital permit for MadMatrix '26! Check yours at: https://www.madmatrix.site/`;
+    const text = `I've secured my official digital permit for MadMatrix '26! Authorized entry for ${attendee.Name}. Access yours at: https://www.madmatrix.site/`;
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
   };
 
@@ -174,15 +186,15 @@ export default function TicketHub() {
           <div className="h-2 w-2 rounded-full bg-primary animate-pulse" />
           <span className="text-xs font-mono uppercase tracking-[0.3em] text-primary">Official Retrieval Portal</span>
         </div>
-        <h1 className="text-6xl md:text-8xl font-black tracking-tighter text-white uppercase drop-shadow-[0_0_20px_rgba(255,0,0,0.4)]">
+        <h1 className="text-6xl md:text-8xl font-black tracking-tighter text-white uppercase">
           MadMatrix<span className="text-primary">'26</span>
         </h1>
-        <p className="text-muted-foreground font-body text-sm md:text-base max-w-md mx-auto">
+        <p className="text-muted-foreground font-body text-sm max-w-md mx-auto">
           Authorized digital entry permits for SIMATS Engineering national symposium.
         </p>
       </div>
 
-      <Card className="w-full max-w-2xl bg-black/60 border-primary/30 backdrop-blur-xl shadow-[0_0_30px_rgba(255,0,0,0.1)] overflow-hidden cyber-scanline">
+      <Card className="w-full max-w-2xl bg-black/60 border-primary/30 backdrop-blur-xl shadow-xl overflow-hidden cyber-scanline">
         <CardContent className="p-8">
           <form onSubmit={handleSearch} className="flex flex-col md:flex-row gap-4">
             <div className="relative flex-1">
@@ -190,28 +202,25 @@ export default function TicketHub() {
               <Input
                 type="email"
                 placeholder="REGISTRY_EMAIL@DOMAIN.COM"
-                className="pl-10 h-14 bg-black/40 border-primary/20 text-primary placeholder:text-primary/30 font-mono focus-visible:ring-primary focus-visible:border-primary text-lg"
+                className="pl-10 h-14 bg-black/40 border-primary/20 text-primary placeholder:text-primary/30 font-mono focus-visible:ring-primary text-lg"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
-            <Button 
+            <button 
               type="submit" 
               disabled={loading || !email}
-              className="h-14 px-10 bg-primary text-white font-bold hover:bg-red-700 transition-all duration-300 shadow-[0_0_25px_rgba(255,0,0,0.4)] disabled:opacity-50 text-base tracking-widest uppercase"
+              className="h-14 px-10 bg-primary text-white font-bold hover:bg-red-700 transition-all rounded-md shadow-lg disabled:opacity-50 text-sm tracking-widest uppercase flex items-center justify-center"
             >
               {loading ? (
-                <>
-                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                  SEARCHING...
-                </>
+                <Loader2 className="h-5 w-5 animate-spin" />
               ) : (
                 <>
                   <Search className="mr-2 h-5 w-5" />
                   ACCESS REGISTRY
                 </>
               )}
-            </Button>
+            </button>
           </form>
         </CardContent>
       </Card>
@@ -219,7 +228,7 @@ export default function TicketHub() {
       {attendee && (
         <div className="w-full space-y-8 animate-in zoom-in-95 duration-700">
           <div className="flex flex-col items-center space-y-8">
-            <div className="p-4 bg-white/5 rounded-lg border border-white/10 shadow-2xl overflow-x-auto w-full flex justify-center">
+            <div className="p-4 bg-white/5 rounded-lg border border-white/10 overflow-x-auto w-full flex justify-center shadow-2xl">
               <div className="p-2">
                 <Ticket
                   ref={ticketRef}
@@ -230,17 +239,16 @@ export default function TicketHub() {
               </div>
             </div>
 
-            {/* Action Buttons Below Ticket */}
             <div className="flex flex-wrap items-center justify-center gap-4 w-full max-w-2xl">
               <Button
                 onClick={handleDownload}
                 disabled={downloading}
-                className="flex-1 min-w-[200px] h-14 bg-primary text-white font-bold hover:bg-red-700 transition-all shadow-[0_0_20px_rgba(255,0,0,0.3)]"
+                className="flex-1 min-w-[200px] h-14 bg-primary text-white font-bold hover:bg-red-700 shadow-lg"
               >
                 {downloading ? (
                   <>
                     <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                    GENERATING PDF...
+                    PREPARING PDF...
                   </>
                 ) : (
                   <>
@@ -251,10 +259,10 @@ export default function TicketHub() {
               </Button>
               <Button
                 onClick={handleShareWhatsApp}
-                className="flex-1 min-w-[200px] h-14 bg-[#25D366] text-white font-bold hover:bg-[#128C7E] transition-all shadow-[0_0_20px_rgba(37,211,102,0.3)]"
+                className="flex-1 min-w-[200px] h-14 bg-[#25D366] text-white font-bold hover:bg-[#128C7E] shadow-lg"
               >
                 <Share2 className="mr-2 h-5 w-5" />
-                SHARE ON WHATSAPP
+                SHARE STATUS
               </Button>
             </div>
           </div>
@@ -266,7 +274,7 @@ export default function TicketHub() {
               </div>
               <div>
                 <h4 className="text-white font-black uppercase tracking-widest">Registry Match Found</h4>
-                <p className="text-xs text-muted-foreground mt-1 font-mono uppercase">{greeting}</p>
+                <p className="text-xs text-muted-foreground mt-1 font-mono uppercase italic">{greeting}</p>
               </div>
             </div>
           )}

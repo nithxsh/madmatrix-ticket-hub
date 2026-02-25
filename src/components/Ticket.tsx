@@ -24,8 +24,8 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
         className="relative flex flex-col overflow-hidden bg-black select-none border border-white/10 shadow-2xl"
         style={{ width: "850px", height: "480px", minWidth: "850px", minHeight: "480px" }}
       >
-        {/* Background Image Container */}
-        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none w-full h-full">
+        {/* Background Image Container - Explicit dimensions for html2canvas */}
+        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none w-full h-full bg-black">
           <img 
             src={bgImage} 
             alt="Ticket Background" 
@@ -34,7 +34,7 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
             width="850"
             height="480"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/40 to-black/90" />
+          <div className="absolute inset-0 bg-black/60" />
         </div>
 
         {/* Clean Logo-free Header with Branding Pinned to Corners */}
@@ -60,7 +60,7 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
           {/* Main Ticket Info Section */}
           <div className="flex-[2.5] flex flex-col items-center justify-between p-8 py-10 relative">
             <div className="text-center">
-               <h3 className="text-primary font-black text-7xl tracking-tighter drop-shadow-[0_0_20px_rgba(255,0,0,0.6)] uppercase italic leading-none">
+               <h3 className="text-primary font-black text-7xl tracking-tighter uppercase italic leading-none">
                  MADMATRIX
                </h3>
                <p className="text-white font-bold text-xs tracking-[0.6em] uppercase opacity-80 mt-2">NATIONAL LEVEL SYMPOSIUM</p>
@@ -69,11 +69,11 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
             {/* Name and Authorized Person Label */}
             <div className="w-full flex flex-col items-center gap-1">
                <span className="text-white/40 font-mono text-[10px] tracking-[0.4em] uppercase">AUTHORIZED PERSON</span>
-               <div className="w-[85%] h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent my-1"></div>
+               <div className="w-[85%] h-[1px] bg-white/20 my-1"></div>
                <span className="text-white font-black text-4xl tracking-tight uppercase leading-tight text-center">
                  {name || "WELCOME MADMATRIX !"}
                </span>
-               <div className="w-[85%] h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent my-1"></div>
+               <div className="w-[85%] h-[1px] bg-white/20 my-1"></div>
             </div>
 
             <div className="w-full flex items-center justify-center gap-16 text-white">
@@ -99,14 +99,14 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
           <div className="w-[1px] h-full border-l-2 border-dashed border-white/20"></div>
 
           {/* Ticket Stub Section */}
-          <div className="flex-1 bg-black/40 backdrop-blur-md flex flex-col items-center justify-between p-6 py-10 relative">
+          <div className="flex-1 bg-black/40 flex flex-col items-center justify-between p-6 py-10 relative">
             <div className="w-full text-center space-y-1">
               <p className="text-white font-black text-xs uppercase tracking-tighter">SIMATS ENGINEERING</p>
               <p className="text-primary font-black text-sm uppercase tracking-tight">MAR 13-14, 2026</p>
             </div>
 
             <div className="flex items-center justify-center">
-              <div className="bg-white p-2 rounded-sm shadow-[0_0_30px_rgba(255,255,255,0.15)] w-32 h-32 flex items-center justify-center">
+              <div className="bg-white p-2 rounded-sm w-32 h-32 flex items-center justify-center shadow-lg">
                  <img 
                   src={qrUrl} 
                   alt="Registration QR" 
@@ -131,7 +131,7 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
             <div className="text-center space-y-1">
                <p className="text-[12px] text-primary font-black font-mono tracking-tighter">{regNo}</p>
                <div className="flex items-center justify-center gap-1.5">
-                 <div className="h-1.5 w-1.5 rounded-full bg-[#22c55e] animate-pulse"></div>
+                 <div className="h-1.5 w-1.5 rounded-full bg-[#22c55e]"></div>
                  <p className="text-[9px] text-[#22c55e] font-black uppercase tracking-tighter">VERIFIED_ENTRY</p>
                </div>
             </div>
