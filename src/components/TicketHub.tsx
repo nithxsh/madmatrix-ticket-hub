@@ -36,7 +36,7 @@ export default function TicketHub() {
     setAttendee(null);
     setGreeting("");
 
-    // Finalized endpoints with lowercase onstage/offstage targets
+    // Finalized endpoints targeting all 5 registry sheets
     const endpoints = [
       "https://sheetdb.io/api/v1/06ca0hvc7hw5j",
       "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=track%201.0",
@@ -65,8 +65,8 @@ export default function TicketHub() {
 
             if (foundRow) {
               foundAttendee = {
-                Name: foundRow.Name || foundRow.name || foundRow.NAME || foundRow['Name'] || foundRow['Name'] || "WELCOME MADMATRIX !",
-                RegNo: foundRow.RegNo || foundRow.regno || foundRow.REGNO || foundRow['Reg No'] || foundRow['RegNo'] || "VERIFIED",
+                Name: foundRow.Name || foundRow.name || foundRow.NAME || foundRow['Name'] || "WELCOME MADMATRIX !",
+                RegNo: foundRow.RegNo || foundRow.regno || foundRow.REGNO || foundRow['Reg No'] || "VERIFIED",
                 email: sanitizedEmail,
               };
               break;
@@ -108,38 +108,40 @@ export default function TicketHub() {
 
     setIsCapturing(true);
     try {
-      // FIX: Robust image validation loop to prevent InvalidStateError
+      // PHASE 1: Asset Validation & Decoding to prevent InvalidStateError
       const images = Array.from(ticketRef.current.getElementsByTagName('img'));
       await Promise.all(
-        images.map(img => {
-          return new Promise((resolve) => {
-            if (img.complete && img.naturalWidth > 0) {
-              resolve(true);
-            } else {
-              img.onload = () => resolve(img.naturalWidth > 0);
-              img.onerror = () => resolve(false);
-              // Fail-safe timeout
-              setTimeout(() => resolve(img.naturalWidth > 0), 2000);
+        images.map(async (img) => {
+          try {
+            if ('decode' in img) {
+              await img.decode();
             }
-          });
+            // Strict dimension check
+            if (img.naturalWidth === 0 || img.naturalHeight === 0) {
+              throw new Error("Asset has zero dimensions");
+            }
+          } catch (e) {
+            console.warn("Asset validation warning:", e);
+          }
         })
       );
 
-      // Brief pause for browser rendering thread to catch up
-      await new Promise(resolve => setTimeout(resolve, 500));
+      // Brief pause for browser layout engine to settle
+      await new Promise(resolve => setTimeout(resolve, 800));
 
+      // PHASE 2: Stabilized Capture
       const canvas = await html2canvas(ticketRef.current, {
         useCORS: true,
         allowTaint: false,
-        scale: 2, // Use 2 for reliable performance
+        scale: 2,
         backgroundColor: "#000000",
         logging: false,
         width: 850,
         height: 480,
         onclone: (clonedDoc) => {
+          // Force layout stability in the clone
           const clonedTicket = clonedDoc.getElementById("madmatrix-ticket");
           if (clonedTicket) {
-            // Force a stable state for capture
             clonedTicket.style.transform = "none";
             clonedTicket.style.transition = "none";
             clonedTicket.style.display = "flex";
@@ -147,6 +149,7 @@ export default function TicketHub() {
             clonedTicket.style.position = "static";
             clonedTicket.style.width = "850px";
             clonedTicket.style.height = "480px";
+            clonedTicket.style.opacity = "1";
           }
         }
       });
