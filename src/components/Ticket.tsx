@@ -1,3 +1,4 @@
+
 "use client";
 
 import React from "react";
@@ -52,7 +53,7 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
           />
         </div>
 
-        {/* 2. Absolute Header Bar - Locked Sides */}
+        {/* 2. Absolute Header - Hard Locked Pinned Sides */}
         <div 
           style={{ 
             position: "absolute", 
@@ -67,7 +68,7 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
             boxSizing: "border-box"
           }}
         >
-          {/* Left Branding - SIMATS Engineering */}
+          {/* Left Branding */}
           <div 
             style={{ 
               position: "absolute", 
@@ -80,7 +81,7 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
             <span style={{ color: "#0a2e5c", fontSize: "9px", fontWeight: 800, letterSpacing: "0.2em", textTransform: "uppercase", marginTop: "2px", display: "block" }}>ENGINEERING</span>
           </div>
 
-          {/* Right Branding - Deemed University */}
+          {/* Right Branding */}
           <div 
             style={{ 
               position: "absolute", 
@@ -116,7 +117,7 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
            <p style={{ color: "rgba(255,255,255,0.6)", fontWeight: 700, fontSize: "8px", letterSpacing: "0.5em", textTransform: "uppercase", margin: "8px 0 0 0" }}>NATIONAL LEVEL SYMPOSIUM</p>
         </div>
 
-        {/* 4. Name Layer - High Z-Index & Absolute Center */}
+        {/* 4. Name Layer - High Z-Index Center Pin */}
         <div style={{ 
           position: "absolute", 
           top: "190px", 
@@ -133,7 +134,7 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
            </div>
         </div>
 
-        {/* 5. Bottom Info - Fixed Percentage Positioning */}
+        {/* 5. Bottom Info - Fixed Pixel Percentage Positioning */}
         <div style={{ position: "absolute", bottom: "40px", left: "20%", width: "150px", textAlign: "center", color: "white", zIndex: 15 }}>
            <span style={{ fontWeight: 900, fontSize: "24px", letterSpacing: "-0.05em", lineHeight: 1, display: "block" }}>MAR 13-14</span>
            <span style={{ fontSize: "7px", fontWeight: 700, textTransform: "uppercase", opacity: 0.5, letterSpacing: "0.2em", display: "block" }}>EVENT DATES</span>
@@ -153,7 +154,7 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
         {/* 6. Vertical Dashed Divider */}
         <div style={{ position: "absolute", left: "600px", top: "65px", width: "2px", height: "265px", borderLeft: "2px dashed rgba(255,255,255,0.2)", zIndex: 10 }}></div>
 
-        {/* 7. Right Panel (QR Stub) - Absolute Right-Pin Group */}
+        {/* 7. Right Panel (QR Stub) - Absolute Unit Lock */}
         <div 
           id="qr-panel"
           style={{ 
@@ -166,7 +167,6 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
             zIndex: 20
           }}
         >
-          {/* QR Code with Sharp Rendering */}
           <div style={{ background: "white", padding: "10px", borderRadius: "4px", margin: "0 auto", width: "150px", height: "150px", boxShadow: "0 10px 30px rgba(0,0,0,0.5)" }}>
              <img 
               src={qrUrl} 
@@ -181,7 +181,6 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
             />
           </div>
 
-          {/* Entry Text with Fixed Margins */}
           <div style={{ marginTop: "15px" }}>
              <p style={{ fontSize: "10px", color: "white", fontWeight: 900, textTransform: "uppercase", margin: 0, letterSpacing: "0.15em" }}>
                ENTRY GRANTED
@@ -191,7 +190,6 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
              </p>
           </div>
 
-          {/* Secure Status Indicator */}
           <div style={{ marginTop: "15px", display: "flex", flexDirection: "column", alignItems: "center", gap: "6px" }}>
              <p style={{ fontSize: "14px", color: "hsl(var(--primary))", fontWeight: 900, fontFamily: "monospace", margin: 0 }}>{regNo}</p>
              <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
