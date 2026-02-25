@@ -2,6 +2,7 @@
 
 import React from "react";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
+import { cn } from "@/lib/utils";
 
 interface TicketProps {
   name: string;
@@ -19,15 +20,14 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
       <div
         ref={ref}
         id={id}
-        className="relative overflow-hidden bg-black select-none border border-white/10 shadow-2xl"
+        className={cn(
+          "relative overflow-hidden bg-black select-none border border-white/10 shadow-2xl",
+          "md:w-[1000px] md:h-[400px] md:min-w-[1000px] md:min-h-[400px]",
+          "w-[95vw] h-auto min-h-[500px] p-[10px] md:p-0",
+          "transform md:scale-100 scale-[0.9] origin-top"
+        )}
         style={{ 
-          width: "1000px", 
-          height: "400px", 
-          minWidth: "1000px", 
-          minHeight: "400px",
           fontFamily: "'Inter', sans-serif",
-          boxSizing: "border-box",
-          position: "relative",
           zIndex: 1,
           backgroundColor: "#000000"
         }}
@@ -38,8 +38,8 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
             position: "absolute", 
             top: 0, 
             left: 0, 
-            width: "1000px", 
-            height: "400px", 
+            width: "100%", 
+            height: "100%", 
             zIndex: 0 
           }}
         >
@@ -48,25 +48,15 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
             alt="" 
             className="w-full h-full object-cover opacity-20"
             crossOrigin="anonymous"
-            style={{ width: "1000px", height: "400px", display: "block" }}
           />
         </div>
 
         {/* 2. Absolute Header - Edge-Lock with Responsive stacking classes */}
         <div 
-          className="flex flex-col md:flex-row items-center justify-between"
-          style={{ 
-            position: "absolute", 
-            top: 0, 
-            left: 0, 
-            width: "1000px", 
-            minHeight: "75px", 
-            backgroundColor: "white", 
-            borderBottom: "3px solid #ff0000",
-            zIndex: 10,
-            boxSizing: "border-box",
-            padding: "10px 30px"
-          }}
+          className={cn(
+            "flex flex-col md:flex-row items-center justify-between",
+            "absolute top-0 left-0 w-full min-h-[75px] bg-white border-b-[3px] border-[#ff0000] z-10 box-border p-[10px_30px]"
+          )}
         >
           {/* Left Branding */}
           <div className="flex flex-col items-center md:items-start text-center md:text-left">
@@ -88,108 +78,92 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
 
         {/* 3. Main Body - MadMatrix Branding */}
         <div 
-          style={{ 
-            position: "absolute", 
-            top: "110px", 
-            left: "0", 
-            width: "650px", 
-            textAlign: "center",
-            zIndex: 15
-          }}
+          className={cn(
+            "absolute z-15 text-center px-4",
+            "md:top-[110px] md:left-0 md:w-[650px] md:px-0",
+            "top-[120px] left-0 w-full"
+          )}
         >
-           <h3 style={{ color: "hsl(var(--primary))", fontWeight: 900, fontSize: "72px", letterSpacing: "-0.05em", textTransform: "uppercase", fontStyle: "italic", margin: 0, lineHeight: 1 }}>
+           <h3 className={cn(
+             "text-primary font-black uppercase italic leading-none m-0",
+             "text-4xl md:text-[72px] tracking-tighter"
+           )}>
              MADMATRIX
            </h3>
-           <p style={{ color: "rgba(255,255,255,0.6)", fontWeight: 700, fontSize: "10px", letterSpacing: "0.6em", textTransform: "uppercase", margin: "10px 0 0 0" }}>NATIONAL LEVEL SYMPOSIUM</p>
+           <p className="text-white/60 font-bold text-[8px] md:text-[10px] tracking-[0.6em] uppercase mt-[10px]">NATIONAL LEVEL SYMPOSIUM</p>
         </div>
 
         {/* 4. Name Layer - Strict Absolute Positioning */}
-        <div style={{ 
-          position: "absolute", 
-          top: "220px", 
-          left: 0, 
-          width: "650px", 
-          textAlign: "center",
-          zIndex: 100 
-        }}>
-           <span style={{ color: "rgba(255,255,255,0.4)", fontFamily: "monospace", fontSize: "8px", letterSpacing: "0.4em", textTransform: "uppercase", display: "block" }}>AUTHORIZED PERSON</span>
-           <div style={{ height: "60px", display: "flex", alignItems: "center", justifyContent: "center", marginTop: "5px" }}>
-             <span style={{ color: "white", fontWeight: 900, fontSize: "38px", letterSpacing: "-0.02em", textTransform: "uppercase", lineHeight: 1, whiteSpace: "nowrap" }}>
+        <div className={cn(
+          "absolute z-[100] text-center",
+          "md:top-[220px] md:left-0 md:w-[650px]",
+          "top-[190px] left-0 w-full"
+        )}>
+           <span className="text-white/40 font-mono text-[8px] tracking-[0.4em] uppercase block">AUTHORIZED PERSON</span>
+           <div className="min-h-[40px] md:h-[60px] flex items-center justify-center mt-[5px]">
+             <span className={cn(
+               "text-white font-black uppercase leading-none whitespace-nowrap tracking-tighter",
+               "text-[1.2rem] md:text-[38px]"
+             )}>
                {name || "WELCOME MADMATRIX !"}
              </span>
            </div>
         </div>
 
         {/* 5. Bottom Info - Split-Anchor Pixel Positioning */}
-        <div style={{ 
-          position: "absolute", 
-          left: "100px", 
-          bottom: "40px", 
-          width: "150px", 
-          textAlign: "center", 
-          color: "white", 
-          zIndex: 15 
-        }}>
-           <span style={{ fontWeight: 900, fontSize: "28px", letterSpacing: "-0.05em", lineHeight: 1, display: "block" }}>MAR 13-14</span>
-           <span style={{ fontSize: "8px", fontWeight: 700, textTransform: "uppercase", opacity: 0.5, letterSpacing: "0.2em", display: "block", marginTop: "4px" }}>EVENT DATES</span>
+        <div className={cn(
+          "absolute text-center text-white z-15",
+          "md:left-[100px] md:bottom-[40px] md:w-[150px]",
+          "left-[5%] bottom-[20px] w-auto"
+        )}>
+           <span className="font-black text-xl md:text-[28px] tracking-tighter leading-none block">MAR 13-14</span>
+           <span className="text-[8px] font-bold uppercase opacity-50 tracking-[0.2em] block mt-[4px]">EVENT DATES</span>
         </div>
 
-        <div style={{ 
-          position: "absolute", 
-          left: "350px", 
-          bottom: "40px", 
-          width: "150px", 
-          textAlign: "center", 
-          color: "white", 
-          zIndex: 15 
-        }}>
-           <span style={{ fontWeight: 900, fontSize: "28px", letterSpacing: "-0.05em", lineHeight: 1, textTransform: "uppercase", display: "block" }}>SIMATS</span>
-           <span style={{ fontSize: "8px", fontWeight: 700, textTransform: "uppercase", opacity: 0.5, letterSpacing: "0.2em", display: "block", marginTop: "4px" }}>LOCATION</span>
+        <div className={cn(
+          "absolute text-center text-white z-15",
+          "md:left-[350px] md:bottom-[40px] md:w-[150px]",
+          "left-[50%] bottom-[20px] w-auto -translate-x-1/2 md:translate-x-0"
+        )}>
+           <span className="font-black text-xl md:text-[28px] tracking-tighter leading-none uppercase block">SIMATS</span>
+           <span className="text-[8px] font-bold uppercase opacity-50 tracking-[0.2em] block mt-[4px]">LOCATION</span>
         </div>
 
         {/* 6. Vertical Dashed Divider */}
-        <div style={{ position: "absolute", left: "680px", top: "75px", width: "2px", height: "325px", borderLeft: "2px dashed rgba(255,255,255,0.2)", zIndex: 10 }}></div>
+        <div className="hidden md:block absolute left-[680px] top-[75px] width-[2px] height-[325px] border-l-[2px] border-dashed border-white/20 z-10"></div>
 
         {/* 7. Right Panel (QR Stub) - Strict Absolute Coordinate System */}
         <div 
           id="qr-panel"
-          style={{ 
-            position: "absolute", 
-            right: "40px", 
-            top: "110px", 
-            width: "220px", 
-            textAlign: "center",
-            zIndex: 20
-          }}
+          className={cn(
+            "absolute z-20 text-center",
+            "md:right-[40px] md:top-[110px] md:w-[220px]",
+            "right-[20px] top-[260px] w-[100px]"
+          )}
         >
-          <div style={{ background: "white", padding: "10px", borderRadius: "4px", margin: "0 auto", width: "160px", height: "160px", boxShadow: "0 10px 30px rgba(0,0,0,0.5)" }}>
+          <div className="bg-white p-2 md:p-[10px] rounded-[4px] mx-auto w-full max-w-[160px] shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
              <img 
               src={qrUrl} 
               alt="QR" 
               crossOrigin="anonymous"
-              style={{ 
-                width: "140px", 
-                height: "140px", 
-                display: "block",
-                imageRendering: "pixelated"
-              }}
+              className="w-full h-auto block image-pixelated"
             />
           </div>
 
-          <div style={{ marginTop: "20px" }}>
-             <p style={{ fontSize: "11px", color: "white", fontWeight: 900, textTransform: "uppercase", margin: 0, letterSpacing: "0.2em" }}>
+          <div className="mt-[10px] md:mt-[20px]">
+             <p className="text-[8px] md:text-[11px] text-white font-black uppercase m-0 tracking-[0.2em]">
                ENTRY GRANTED
              </p>
-             <p style={{ color: "hsl(var(--primary))", fontWeight: 900, fontSize: "12px", textTransform: "uppercase", letterSpacing: "0.25em", marginTop: "5px" }}>
+             <p className="text-primary font-black text-[8px] md:text-[12px] uppercase tracking-[0.25em] mt-[5px]">
                GET INTO MATRIX !
              </p>
           </div>
 
-          <div style={{ marginTop: "20px", display: "flex", flexDirection: "column", alignItems: "center", gap: "8px" }}>
-             <p style={{ fontSize: "16px", color: "hsl(var(--primary))", fontWeight: 900, fontFamily: "monospace", margin: 0 }}>{regNo}</p>
-             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-               <div style={{ height: "7px", width: "7px", borderRadius: "50%", background: "#22c55e", boxShadow: "0 0 5px #22c55e" }}></div>
-               <p style={{ fontSize: "8px", color: "#22c55e", fontWeight: 900, textTransform: "uppercase", margin: 0, letterSpacing: "0.15em" }}>SECURED_CREDENTIAL</p>
+          <div className="mt-[10px] md:mt-[20px] flex flex-col items-center gap-[4px] md:gap-[8px]">
+             <p className="text-sm md:text-[16px] text-primary font-black font-mono m-0">{regNo}</p>
+             <div className="flex items-center gap-[4px] md:gap-[8px]">
+               <div className="h-[5px] w-[5px] md:h-[7px] md:w-[7px] rounded-full bg-[#22c55e] shadow-[0_0_5px_#22c55e]"></div>
+               <p className="text-[6px] md:text-[8px] text-[#22c55e] font-black uppercase m-0 tracking-[0.15em]">SECURED_CREDENTIAL</p>
              </div>
           </div>
         </div>
