@@ -24,14 +24,14 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
         className="relative flex flex-col overflow-hidden bg-black select-none border border-white/10 shadow-2xl"
         style={{ 
           width: "850px", 
-          height: "480px", 
+          height: "330px", 
           minWidth: "850px", 
-          minHeight: "480px",
+          minHeight: "330px",
           fontFamily: "'Inter', sans-serif"
         }}
       >
         {/* Background Image Container */}
-        <div className="absolute inset-0 z-0 pointer-events-none w-[850px] h-[480px] bg-black">
+        <div className="absolute inset-0 z-0 pointer-events-none w-[850px] h-[330px] bg-black">
           <img 
             src={bgImage} 
             alt="" 
@@ -41,102 +41,102 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
           <div className="absolute inset-0 bg-black/40" />
         </div>
 
-        {/* Header - Minimized Height 80px with Precise Absolute Positioning */}
-        <div className="relative h-[80px] bg-white z-30 overflow-hidden">
-          {/* Left Side Branding */}
-          <div className="absolute left-10 top-1/2 -translate-y-1/2 flex flex-col items-start">
-            <span className="text-[#0a2e5c] font-black text-2xl tracking-tighter leading-none mb-0.5">SIMATS</span>
-            <span className="text-[#0a2e5c] text-[10px] font-bold tracking-[0.2em] uppercase leading-none opacity-90">ENGINEERING</span>
+        {/* Header - Minimized Height 60px with Absolute Corner Positioning */}
+        <div className="relative h-[60px] bg-white z-30 overflow-hidden">
+          {/* Left Side Branding - SIMATS Engineering */}
+          <div className="absolute left-8 top-1/2 -translate-y-1/2 flex flex-col items-start">
+            <span className="text-[#0a2e5c] font-black text-xl tracking-tighter leading-none mb-0.5">SIMATS</span>
+            <span className="text-[#0a2e5c] text-[8px] font-bold tracking-[0.2em] uppercase leading-none opacity-90">ENGINEERING</span>
           </div>
 
-          {/* Right Side Branding */}
-          <div className="absolute right-10 top-1/2 -translate-y-1/2 flex flex-col items-end text-right">
-            <span className="text-[#0a2e5c] font-black text-2xl tracking-tighter leading-none mb-0.5">SIMATS</span>
-            <span className="text-[#0a2e5c] text-[8px] font-bold uppercase tracking-[0.05em] leading-none mb-1">DEEMED TO BE UNIVERSITY</span>
-            <span className="text-[#0a2e5c] text-[6px] font-medium uppercase tracking-tight opacity-70 leading-none">
+          {/* Right Side Branding - SIMATS University */}
+          <div className="absolute right-8 top-1/2 -translate-y-1/2 flex flex-col items-end text-right">
+            <span className="text-[#0a2e5c] font-black text-xl tracking-tighter leading-none mb-0.5">SIMATS</span>
+            <span className="text-[#0a2e5c] text-[7px] font-bold uppercase tracking-[0.05em] leading-none mb-1">DEEMED TO BE UNIVERSITY</span>
+            <span className="text-[#0a2e5c] text-[5px] font-medium uppercase tracking-tight opacity-70 leading-none">
               SAVEETHA INSTITUTE OF MEDICAL AND TECHNICAL SCIENCES
             </span>
           </div>
         </div>
 
-        {/* Red Separator Bar - Height 6px */}
-        <div className="h-[6px] w-full bg-[#ff0000] z-30"></div>
+        {/* Red Separator Bar - Height 4px */}
+        <div className="h-[4px] w-full bg-[#ff0000] z-30"></div>
 
-        {/* Ticket Body - Remaining height 394px */}
-        <div className="relative z-10 flex h-[394px] w-[850px]">
-          {/* Main Section */}
-          <div className="w-[600px] h-full flex flex-col items-center justify-between py-10 px-8">
+        {/* Ticket Body - Remaining height 266px */}
+        <div className="relative z-10 flex h-[266px] w-[850px]">
+          {/* Main Section - 600px width */}
+          <div className="w-[600px] h-full flex flex-col items-center justify-between py-6 px-8">
             <div className="text-center">
-               <h3 className="text-primary font-black text-7xl tracking-tighter uppercase italic leading-none">
+               <h3 className="text-primary font-black text-5xl tracking-tighter uppercase italic leading-none">
                  MADMATRIX
                </h3>
-               <p className="text-white font-bold text-xs tracking-[0.5em] uppercase opacity-80 mt-2">NATIONAL LEVEL SYMPOSIUM</p>
+               <p className="text-white font-bold text-[8px] tracking-[0.4em] uppercase opacity-70 mt-1">NATIONAL LEVEL SYMPOSIUM</p>
             </div>
 
-            {/* Name and Authorized Person Label */}
-            <div className="w-full flex flex-col items-center mt-2">
-               <span className="text-white/40 font-mono text-[9px] tracking-[0.3em] uppercase mb-1">AUTHORIZED PERSON</span>
-               <div className="w-48 h-[1px] bg-white/20 mb-3"></div>
-               <span className="text-white font-black text-4xl tracking-tight uppercase leading-none text-center px-4">
+            {/* Name and Authorized Person Label - Absolute stability */}
+            <div className="w-full flex flex-col items-center">
+               <span className="text-white/40 font-mono text-[8px] tracking-[0.2em] uppercase mb-1">AUTHORIZED PERSON</span>
+               <div className="w-32 h-[1px] bg-white/20 mb-2"></div>
+               <span className="text-white font-black text-3xl tracking-tight uppercase leading-none text-center px-4">
                  {name || "WELCOME MADMATRIX !"}
                </span>
-               <div className="w-48 h-[1px] bg-white/20 mt-4"></div>
+               <div className="w-32 h-[1px] bg-white/20 mt-3"></div>
             </div>
 
-            <div className="w-full flex items-center justify-center gap-16 text-white mb-2">
+            <div className="w-full flex items-center justify-center gap-12 text-white">
               <div className="flex flex-col items-center">
-                <span className="font-black text-2xl tracking-tighter">MAR 13-14</span>
-                <span className="text-[9px] font-bold uppercase opacity-50 tracking-widest">DATES</span>
+                <span className="font-black text-xl tracking-tighter">MAR 13-14</span>
+                <span className="text-[7px] font-bold uppercase opacity-50 tracking-widest">DATES</span>
               </div>
-              <div className="w-[1px] h-10 bg-white/20"></div>
+              <div className="w-[1px] h-8 bg-white/20"></div>
               <div className="flex flex-col items-center">
-                <span className="font-black text-2xl tracking-tighter uppercase">SIMATS</span>
-                <span className="text-[9px] font-bold uppercase opacity-50 tracking-widest">CAMPUS</span>
+                <span className="font-black text-xl tracking-tighter uppercase">SIMATS</span>
+                <span className="text-[7px] font-bold uppercase opacity-50 tracking-widest">CAMPUS</span>
               </div>
             </div>
 
             <div className="text-center">
-               <p className="text-primary font-black text-xs tracking-[0.2em] uppercase">
+               <p className="text-primary font-black text-[9px] tracking-[0.2em] uppercase">
                  VENUE: SIMATS ENGINEERING CAMPUS, CHENNAI
                </p>
             </div>
           </div>
 
-          {/* Vertical Divider */}
-          <div className="w-[2px] h-full flex flex-col justify-between py-4">
+          {/* Vertical Divider - Perforated Look */}
+          <div className="w-[2px] h-full flex flex-col justify-between py-2">
             <div className="flex-1 border-l-2 border-dashed border-white/20"></div>
           </div>
 
-          {/* Stub Section */}
-          <div className="w-[248px] h-full bg-black/40 flex flex-col items-center pt-10 pb-8 px-6">
-            <div className="text-center mb-10">
-              <p className="text-white font-black text-[10px] uppercase tracking-tighter opacity-60">SIMATS ENGINEERING</p>
-              <p className="text-primary font-black text-xs uppercase tracking-tight">MAR 13-14, 2026</p>
+          {/* Stub Section - 248px width */}
+          <div className="w-[248px] h-full bg-black/40 flex flex-col items-center pt-6 pb-4 px-4">
+            <div className="text-center mb-6">
+              <p className="text-white font-black text-[8px] uppercase tracking-tighter opacity-50">SIMATS ENGINEERING</p>
+              <p className="text-primary font-black text-[10px] uppercase tracking-tight">MAR 13-14, 2026</p>
             </div>
 
-            <div className="bg-white p-2 rounded-sm shadow-xl mb-10">
+            <div className="bg-white p-1.5 rounded-sm shadow-xl mb-6">
                <img 
                 src={qrUrl} 
                 alt="QR" 
-                className="w-24 h-24 block"
+                className="w-20 h-20 block"
                 crossOrigin="anonymous"
-                width="96"
-                height="96"
+                width="80"
+                height="80"
               />
             </div>
 
-            <div className="text-center space-y-1 mb-10">
-               <p className="text-[9px] text-white font-black uppercase leading-tight">
+            <div className="text-center space-y-0.5 mb-4">
+               <p className="text-[8px] text-white font-black uppercase leading-tight">
                  PAYMENT RECEIVED
                </p>
-               <span className="text-primary font-black tracking-[0.1em] text-[10px] uppercase">GET INTO MATRIX !</span>
+               <span className="text-primary font-black tracking-[0.1em] text-[9px] uppercase">GET INTO MATRIX !</span>
             </div>
 
             <div className="text-center mt-auto">
-               <p className="text-sm text-primary font-black font-mono tracking-tighter">{regNo}</p>
+               <p className="text-xs text-primary font-black font-mono tracking-tighter leading-none">{regNo}</p>
                <div className="flex items-center justify-center gap-1 mt-1">
-                 <div className="h-1.5 w-1.5 rounded-full bg-[#22c55e]"></div>
-                 <p className="text-[8px] text-[#22c55e] font-black uppercase tracking-tighter">VERIFIED_ENTRY</p>
+                 <div className="h-1 w-1 rounded-full bg-[#22c55e]"></div>
+                 <p className="text-[7px] text-[#22c55e] font-black uppercase tracking-tighter">VERIFIED_ENTRY</p>
                </div>
             </div>
           </div>

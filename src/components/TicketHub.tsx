@@ -37,8 +37,9 @@ export default function TicketHub() {
     setAttendee(null);
     setGreeting("");
 
+    // Targeted search for the 5 official event sheets
     const endpoints = [
-      "https://sheetdb.io/api/v1/06ca0hvc7hw5j",
+      "https://sheetdb.io/api/v1/06ca0hvc7hw5j", // Main
       "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=onstage",
       "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=offstage",
       "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=MOBILE%20GAMES%20%26%20mad%20sports",
@@ -58,14 +59,14 @@ export default function TicketHub() {
           if (Array.isArray(data)) {
             const foundRow = data.find((row: any) => {
               return Object.values(row).some((value) => {
-                return typeof value !== 'undefined' && String(value).trim().toLowerCase() === sanitizedEmail;
+                return value !== undefined && value !== null && String(value).trim().toLowerCase() === sanitizedEmail;
               });
             });
 
             if (foundRow) {
               foundAttendee = {
                 Name: foundRow.Name || foundRow.name || foundRow.NAME || "WELCOME MADMATRIX !",
-                RegNo: foundRow.RegNo || foundRow.regno || foundRow.REGNO || "VERIFIED",
+                RegNo: foundRow.RegNo || foundRow.regno || foundRow.REGNO || "VERIFIED_USER",
                 email: sanitizedEmail,
               };
               break;
@@ -107,11 +108,11 @@ export default function TicketHub() {
 
     setDownloading(true);
     try {
-      // 1. Rigorous asset validation to eliminate InvalidStateError
+      // 1. Rigorous Asset Validation to eliminate InvalidStateError
       const images = Array.from(ticketRef.current.querySelectorAll('img'));
       
-      const checkImages = () => {
-        return Promise.all(images.map(img => {
+      const validateAssets = async () => {
+        const checkImage = (img: HTMLImageElement) => {
           return new Promise((resolve) => {
             const isReady = () => img.complete && img.naturalWidth > 0 && img.naturalHeight > 0;
             
@@ -119,8 +120,8 @@ export default function TicketHub() {
               resolve(true);
             } else {
               img.onload = () => resolve(true);
-              img.onerror = () => resolve(true); // Don't block forever if one fails
-              // Re-check periodically
+              img.onerror = () => resolve(true);
+              // Fallback interval to ensure layout engine registration
               const interval = setInterval(() => {
                 if (isReady()) {
                   clearInterval(interval);
@@ -129,41 +130,41 @@ export default function TicketHub() {
               }, 100);
             }
           });
+        };
+
+        await Promise.all(images.map(img => checkImage(img)));
+        // Decoding step for rendering stability
+        await Promise.all(images.map(img => {
+          if ('decode' in img) return (img as any).decode().catch(() => {});
+          return Promise.resolve();
         }));
       };
 
-      await checkImages();
+      await validateAssets();
       
-      // Additional decoding step for cross-origin stability
-      await Promise.all(images.map(img => {
-        if ('decode' in img) return (img as any).decode().catch(() => {});
-        return Promise.resolve();
-      }));
-
-      // 2. Delay for browser layout engine to fully realize the pixel-fixed dimensions
+      // 2. Delay for browser layout stabilization
       await new Promise(r => setTimeout(r, 800));
 
       const canvas = await html2canvas(ticketRef.current, {
         useCORS: true,
         allowTaint: false,
-        scale: 3, // High scale for PDF clarity
+        scale: 3, // High DPI for PDF
         backgroundColor: "#000000",
         logging: false,
         width: 850,
-        height: 480,
+        height: 330,
         x: 0,
         y: 0,
         onclone: (clonedDoc) => {
           const clonedTicket = clonedDoc.getElementById("madmatrix-ticket");
           if (clonedTicket) {
-            // Force absolute stability on the clone to prevent alignment drifting
+            // Force absolute static position for the cloned capture element
             clonedTicket.style.transform = "none";
             clonedTicket.style.position = "fixed";
             clonedTicket.style.top = "0";
             clonedTicket.style.left = "0";
             clonedTicket.style.margin = "0";
             clonedTicket.style.border = "none";
-            clonedTicket.style.boxShadow = "none";
           }
         }
       });
@@ -172,10 +173,10 @@ export default function TicketHub() {
       const pdf = new jsPDF({
         orientation: "landscape",
         unit: "px",
-        format: [850, 480]
+        format: [850, 330]
       });
 
-      pdf.addImage(imgData, "JPEG", 0, 0, 850, 480);
+      pdf.addImage(imgData, "JPEG", 0, 0, 850, 330);
       pdf.save(`MadMatrix_Permit_${attendee.RegNo}.pdf`);
 
       toast({
@@ -185,7 +186,7 @@ export default function TicketHub() {
     } catch (error) {
       console.error("PDF Capture Error:", error);
       toast({
-        title: "Download Stability Issue",
+        title: "Capture Stabilization Issue",
         description: "The system encountered a rendering error. Please try again.",
         variant: "destructive",
       });
