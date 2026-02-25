@@ -12,7 +12,6 @@ interface TicketProps {
 
 export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
   ({ name, regNo, id }, ref) => {
-    // QR redirecting to the official site
     const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent("https://www.madmatrix.site/")}&size=250x250&color=000000&bgcolor=ffffff`;
     
     const bgImage = PlaceHolderImages.find(img => img.id === "ticket-template")?.imageUrl || "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=1080";
@@ -24,7 +23,6 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
         className="relative flex flex-col overflow-hidden bg-black select-none border border-white/10 shadow-2xl"
         style={{ width: "850px", height: "480px", minWidth: "850px", minHeight: "480px" }}
       >
-        {/* Background Image Container with fixed size to stabilize capture */}
         <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none w-full h-full">
           <img 
             src={bgImage} 
@@ -35,7 +33,6 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
           <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/40 to-black/90" />
         </div>
 
-        {/* Header Branding Bar - Text moved to far corners, no logos as requested */}
         <div className="relative h-[95px] bg-white z-30 flex items-center justify-between px-10">
           <div className="flex flex-col">
             <span className="text-[#0a2e5c] font-black text-2xl tracking-tighter leading-none">SIMATS</span>
@@ -51,10 +48,8 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
           </div>
         </div>
 
-        {/* Branding Red Strip */}
         <div className="h-2 w-full bg-[#ff0000] z-30"></div>
 
-        {/* Main Body */}
         <div className="flex-1 flex overflow-hidden relative z-10">
           <div className="flex-[2.5] flex flex-col items-center justify-between p-8 py-10 relative">
             <div className="text-center">
@@ -92,10 +87,8 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
             </div>
           </div>
 
-          {/* Dotted Separator */}
           <div className="w-[1px] h-full border-l-2 border-dashed border-white/20"></div>
 
-          {/* Ticket Stub */}
           <div className="flex-1 bg-black/40 backdrop-blur-md flex flex-col items-center justify-between p-6 py-10 relative">
             <div className="w-full text-center space-y-1">
               <p className="text-white font-black text-xs uppercase tracking-tighter">SIMATS ENGINEERING</p>

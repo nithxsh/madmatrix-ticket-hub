@@ -36,7 +36,6 @@ export default function TicketHub() {
     setAttendee(null);
     setGreeting("");
 
-    // Consolidating all requested SheetDB endpoints
     const endpoints = [
       "https://sheetdb.io/api/v1/06ca0hvc7hw5j",
       "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=track%201.0",
@@ -57,7 +56,6 @@ export default function TicketHub() {
           const data = await response.json();
 
           if (Array.isArray(data)) {
-            // Robust search across every cell in the row
             const foundRow = data.find((row: any) => {
               return Object.values(row).some((value) => {
                 return typeof value !== 'undefined' && String(value).trim().toLowerCase() === sanitizedEmail;
@@ -109,20 +107,24 @@ export default function TicketHub() {
 
     setIsCapturing(true);
     try {
-      // Robust image pre-loading check
+      // Robust image pre-loading and dimension verification
       const images = Array.from(ticketRef.current.getElementsByTagName('img'));
       await Promise.all(
         images.map(img => {
-          if (img.complete && img.naturalWidth !== 0) return Promise.resolve();
+          if (img.complete && img.naturalWidth > 0) return Promise.resolve();
           return new Promise((resolve) => {
-            img.onload = resolve;
+            img.onload = () => {
+              // Ensure dimensions are greater than zero to prevent createPattern errors
+              if (img.naturalWidth > 0) resolve(true);
+              else setTimeout(() => resolve(true), 500); 
+            };
             img.onerror = resolve;
           });
         })
       );
 
-      // Stabilization delay to avoid CanvasRenderingContext2D issues
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Stabilization delay to allow layout recalculation
+      await new Promise(resolve => setTimeout(resolve, 2000));
 
       const canvas = await html2canvas(ticketRef.current, {
         useCORS: true,
@@ -133,7 +135,6 @@ export default function TicketHub() {
         width: 850,
         height: 480,
         onclone: (clonedDoc) => {
-          // Absolute stabilization of elements in the cloned capture document
           const clonedTicket = clonedDoc.getElementById("madmatrix-ticket");
           if (clonedTicket) {
             clonedTicket.style.transform = "none";
@@ -141,6 +142,7 @@ export default function TicketHub() {
             clonedTicket.style.transition = "none";
             clonedTicket.style.display = "flex";
             clonedTicket.style.visibility = "visible";
+            clonedTicket.style.position = "static";
           }
         }
       });
@@ -158,7 +160,7 @@ export default function TicketHub() {
       console.error("Download Error:", error);
       toast({
         title: "Download Failed",
-        description: "Could not generate permit image. Please refresh and try again.",
+        description: "Could not generate permit image. Please wait a moment and try again.",
         variant: "destructive",
       });
     } finally {
