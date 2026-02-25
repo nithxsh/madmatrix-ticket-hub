@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { Search, Terminal, Loader2, Download, Share2, UserCheck, ShieldCheck, Phone, Globe, User, Cpu, Activity, Zap, Mail, MessageSquare, ChevronRight, ChevronLeft, LayoutDashboard, Database, ShieldAlert } from "lucide-react";
+import { Search, Terminal, Loader2, Download, Share2, UserCheck, ShieldCheck, Phone, Globe, User, Cpu, Activity, Zap, Mail, MessageSquare, ChevronRight, ChevronLeft, LayoutDashboard, Database, ShieldAlert, Rocket } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -74,14 +74,14 @@ const PersistentSupportMenu = () => {
     <div className="fixed left-6 top-1/2 -translate-y-1/2 z-[100] hidden lg:flex flex-col gap-4">
       <div className="flex flex-col gap-2 p-2 bg-black/60 border border-primary/30 backdrop-blur-xl rounded-full shadow-[0_0_30px_rgba(255,0,0,0.2)]">
         <a 
-          href="mailto:support@madmatrix.site?subject=Technical_Support" 
+          href="mailto:support@madmatrix.site?subject=Neural_Link_Support" 
           title="HELP_DESK" 
           className="h-10 w-10 flex items-center justify-center rounded-full bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all group"
         >
           <Mail className="h-5 w-5" />
         </a>
         <a 
-          href="mailto:organizer@madmatrix.site?subject=Sponsorship_Inquiry" 
+          href="mailto:organizer@madmatrix.site?subject=Sponsorship_Uplink" 
           title="SPONSORS" 
           className="h-10 w-10 flex items-center justify-center rounded-full bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all group"
         >
@@ -118,7 +118,7 @@ const AdminTiltGrid = () => {
       <div className="col-span-full mb-6">
         <div className="flex items-center gap-3 text-primary">
           <ShieldCheck className="h-5 w-5 animate-pulse" />
-          <span className="font-mono text-sm tracking-widest uppercase">ORGANIZING TEAM</span>
+          <span className="font-mono text-sm tracking-widest uppercase">[MAIL_TEAM_MOVE]</span>
         </div>
       </div>
       {admins.map((admin, idx) => (
@@ -135,9 +135,9 @@ const AdminTiltGrid = () => {
           <h4 className="text-white font-bold text-lg uppercase tracking-tight group-hover:cyber-glitch">{admin.name}</h4>
           <a 
             href={`tel:+91${admin.phone}`} 
-            className="inline-flex items-center gap-2 text-primary/60 font-mono text-xs mt-4 group-hover:text-primary transition-colors border border-primary/20 px-3 py-2 rounded-md hover:bg-primary/10 w-full justify-center"
+            className="inline-flex items-center gap-2 text-primary/60 font-mono text-xs mt-4 group-hover:text-primary transition-colors border border-primary/20 px-3 py-2 rounded-md hover:bg-primary/10 w-full justify-center uppercase tracking-tighter"
           >
-            <Phone className="h-3 w-3" /> CONTACT: {admin.phone}
+            <Phone className="h-3 w-3" /> DIRECT_CONTACT: {admin.phone}
           </a>
         </div>
       ))}
@@ -146,13 +146,14 @@ const AdminTiltGrid = () => {
 };
 
 const GlitchOverlay = () => (
-  <div className="fixed inset-0 z-[200] pointer-events-none overflow-hidden bg-black/40">
-    <div className="absolute inset-0 animate-pulse opacity-20">
-      <div className="h-full w-full bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] z-10 bg-[length:100%_2px,3px_100%]" />
-    </div>
-    <div className="flex h-full w-full items-center justify-center">
-      <div className="font-mono text-primary text-4xl animate-bounce tracking-[1em] uppercase">
-        [LAUNCHING_NEURAL_INTERFACE]
+  <div className="fixed inset-0 z-[200] pointer-events-none overflow-hidden bg-black/40 backdrop-blur-sm">
+    <div className="absolute inset-0 animate-pulse opacity-40 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(255,0,0,0.1)_50.1%)] bg-[length:100%_4px]" />
+    <div className="flex h-full w-full flex-col items-center justify-center">
+      <div className="font-mono text-primary text-4xl animate-bounce tracking-[0.5em] uppercase font-black cyber-glitch">
+        [SONIC_BOOM_DETECTED]
+      </div>
+      <div className="mt-4 font-mono text-white/40 text-xs uppercase tracking-[1em]">
+        recalculating_neural_pathway
       </div>
     </div>
   </div>
@@ -364,14 +365,15 @@ export default function TicketHub() {
                   </button>
                 </form>
               ) : (
-                <div className="space-y-8 py-6 animate-in slide-in-from-bottom-4 duration-500">
-                  <div className="flex justify-between items-center text-xs font-mono text-green-500 uppercase tracking-widest">
-                    <span className="flex items-center gap-2"><ShieldCheck className="h-4 w-4" /> [CREDENTIALS_VERIFIED]</span>
-                    <span className="animate-pulse">STABLE_CONNECTION</span>
+                <div className="space-y-10 py-6 animate-in slide-in-from-bottom-4 duration-500 flex flex-col items-center">
+                  <div className="w-full flex justify-between items-center text-[10px] font-mono text-green-500 uppercase tracking-widest px-4">
+                    <span className="flex items-center gap-2"><ShieldCheck className="h-4 w-4" /> [BIO_SYNC_COMPLETE]</span>
+                    <span className="animate-pulse">CORE_NEURAL_UPLINK</span>
                   </div>
-                  <div className="space-y-4">
-                    <p className="text-[10px] font-mono text-primary/60 uppercase tracking-[0.3em] text-center">Slide to launch neural interface</p>
-                    <div className="p-4 bg-white/5 rounded-2xl border border-primary/20">
+                  <div className="w-full max-w-md space-y-6">
+                    <p className="text-[10px] font-mono text-primary/60 uppercase tracking-[0.3em] text-center">Swipe rocket to initiate launch</p>
+                    <div className="p-6 bg-white/5 rounded-2xl border border-primary/20 relative overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-transparent pointer-events-none" />
                       <Slider
                         defaultValue={[0]}
                         max={100}
@@ -379,7 +381,7 @@ export default function TicketHub() {
                         className="cursor-pointer"
                         onValueChange={handleLaunch}
                       />
-                      <div className="mt-4 flex justify-between text-[8px] font-mono text-primary/40 uppercase">
+                      <div className="mt-6 flex justify-between text-[8px] font-mono text-primary/40 uppercase tracking-widest">
                         <span>INIT_SEQ</span>
                         <span>&gt;&gt;&gt; SLIDE TO LAUNCH &gt;&gt;&gt;</span>
                         <span>EXEC_NODE</span>
@@ -509,14 +511,14 @@ export default function TicketHub() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 font-mono">
                   <div className="space-y-4">
-                    <a href="mailto:support@madmatrix.site?subject=Technical_Support" className="flex items-center gap-5 p-5 bg-white/5 rounded-xl border border-white/5 hover:border-primary/40 transition-all group">
+                    <a href="mailto:support@madmatrix.site?subject=Neural_Link_Support" className="flex items-center gap-5 p-5 bg-white/5 rounded-xl border border-white/5 hover:border-primary/40 transition-all group">
                       <Mail className="h-6 w-6 text-primary group-hover:scale-110 transition-transform" />
                       <div>
                         <p className="text-primary uppercase text-[10px] font-bold mb-1 tracking-widest">HELP_DESK</p>
                         <p className="text-white text-sm">support@madmatrix.site</p>
                       </div>
                     </a>
-                    <a href="mailto:organizer@madmatrix.site?subject=Sponsorship_Inquiry" className="flex items-center gap-5 p-5 bg-white/5 rounded-xl border border-white/5 hover:border-primary/40 transition-all group">
+                    <a href="mailto:organizer@madmatrix.site?subject=Sponsorship_Uplink" className="flex items-center gap-5 p-5 bg-white/5 rounded-xl border border-white/5 hover:border-primary/40 transition-all group">
                       <MessageSquare className="h-6 w-6 text-primary group-hover:scale-110 transition-transform" />
                       <div>
                         <p className="text-primary uppercase text-[10px] font-bold mb-1 tracking-widest">SPONSOR_ENQUIRY</p>
