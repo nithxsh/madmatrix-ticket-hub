@@ -101,6 +101,7 @@ const PersistentSupportMenu = () => {
 };
 
 const AdminTiltGrid = () => {
+  // Ordered as per request: Faculty, Dhanush R, Nithishwaran, then others
   const admins = [
     { role: "Faculty Convenor", name: "Dr. K. Sudar Mozhi", phone: "9080730749", color: "border-blue-500/30" },
     { role: "Student Admin", name: "Dhanush R", phone: "9025718226", color: "border-white/10" },
@@ -381,7 +382,7 @@ export default function TicketHub() {
                         className="cursor-pointer"
                         onValueChange={handleLaunch}
                       />
-                      <div className="mt-6 flex justify-between text-[8px] font-mono text-primary/40 uppercase tracking-widest">
+                      <div className="mt-6 flex justify-between text-[8px] font-mono text-primary/40 uppercase tracking-widest px-4">
                         <span>INIT_SEQ</span>
                         <span>&gt;&gt;&gt; SLIDE TO LAUNCH &gt;&gt;&gt;</span>
                         <span>EXEC_NODE</span>
@@ -397,43 +398,45 @@ export default function TicketHub() {
 
       {step === 2 && attendee && (
         <div className="w-full space-y-24 animate-in slide-in-from-bottom-12 duration-1000">
-          {/* Identity Node Dashboard */}
-          <div className="w-full max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 animate-in slide-in-from-bottom-8 duration-700">
-            <Card className="bg-black/60 border-primary/30 backdrop-blur-2xl p-8 relative overflow-hidden group hover:shadow-[0_0_30px_rgba(255,0,0,0.15)] transition-all">
-              <div className="absolute top-0 right-0 p-2 text-[8px] font-mono text-primary/30 tracking-widest">NODE_01</div>
-              <p className="text-[10px] font-mono text-primary uppercase tracking-[0.4em] mb-4 flex items-center gap-2">
-                <User className="h-3 w-3" /> [IDENT_VERIFICATION]
-              </p>
-              <h3 className="text-3xl font-black text-white uppercase tracking-tighter">
-                <DecryptText text={attendee.Name} />
-              </h3>
-            </Card>
+          {/* Vertical Neural Data-Stream */}
+          <div className="w-full max-w-4xl mx-auto space-y-8 animate-in slide-in-from-bottom-8 duration-700">
+             <div className="bg-black/60 border border-primary/30 backdrop-blur-2xl p-10 rounded-3xl relative overflow-hidden group hover:shadow-[0_0_40px_rgba(255,0,0,0.15)] transition-all cyber-scanline">
+                <div className="absolute top-0 right-0 p-4 text-[8px] font-mono text-primary/30 tracking-[0.5em] uppercase">SYSTEM_LOG_v2.0</div>
+                
+                <div className="space-y-6 font-mono">
+                  <div className="flex flex-col md:flex-row md:items-center gap-4 border-l-2 border-green-500 pl-6 py-2">
+                    <span className="text-green-500/60 text-xs tracking-widest uppercase">IDENT_SYNC:</span>
+                    <h3 className="text-3xl md:text-5xl font-black text-green-500 uppercase tracking-tighter">
+                      <DecryptText text={attendee.Name} />
+                    </h3>
+                  </div>
 
-            <Card className="bg-black/60 border-primary/30 backdrop-blur-2xl p-8 relative overflow-hidden group hover:shadow-[0_0_30px_rgba(255,0,0,0.15)] transition-all">
-              <div className="absolute top-0 right-0 p-2 text-[8px] font-mono text-primary/30 tracking-widest">NODE_02</div>
-              <p className="text-[10px] font-mono text-primary uppercase tracking-[0.4em] mb-4 flex items-center gap-2">
-                <Activity className="h-3 w-3" /> [SPORTS_FORM]
-              </p>
-              <h3 className="text-3xl font-black text-white uppercase tracking-tighter">
-                {attendee.Event}
-              </h3>
-            </Card>
+                  <div className="flex flex-col md:flex-row md:items-center gap-4 border-l-2 border-primary pl-6 py-2">
+                    <span className="text-primary/60 text-xs tracking-widest uppercase">ASSIGNED_PROTOCOL:</span>
+                    <h3 className="text-2xl md:text-4xl font-black text-primary uppercase tracking-tighter">
+                      {attendee.Event}
+                    </h3>
+                  </div>
 
-            <Card className="bg-black/60 border-primary/30 backdrop-blur-2xl p-8 relative overflow-hidden group hover:shadow-[0_0_30px_rgba(255,0,0,0.15)] transition-all">
-              <div className="absolute top-0 right-0 p-2 text-[8px] font-mono text-primary/30 tracking-widest">NODE_03</div>
-              <p className="text-[10px] font-mono text-primary uppercase tracking-[0.4em] mb-4 flex items-center gap-2">
-                <ShieldCheck className="h-3 w-3" /> [LOCATION_NODE]
-              </p>
-              <div className="flex flex-col gap-1">
-                <div className="flex items-center gap-3">
-                  <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_10px_#22c55e]" />
-                  <h3 className="text-xl font-black text-green-500 uppercase tracking-[0.2em]">
-                    SCAD AUDITORIUM
-                  </h3>
+                  <div className="flex flex-col md:flex-row md:items-center gap-4 border-l-2 border-white/20 pl-6 py-2">
+                    <span className="text-white/40 text-xs tracking-widest uppercase">DEPLOYMENT_ZONE:</span>
+                    <div className="flex flex-col">
+                      <div className="flex items-center gap-3">
+                        <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_10px_#22c55e]" />
+                        <h3 className="text-xl md:text-2xl font-black text-white uppercase tracking-[0.2em]">
+                          SIMATS ENGINEERING
+                        </h3>
+                      </div>
+                      <p className="text-[10px] text-primary/60 mt-1">SCAD AUDITORIUM // COMMENCEMENT: 09:00 AM</p>
+                    </div>
+                  </div>
                 </div>
-                <p className="text-[8px] font-mono text-primary/40 ml-5">COMMENCEMENT: 09:00 AM</p>
-              </div>
-            </Card>
+
+                <div className="mt-8 flex justify-between items-center text-[10px] font-mono text-primary/40 uppercase tracking-widest px-2">
+                  <span className="flex items-center gap-2 text-green-500"><ShieldCheck className="h-4 w-4" /> [BIO_SYNC_COMPLETE]</span>
+                  <span className="animate-pulse">CORE_NEURAL_UPLINK</span>
+                </div>
+             </div>
           </div>
 
           {/* Ticket Section */}
