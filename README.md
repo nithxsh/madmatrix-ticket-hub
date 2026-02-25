@@ -1,3 +1,4 @@
+
 # MadMatrix '26 Ticket Hub
 
 Authorized ticket retrieval portal for MadMatrix 2026. This application is built with Next.js, Tailwind CSS, and Genkit AI.
