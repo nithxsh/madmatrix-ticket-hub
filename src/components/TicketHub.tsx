@@ -37,7 +37,7 @@ export default function TicketHub() {
     setAttendee(null);
     setGreeting("");
 
-    // Targeted search for the 5 official event sheets
+    // Official registry endpoints for MadMatrix '26
     const endpoints = [
       "https://sheetdb.io/api/v1/06ca0hvc7hw5j", // Main
       "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=onstage",
@@ -73,7 +73,7 @@ export default function TicketHub() {
             }
           }
         } catch (err) {
-          console.error(`Error searching registry sheet:`, err);
+          console.error(`Registry access error:`, err);
         }
       }
 
@@ -83,7 +83,7 @@ export default function TicketHub() {
           const aiResult = await generateCyberpunkGreeting({ attendeeName: foundAttendee.Name });
           setGreeting(aiResult.greeting);
         } catch (error) {
-          setGreeting("Authorized entry permit retrieved.");
+          setGreeting("Authorized entry permit retrieved. Welcome to the Matrix.");
         }
       } else {
         toast({
@@ -95,7 +95,7 @@ export default function TicketHub() {
     } catch (error) {
       toast({
         title: "Registry Offline",
-        description: "Could not connect to database services.",
+        description: "Could not connect to database services. Check your connection.",
         variant: "destructive",
       });
     } finally {
@@ -108,43 +108,37 @@ export default function TicketHub() {
 
     setDownloading(true);
     try {
-      // 1. Rigorous Asset Validation to eliminate InvalidStateError
-      // We check for naturalWidth to ensure the image is NOT 0x0
-      const images = Array.from(ticketRef.current.querySelectorAll('img'));
-      
-      const validateAssets = async () => {
-        const checkImage = (img: HTMLImageElement) => {
+      // 1. Recursive Asset Verification Logic
+      const validateImages = async () => {
+        const images = Array.from(ticketRef.current!.querySelectorAll('img'));
+        
+        await Promise.all(images.map(img => {
           return new Promise((resolve) => {
-            const isReady = () => img.complete && img.naturalWidth > 0 && img.naturalHeight > 0;
-            
-            if (isReady()) {
-              resolve(true);
-            } else {
-              img.onload = () => resolve(true);
-              img.onerror = () => resolve(true);
-              // Fallback interval to ensure layout engine registration
-              const interval = setInterval(() => {
-                if (isReady()) {
-                  clearInterval(interval);
-                  resolve(true);
-                }
-              }, 100);
-            }
+            const check = () => {
+              if (img.complete && img.naturalWidth > 0) {
+                resolve(true);
+              } else {
+                img.onload = () => resolve(true);
+                img.onerror = () => resolve(true);
+                // Fallback polling for layout registration
+                setTimeout(check, 100);
+              }
+            };
+            check();
           });
-        };
+        }));
 
-        await Promise.all(images.map(img => checkImage(img)));
-        // Decoding step for rendering stability
+        // Stability decoding
         await Promise.all(images.map(img => {
           if ('decode' in img) return (img as any).decode().catch(() => {});
           return Promise.resolve();
         }));
       };
 
-      await validateAssets();
+      await validateImages();
       
-      // 2. Extra delay for browser layout stabilization
-      await new Promise(r => setTimeout(r, 1000));
+      // Forced layout stabilization delay
+      await new Promise(r => setTimeout(r, 1200));
 
       const canvas = await html2canvas(ticketRef.current, {
         useCORS: true,
@@ -154,22 +148,15 @@ export default function TicketHub() {
         logging: false,
         width: 850,
         height: 330,
-        x: 0,
-        y: 0,
         onclone: (clonedDoc) => {
           const clonedTicket = clonedDoc.getElementById("madmatrix-ticket");
           if (clonedTicket) {
-            clonedTicket.style.transform = "none";
             clonedTicket.style.position = "fixed";
             clonedTicket.style.top = "0";
             clonedTicket.style.left = "0";
+            clonedTicket.style.transform = "none";
             clonedTicket.style.margin = "0";
             clonedTicket.style.border = "none";
-            // Ensure child visibility
-            Array.from(clonedTicket.querySelectorAll('*')).forEach((el: any) => {
-                el.style.visibility = 'visible';
-                el.style.opacity = '1';
-            });
           }
         }
       });
@@ -185,14 +172,14 @@ export default function TicketHub() {
       pdf.save(`MadMatrix_Permit_${attendee.RegNo}.pdf`);
 
       toast({
-        title: "Download Successful",
-        description: "Your official entry permit has been saved as PDF.",
+        title: "PDF Saved",
+        description: "Your official entry permit has been downloaded.",
       });
     } catch (error: any) {
-      console.error("PDF Capture Error:", error);
+      console.error("Capture Error:", error);
       toast({
-        title: "Download Error",
-        description: error.message || "System encountered a rendering error. Please try again.",
+        title: "Rendering Error",
+        description: "System failed to capture high-res ticket. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -202,7 +189,7 @@ export default function TicketHub() {
 
   const handleShareWhatsApp = () => {
     if (!attendee) return;
-    const text = `I've secured my official digital permit for MadMatrix '26! Authorized entry for ${attendee.Name}. Access yours at: https://www.madmatrix.site/`;
+    const text = `I've secured my official digital permit for MadMatrix '26! Authorized entry for ${attendee.Name}. Retrieve yours at: https://www.madmatrix.site/`;
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
   };
 
@@ -211,13 +198,13 @@ export default function TicketHub() {
       <div className="text-center space-y-4">
         <div className="flex items-center justify-center gap-2 mb-2">
           <div className="h-2 w-2 rounded-full bg-primary animate-pulse" />
-          <span className="text-xs font-mono uppercase tracking-[0.3em] text-primary">Official Retrieval Portal</span>
+          <span className="text-xs font-mono uppercase tracking-[0.3em] text-primary">Authorized Retrieval Portal</span>
         </div>
         <h1 className="text-6xl md:text-8xl font-black tracking-tighter text-white uppercase">
           MadMatrix<span className="text-primary">'26</span>
         </h1>
         <p className="text-muted-foreground font-body text-sm max-w-md mx-auto">
-          Authorized digital entry permits for SIMATS Engineering national symposium.
+          SIMATS Engineering national level symposium digital entry permits.
         </p>
       </div>
 
@@ -228,8 +215,8 @@ export default function TicketHub() {
               <Terminal className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-primary opacity-50" />
               <Input
                 type="email"
-                placeholder="REGISTRY_EMAIL@DOMAIN.COM"
-                className="pl-10 h-14 bg-black/40 border-primary/20 text-primary placeholder:text-primary/30 font-mono focus-visible:ring-primary text-lg"
+                placeholder="REGISTERED_EMAIL_ID"
+                className="pl-10 h-14 bg-black/40 border-primary/20 text-primary placeholder:text-primary/30 font-mono focus-visible:ring-primary text-lg uppercase"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -244,7 +231,7 @@ export default function TicketHub() {
               ) : (
                 <>
                   <Search className="mr-2 h-5 w-5" />
-                  ACCESS REGISTRY
+                  AUTH_SEARCH
                 </>
               )}
             </button>
@@ -275,12 +262,12 @@ export default function TicketHub() {
                 {downloading ? (
                   <>
                     <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                    GENERATING PDF...
+                    PREPARING PDF...
                   </>
                 ) : (
                   <>
                     <Download className="mr-2 h-5 w-5" />
-                    DOWNLOAD PDF PERMIT
+                    DOWNLOAD PERMIT
                   </>
                 )}
               </Button>
@@ -289,19 +276,19 @@ export default function TicketHub() {
                 className="flex-1 min-w-[200px] h-14 bg-[#25D366] text-white font-bold hover:bg-[#128C7E] shadow-lg"
               >
                 <Share2 className="mr-2 h-5 w-5" />
-                SHARE STATUS
+                WHATSAPP SHARE
               </Button>
             </div>
           </div>
           
           {greeting && (
             <div className="max-w-md mx-auto p-6 bg-primary/5 border border-primary/20 rounded-xl flex flex-col items-center gap-4 text-center">
-              <div className="h-12 w-12 rounded-full bg-primary/20 flex items-center justify-center">
-                <AlertTriangle className="h-6 w-6 text-primary" />
+              <div className="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center">
+                <AlertTriangle className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <h4 className="text-white font-black uppercase tracking-widest">Registry Match Found</h4>
-                <p className="text-xs text-muted-foreground mt-1 font-mono uppercase italic">{greeting}</p>
+                <h4 className="text-white font-black uppercase tracking-widest text-xs">Credential Verified</h4>
+                <p className="text-[10px] text-muted-foreground mt-2 font-mono uppercase italic leading-relaxed">{greeting}</p>
               </div>
             </div>
           )}
@@ -309,8 +296,8 @@ export default function TicketHub() {
       )}
 
       <div className="pt-12 pb-8 text-center opacity-30">
-        <p className="text-[10px] font-mono text-primary tracking-[0.5em] uppercase">
-          &copy; 2026 MadMatrix Defense Protocol | SIMATS Engineering
+        <p className="text-[9px] font-mono text-primary tracking-[0.4em] uppercase">
+          &copy; 2026 MADMATRIX SYMPOSIUM | SIMATS ENGINEERING CAMPUS
         </p>
       </div>
     </div>
