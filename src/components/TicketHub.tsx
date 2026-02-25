@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
-import { Search, Terminal, Loader2, Download, Share2, UserCheck, ShieldCheck, Phone, Globe, User, Cpu, Activity, Zap, ShieldAlert, Mail, MessageSquare, Info } from "lucide-react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
+import { Search, Terminal, Loader2, Download, Share2, UserCheck, ShieldCheck, Phone, Globe, User, Cpu, Activity, Zap, ShieldAlert, Mail, MessageSquare, Info, ChevronRight, ChevronLeft, LayoutDashboard, Database } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -12,6 +12,7 @@ import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
+import useEmblaCarousel from "embla-carousel-react";
 
 interface Attendee {
   Name: string;
@@ -61,116 +62,65 @@ const DecryptText = ({ text, delay = 0, className = "" }: { text: string; delay?
   return <span className={cn("font-mono", className)}>{displayText}</span>;
 };
 
-const MatrixTerminalFooter = () => {
-  const coordinators = [
-    { name: "Dhanush R", phone: "9025718226" },
-    { name: "Kevin Mathew", phone: "8610871590" },
-    { name: "Infant A", phone: "7548855208" },
-    { name: "Prasithi Kumaran", phone: "8248372122" },
-    { name: "Vivaa", phone: "9363315750" },
-    { name: "K L Dinesh Eswar", phone: "7200295986" },
-    { name: "Sugantharaj", phone: "9150184324" }
+const PersistentSupportMenu = () => (
+  <div className="fixed left-6 top-1/2 -translate-y-1/2 z-[100] hidden lg:flex flex-col gap-4">
+    <div className="flex flex-col gap-2 p-2 bg-black/60 border border-primary/30 backdrop-blur-xl rounded-full shadow-[0_0_30px_rgba(255,0,0,0.2)]">
+      <a href="mailto:support@madmatrix.site" title="HELP_DESK" className="h-10 w-10 flex items-center justify-center rounded-full bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all group">
+        <Mail className="h-5 w-5" />
+      </a>
+      <a href="mailto:organizer@madmatrix.site" title="SPONSORS" className="h-10 w-10 flex items-center justify-center rounded-full bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all group">
+        <MessageSquare className="h-5 w-5" />
+      </a>
+      <a href="mailto:madmatrix2026@gmail.com" title="SYSTEM_NODE" className="h-10 w-10 flex items-center justify-center rounded-full bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all group">
+        <Cpu className="h-5 w-5" />
+      </a>
+    </div>
+    <div className="h-20 w-[1px] bg-gradient-to-b from-primary/50 to-transparent mx-auto" />
+  </div>
+);
+
+const AdminTiltGrid = () => {
+  const admins = [
+    { role: "Faculty Convenor", name: "Dr. K. Sudar Mozhi", phone: "9080730749", color: "border-blue-500/30" },
+    { role: "Lead Admin", name: "Nithishwaran", phone: "8754330333", color: "border-primary/40" },
+    { role: "Student Admin", name: "Dhanush R", phone: "9025718226", color: "border-white/10" },
+    { role: "Student Admin", name: "Kevin Mathew", phone: "8610871590", color: "border-white/10" },
+    { role: "Student Admin", name: "Infant A", phone: "7548855208", color: "border-white/10" },
+    { role: "Student Admin", name: "Prasithi Kumaran", phone: "8248372122", color: "border-white/10" },
+    { role: "Student Admin", name: "Vivaa", phone: "9363315750", color: "border-white/10" },
+    { role: "Student Admin", name: "K L Dinesh Eswar", phone: "7200295986", color: "border-white/10" },
+    { role: "Student Admin", name: "Sugantharaj", phone: "9150184324", color: "border-white/10" },
   ];
 
   return (
-    <footer className="w-full max-w-5xl mx-auto pt-12 pb-24 space-y-12">
-      {/* System Admin Registry */}
-      <div className="space-y-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-5xl mx-auto py-12">
+      <div className="col-span-full mb-6">
         <div className="flex items-center gap-3 text-primary">
           <ShieldCheck className="h-5 w-5 animate-pulse" />
           <span className="font-mono text-sm tracking-widest uppercase">[SYSTEM_ADMIN_REGISTRY]</span>
         </div>
-        
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {coordinators.map((coord, idx) => (
-            <div key={idx} className="group relative bg-black/40 border border-primary/20 p-4 rounded-lg backdrop-blur-md hover:border-primary/50 transition-all overflow-hidden">
-              <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
-              <p className="text-[10px] font-mono text-primary/40 uppercase mb-1">NODE_{idx + 1}</p>
-              <h4 className="text-white font-bold uppercase tracking-tight group-hover:cyber-glitch">{coord.name}</h4>
-              <a 
-                href={`tel:+91${coord.phone}`} 
-                className="inline-flex items-center gap-2 text-primary/60 font-mono text-xs mt-3 group-hover:text-primary transition-colors border border-primary/20 px-2 py-1 rounded hover:bg-primary/10"
-              >
-                <Phone className="h-3 w-3" /> UPLINK: {coord.phone}
-              </a>
-            </div>
-          ))}
-          <div className="group relative bg-primary/10 border-2 border-primary/40 p-4 rounded-lg backdrop-blur-md">
-             <p className="text-[10px] font-mono text-primary uppercase mb-1">FACULTY_CONVENOR</p>
-             <h4 className="text-white font-bold uppercase tracking-tight">Dr. K. Sudar Mozhi</h4>
-             <a 
-              href="tel:+919080730749" 
-              className="inline-flex items-center gap-2 text-primary font-mono text-xs mt-3 border border-primary/40 px-2 py-1 rounded hover:bg-primary/20 transition-all"
-             >
-              <Phone className="h-3 w-3" /> UPLINK: 9080730749
-             </a>
-          </div>
-        </div>
       </div>
-
-      {/* Support & Inquiry Terminal */}
-      <div className="bg-black/80 border border-primary/30 p-8 rounded-lg cyber-scanline relative overflow-hidden shadow-[0_0_50px_rgba(255,0,0,0.1)]">
-        <div className="flex items-center gap-3 mb-8 text-primary">
-          <Terminal className="h-5 w-5 animate-pulse" />
-          <span className="font-mono text-sm tracking-tighter uppercase">[SUPPORT_&_INQUIRY_TERMINAL]</span>
+      {admins.map((admin, idx) => (
+        <div 
+          key={idx} 
+          className={cn(
+            "group relative bg-black/40 border p-6 rounded-xl backdrop-blur-md transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(0,0,0,0.5)] overflow-hidden",
+            admin.color,
+            "perspective-1000"
+          )}
+        >
+          <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
+          <p className="text-[10px] font-mono text-primary/60 uppercase mb-2">{admin.role}</p>
+          <h4 className="text-white font-bold text-lg uppercase tracking-tight group-hover:cyber-glitch">{admin.name}</h4>
+          <a 
+            href={`tel:+91${admin.phone}`} 
+            className="inline-flex items-center gap-2 text-primary/60 font-mono text-xs mt-4 group-hover:text-primary transition-colors border border-primary/20 px-3 py-2 rounded-md hover:bg-primary/10 w-full justify-center"
+          >
+            <Phone className="h-3 w-3" /> UPLINK: {admin.phone}
+          </a>
         </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 font-mono text-xs md:text-sm">
-          <div className="space-y-4">
-            <a 
-              href="mailto:support@madmatrix.site" 
-              className="flex items-start gap-4 p-4 bg-white/5 rounded border border-white/5 hover:border-primary/20 transition-all cursor-pointer group"
-            >
-              <Mail className="h-5 w-5 text-primary shrink-0 group-hover:scale-110 transition-transform" />
-              <div>
-                <p className="text-primary uppercase text-[10px] font-bold mb-1">HELP_DESK</p>
-                <p className="text-white">support@madmatrix.site</p>
-              </div>
-            </a>
-            <a 
-              href="mailto:organizer@madmatrix.site" 
-              className="flex items-start gap-4 p-4 bg-white/5 rounded border border-white/5 hover:border-primary/20 transition-all cursor-pointer group"
-            >
-              <MessageSquare className="h-5 w-5 text-primary shrink-0 group-hover:scale-110 transition-transform" />
-              <div>
-                <p className="text-primary uppercase text-[10px] font-bold mb-1">SPONSOR_ENQUIRY</p>
-                <p className="text-white">organizer@madmatrix.site</p>
-              </div>
-            </a>
-          </div>
-          <div className="space-y-4">
-            <a 
-              href="mailto:madmatrix2026@gmail.com" 
-              className="flex items-start gap-4 p-4 bg-white/5 rounded border border-white/5 hover:border-primary/20 transition-all cursor-pointer group"
-            >
-              <Cpu className="h-5 w-5 text-primary shrink-0 group-hover:scale-110 transition-transform" />
-              <div>
-                <p className="text-primary uppercase text-[10px] font-bold mb-1">PRIMARY_NODE</p>
-                <p className="text-white">madmatrix2026@gmail.com</p>
-              </div>
-            </a>
-            <a 
-              href="https://www.madmatrix.site" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="flex items-start gap-4 p-4 bg-white/5 rounded border border-white/5 hover:border-primary/20 transition-all cursor-pointer group"
-            >
-              <Globe className="h-5 w-5 text-primary shrink-0 group-hover:scale-110 transition-transform" />
-              <div>
-                <p className="text-primary uppercase text-[10px] font-bold mb-1">OFFICIAL_UPLINK</p>
-                <span className="text-white hover:text-primary transition-colors underline underline-offset-4">www.madmatrix.site</span>
-              </div>
-            </a>
-          </div>
-        </div>
-
-        <div className="mt-12 text-center border-t border-primary/10 pt-6">
-          <p className="text-[9px] font-mono text-primary/30 tracking-[1em] uppercase">
-            &copy; 2026_ESTABLISHMENT_NODE // MAD_MATRIX_ROOT
-          </p>
-        </div>
-      </div>
-    </footer>
+      ))}
+    </div>
   );
 };
 
@@ -184,7 +134,23 @@ export default function TicketHub() {
   const [attendee, setAttendee] = useState<Attendee | null>(null);
   const [greeting, setGreeting] = useState<string>("");
   const ticketRef = useRef<HTMLDivElement>(null);
+  const ticketSectionRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false });
+
+  const onSelect = useCallback(() => {
+    if (!emblaApi) return;
+    if (emblaApi.selectedScrollSnap() === emblaApi.scrollSnapList().length - 1) {
+      setTimeout(() => {
+        ticketSectionRef.current?.scrollIntoView({ behavior: "smooth" });
+      }, 1200);
+    }
+  }, [emblaApi]);
+
+  useEffect(() => {
+    if (emblaApi) emblaApi.on("select", onSelect);
+  }, [emblaApi, onSelect]);
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -193,9 +159,6 @@ export default function TicketHub() {
 
     setLoading(true);
     setLoadingProgress(0);
-    setAttendee(null);
-    setGreeting("");
-
     let foundAttendee: Attendee | null = null;
 
     const endpoints = [
@@ -224,7 +187,7 @@ export default function TicketHub() {
               RegNo: foundRow.RegNo || foundRow.regno || foundRow.REGNO || "VERIFIED_USER",
               email: sanitizedEmail,
               Dept: foundRow.Department || foundRow.dept || foundRow.DEPT || "SIMATS ENGINEERING",
-              Event: endpoints[i].name,
+              Event: foundRow.Event || foundRow.event || foundRow.EVENT || endpoints[i].name,
               Status: "AUTHORIZED_ENTRY"
             };
             break;
@@ -250,7 +213,7 @@ export default function TicketHub() {
       } else {
         toast({
           title: "Registry Mismatch",
-          description: `Email "${sanitizedEmail}" not found in registries.`,
+          description: `Email not found in registries.`,
           variant: "destructive",
         });
       }
@@ -308,23 +271,17 @@ export default function TicketHub() {
 
       toast({
         title: "Permit Generated",
-        description: "Official entry document saved to your device.",
+        description: "Official entry document saved.",
       });
     } catch (error) {
       toast({
         title: "Download Interrupted",
-        description: "Layout stabilization failed. Please try again.",
+        description: "Layout stabilization failed.",
         variant: "destructive",
       });
     } finally {
       setDownloading(false);
     }
-  };
-
-  const handleShareWhatsApp = () => {
-    if (!attendee) return;
-    const text = `I've secured my official permit for MadMatrix '26! Authorized entry for ${attendee.Name}. Retrieve yours at: https://www.madmatrix.site/`;
-    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
   };
 
   const resetPortal = () => {
@@ -336,45 +293,42 @@ export default function TicketHub() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[90vh] p-4 max-w-6xl mx-auto space-y-12">
-      {/* Help Uplink FAB */}
-      <div className="fixed bottom-6 right-6 z-[100] group">
-        <div className="absolute -top-12 right-0 bg-primary/90 text-white text-[10px] px-3 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity font-mono whitespace-nowrap">
-          [SYSTEM_ADMIN]: NITHISHWARAN
-        </div>
-        <a 
-          href="tel:+918754330333"
-          className="h-14 w-14 bg-primary flex items-center justify-center rounded-full shadow-[0_0_20px_rgba(255,0,0,0.5)] hover:scale-110 transition-transform active:scale-95 border border-white/20"
-        >
+    <div className="flex flex-col items-center justify-center min-h-screen p-4 max-w-6xl mx-auto space-y-24">
+      <PersistentSupportMenu />
+      
+      {/* Help Uplink FAB for mobile */}
+      <div className="fixed bottom-6 right-6 z-[100] lg:hidden">
+        <a href="tel:+918754330333" className="h-14 w-14 bg-primary flex items-center justify-center rounded-full shadow-lg border border-white/20">
           <Phone className="h-6 w-6 text-white" />
         </a>
       </div>
 
       {step === 1 && (
-        <div className="w-full flex flex-col items-center space-y-8 animate-in fade-in zoom-in duration-500">
-          <div className="text-center space-y-4">
-            <div className="flex items-center justify-center gap-2 mb-2">
-              <div className="h-2 w-2 rounded-full bg-primary animate-pulse" />
-              <span className="text-xs font-mono uppercase tracking-[0.3em] text-primary">Authorized Retrieval Portal</span>
+        <div className="w-full flex flex-col items-center space-y-12 animate-in fade-in zoom-in duration-700">
+          <div className="text-center space-y-6">
+            <div className="flex items-center justify-center gap-3">
+              <div className="h-2 w-2 rounded-full bg-primary animate-ping" />
+              <span className="text-xs font-mono uppercase tracking-[0.4em] text-primary/80">Neural Authorization Portal</span>
             </div>
-            <h1 className="text-6xl md:text-8xl font-black tracking-tighter text-white uppercase">
-              MadMatrix<span className="text-primary">'26</span>
+            <h1 className="text-6xl md:text-9xl font-black tracking-tighter text-white uppercase leading-none">
+              MadMatrix<span className="text-primary italic animate-pulse">'26</span>
             </h1>
-            <p className="text-muted-foreground font-body text-sm max-w-md mx-auto">
-              Secure access portal for digital permits. Verification via registered encryption node required.
+            <p className="text-muted-foreground font-mono text-xs md:text-sm max-w-lg mx-auto leading-relaxed">
+              [INIT_SEQUENCE]: VERIFY CREDENTIALS VIA ENCRYPTED UPLINK. AUTHORIZED ACCESS ONLY.
             </p>
           </div>
 
-          <Card className="w-full max-w-2xl bg-black/60 border-primary/30 backdrop-blur-xl shadow-xl overflow-hidden cyber-scanline">
-            <CardContent className="p-8">
+          <Card className="w-full max-w-2xl bg-black/40 border-primary/20 backdrop-blur-3xl shadow-[0_0_50px_rgba(255,0,0,0.1)] overflow-hidden relative group">
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+            <CardContent className="p-10">
               {!loading ? (
-                <form onSubmit={handleSearch} className="flex flex-col md:flex-row gap-4">
+                <form onSubmit={handleSearch} className="flex flex-col md:flex-row gap-6">
                   <div className="relative flex-1">
-                    <Terminal className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-primary opacity-50" />
+                    <Terminal className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-primary" />
                     <Input
                       type="email"
-                      placeholder="REGISTERED_EMAIL_ID"
-                      className="pl-10 h-14 bg-black/40 border-primary/20 text-primary placeholder:text-primary/30 font-mono focus-visible:ring-primary text-lg uppercase"
+                      placeholder="ENTER_ENCRYPTED_ID"
+                      className="pl-12 h-16 bg-white/5 border-primary/10 text-primary placeholder:text-primary/20 font-mono focus-visible:ring-primary text-xl uppercase tracking-widest"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                     />
@@ -382,22 +336,21 @@ export default function TicketHub() {
                   <button 
                     type="submit" 
                     disabled={!email}
-                    className="h-14 px-10 bg-primary text-white font-bold hover:bg-red-700 transition-all rounded-md shadow-lg disabled:opacity-50 text-sm tracking-widest uppercase flex items-center justify-center"
+                    className="h-16 px-12 bg-primary text-white font-black hover:bg-red-700 transition-all rounded-lg shadow-xl disabled:opacity-30 text-sm tracking-[0.2em] uppercase flex items-center justify-center active:scale-95"
                   >
-                    <Search className="mr-2 h-5 w-5" />VERIFY_ACCESS
+                    <Search className="mr-2 h-5 w-5" />DECRYPT
                   </button>
                 </form>
               ) : (
-                <div className="space-y-6 py-4">
-                  <div className="flex justify-between items-center text-xs font-mono text-primary/80 uppercase">
+                <div className="space-y-8 py-6">
+                  <div className="flex justify-between items-center text-[10px] font-mono text-primary uppercase">
                     <span>[RETRIVING_DATA_FROM_EXCEL_DATABASE...]</span>
                     <span>{loadingProgress}%</span>
                   </div>
-                  <Progress value={loadingProgress} className="h-2 bg-primary/10" />
+                  <Progress value={loadingProgress} className="h-1 bg-white/5" />
                   {isDecypting && (
-                    <div className="flex items-center justify-center gap-2 text-green-500 font-mono text-sm animate-pulse">
-                      <ShieldCheck className="h-4 w-4" />
-                      [ACCESS_GRANTED]
+                    <div className="flex items-center justify-center gap-3 text-green-500 font-mono text-sm animate-pulse tracking-[0.5em]">
+                      <ShieldCheck className="h-4 w-4" /> [ACCESS_GRANTED]
                     </div>
                   )}
                 </div>
@@ -408,109 +361,132 @@ export default function TicketHub() {
       )}
 
       {step === 2 && attendee && (
-        <div className="w-full space-y-12 animate-in slide-in-from-bottom-8 duration-700">
-          {/* Identity Node Dashboard */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto w-full">
-            <Card className="bg-white/5 border-primary/30 backdrop-blur-xl hover:bg-white/10 transition-all group overflow-hidden relative cyber-scanline shadow-[0_0_20px_rgba(255,0,0,0.1)]">
-              <div className="absolute top-0 left-0 w-1 h-full bg-primary" />
-              <CardContent className="p-6">
-                <div className="flex items-center gap-2 text-primary/60 font-mono text-[10px] mb-4 uppercase tracking-widest">
-                  <User className="h-3 w-3" /> [IDENTITY]
+        <div className="w-full space-y-24 animate-in slide-in-from-bottom-12 duration-1000">
+          {/* Neural Swipe Gallery */}
+          <div className="w-full max-w-4xl mx-auto space-y-8">
+            <div className="flex items-center gap-3 text-primary justify-center mb-8">
+              <LayoutDashboard className="h-4 w-4" />
+              <span className="font-mono text-xs tracking-[0.5em] uppercase">[NEURAL_SWIPE_INTERFACE]</span>
+            </div>
+            
+            <div className="overflow-hidden" ref={emblaRef}>
+              <div className="flex gap-6">
+                {/* Card 1: Identity */}
+                <div className="flex-[0_0_100%] md:flex-[0_0_40%] min-w-0">
+                  <Card className="bg-white/5 border-primary/20 backdrop-blur-2xl h-64 flex flex-col justify-between p-8 relative overflow-hidden group hover:border-primary/50 transition-all">
+                    <div className="absolute top-0 right-0 p-2 text-[8px] font-mono text-primary/30">NODE_01</div>
+                    <div className="space-y-4">
+                      <p className="text-[10px] font-mono text-primary uppercase tracking-[0.2em] flex items-center gap-2">
+                        <User className="h-3 w-3" /> [IDENT_VERIFICATION]
+                      </p>
+                      <h3 className="text-3xl font-black text-white uppercase tracking-tighter">
+                        <DecryptText text={attendee.Name} delay={200} />
+                      </h3>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_10px_#22c55e]" />
+                      <span className="text-[10px] font-mono text-green-500 uppercase">AUTHORIZED</span>
+                    </div>
+                  </Card>
                 </div>
-                <div className="space-y-1">
-                  <h3 className="text-xl font-black text-white uppercase tracking-tighter cyber-glitch">
-                    <DecryptText text={attendee.Name} delay={100} />
-                  </h3>
-                  <p className="text-[10px] text-primary/60 font-mono uppercase">{attendee.RegNo}</p>
-                </div>
-              </CardContent>
-            </Card>
 
-            <Card className="bg-white/5 border-primary/30 backdrop-blur-xl hover:bg-white/10 transition-all group overflow-hidden relative shadow-[0_0_20px_rgba(255,0,0,0.1)]">
-              <div className="absolute top-0 left-0 w-1 h-full bg-blue-500" />
-              <CardContent className="p-6">
-                <div className="flex items-center gap-2 text-blue-500/60 font-mono text-[10px] mb-4 uppercase tracking-widest">
-                  <Zap className="h-3 w-3" /> [ASSIGNED_EVENT]
+                {/* Card 2: Mission */}
+                <div className="flex-[0_0_100%] md:flex-[0_0_40%] min-w-0">
+                  <Card className="bg-white/5 border-primary/20 backdrop-blur-2xl h-64 flex flex-col justify-between p-8 relative overflow-hidden group hover:border-primary/50 transition-all">
+                    <div className="absolute top-0 right-0 p-2 text-[8px] font-mono text-primary/30">NODE_02</div>
+                    <div className="space-y-4">
+                      <p className="text-[10px] font-mono text-primary uppercase tracking-[0.2em] flex items-center gap-2">
+                        <Zap className="h-3 w-3" /> [MISSION_ASSIGNMENT]
+                      </p>
+                      <h3 className="text-3xl font-black text-white uppercase tracking-tighter">
+                        {attendee.Event}
+                      </h3>
+                    </div>
+                    <span className="text-[10px] font-mono text-primary/40 uppercase tracking-widest">{attendee.Dept}</span>
+                  </Card>
                 </div>
-                <div className="space-y-1">
-                  <h3 className="text-xl font-black text-white uppercase tracking-tighter">
-                    {attendee.Event || "MAIN SYMPOSIUM"}
-                  </h3>
-                  <p className="text-[10px] text-blue-500/60 font-mono uppercase">{attendee.Dept}</p>
-                </div>
-              </CardContent>
-            </Card>
 
-            <Card className="bg-white/5 border-primary/30 backdrop-blur-xl hover:bg-white/10 transition-all group overflow-hidden relative shadow-[0_0_20px_rgba(255,0,0,0.1)]">
-              <div className="absolute top-0 left-0 w-1 h-full bg-green-500" />
-              <CardContent className="p-6">
-                <div className="flex items-center gap-2 text-green-500/60 font-mono text-[10px] mb-4 uppercase tracking-widest">
-                  <ShieldCheck className="h-3 w-3" /> [CLEARANCE]
+                {/* Card 3: Location */}
+                <div className="flex-[0_0_100%] md:flex-[0_0_40%] min-w-0">
+                  <Card className="bg-white/5 border-primary/20 backdrop-blur-2xl h-64 flex flex-col justify-between p-8 relative overflow-hidden group hover:border-primary/50 transition-all">
+                    <div className="absolute top-0 right-0 p-2 text-[8px] font-mono text-primary/30">NODE_03</div>
+                    <div className="space-y-4">
+                      <p className="text-[10px] font-mono text-primary uppercase tracking-[0.2em] flex items-center gap-2">
+                        <Globe className="h-3 w-3" /> [LOCATION_NODE]
+                      </p>
+                      <h3 className="text-2xl font-black text-white uppercase tracking-tighter">
+                        SCAD Auditorium, SIMATS
+                      </h3>
+                    </div>
+                    <div className="flex items-center justify-between">
+                       <span className="text-[10px] font-mono text-white/60">09:00 AM COMMENCEMENT</span>
+                       <div className="h-1.5 w-1.5 rounded-full bg-primary animate-ping" />
+                    </div>
+                  </Card>
                 </div>
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_8px_#22c55e]" />
-                    <h3 className="text-xl font-black text-white uppercase tracking-tighter">
-                      {attendee.Status}
-                    </h3>
-                  </div>
-                  <p className="text-[10px] text-green-500/60 font-mono uppercase">VERIFIED_CREDENTIALS</p>
-                </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
+            
+            <div className="flex justify-center gap-4 text-primary/30 font-mono text-[10px] uppercase">
+              <ChevronLeft className="h-3 w-3" /> SWIPE_TO_UNLOCK_PERMIT <ChevronRight className="h-3 w-3" />
+            </div>
           </div>
 
           {/* Ticket Section */}
-          <div className="w-full flex flex-col items-center space-y-12 pt-8">
-            <div className="p-8 bg-white/5 rounded-2xl border border-white/10 overflow-x-auto w-full flex justify-center shadow-2xl backdrop-blur-md relative">
-              <div className="absolute top-4 left-4 flex items-center gap-2 text-[8px] font-mono text-primary/40 uppercase">
-                <ShieldAlert className="h-2 w-2 animate-pulse" /> LIVE_PREVIEW_MODE
-              </div>
-              <div className="p-4 bg-black/40 rounded-lg">
-                <Ticket
-                  ref={ticketRef}
-                  id="madmatrix-ticket"
-                  name={attendee.Name}
-                  regNo={attendee.RegNo}
-                />
+          <div ref={ticketSectionRef} className="w-full space-y-16 pt-12">
+            <div className="flex flex-col items-center gap-4">
+               <span className="text-[10px] font-mono text-primary/40 tracking-[1em] uppercase">PERMIT_ENCRYPTION_LAYER</span>
+               <div className="p-8 bg-white/5 rounded-3xl border border-white/10 overflow-x-auto w-full flex justify-center shadow-inner relative group">
+                <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity blur-3xl pointer-events-none" />
+                <div className="p-4 bg-black/60 rounded-xl backdrop-blur-md relative z-10 border border-white/5">
+                  <Ticket
+                    ref={ticketRef}
+                    id="madmatrix-ticket"
+                    name={attendee.Name}
+                    regNo={attendee.RegNo}
+                  />
+                </div>
               </div>
             </div>
 
-            <div className="flex flex-wrap items-center justify-center gap-4 w-full max-w-3xl">
+            <div className="flex flex-wrap items-center justify-center gap-6 w-full max-w-4xl mx-auto">
               <Button
                 onClick={handleDownload}
                 disabled={downloading}
-                className="flex-1 min-w-[220px] h-16 bg-primary text-white font-black hover:bg-red-700 shadow-[0_0_20px_rgba(255,0,0,0.3)] uppercase tracking-[0.2em] text-xs transition-all active:scale-95"
+                className="flex-1 min-w-[280px] h-20 bg-primary text-white font-black hover:bg-red-700 shadow-[0_0_40px_rgba(255,0,0,0.3)] uppercase tracking-[0.3em] text-xs transition-all active:scale-95 rounded-xl"
               >
                 {downloading ? (
-                  <><Loader2 className="mr-2 h-5 w-5 animate-spin" />RENDERING_ASSETS_3X...</>
+                  <><Loader2 className="mr-3 h-6 w-6 animate-spin" />RENDERING_HD_PERMIT_3X...</>
                 ) : (
-                  <><Download className="mr-2 h-5 w-5" />DOWNLOAD HD_PERMIT</>
+                  <><Download className="mr-3 h-6 w-6" />DOWNLOAD_PERMIT_v1.0</>
                 )}
               </Button>
               <Button
-                onClick={handleShareWhatsApp}
-                className="flex-1 min-w-[220px] h-16 bg-[#25D366] text-white font-black hover:bg-[#128C7E] shadow-[0_0_20px_rgba(37,211,102,0.3)] uppercase tracking-[0.2em] text-xs transition-all active:scale-95"
+                onClick={() => {
+                  const text = `I've secured my official permit for MadMatrix '26! Authorized entry for ${attendee.Name}. Retrieve yours at: https://www.madmatrix.site/`;
+                  window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
+                }}
+                className="flex-1 min-w-[280px] h-20 bg-[#25D366] text-white font-black hover:bg-[#128C7E] shadow-[0_0_30px_rgba(37,211,102,0.2)] uppercase tracking-[0.3em] text-xs transition-all rounded-xl"
               >
-                <Share2 className="mr-2 h-5 w-5" />UPLINK_TO_WHATSAPP
+                <Share2 className="mr-3 h-6 w-6" />UPLINK_TO_WHATSAPP
               </Button>
               <Button
-                variant="outline"
+                variant="ghost"
                 onClick={resetPortal}
-                className="w-full h-12 border-primary/20 text-primary/60 hover:text-primary hover:border-primary/40 hover:bg-primary/5 uppercase tracking-[0.4em] text-[10px] font-mono"
+                className="w-full h-14 text-primary/40 hover:text-primary hover:bg-primary/5 uppercase tracking-[0.5em] text-[10px] font-mono"
               >
-                [RESET_SYSTEM_NODE]
+                [INITIATE_SYSTEM_RESET]
               </Button>
             </div>
 
             {greeting && (
-              <div className="max-w-2xl mx-auto p-8 bg-primary/5 border border-primary/20 rounded-2xl flex flex-col items-center gap-6 text-center relative cyber-scanline shadow-[0_0_30px_rgba(255,0,0,0.05)]">
-                <div className="h-12 w-12 rounded-full bg-primary/20 flex items-center justify-center border border-primary/40">
-                  <UserCheck className="h-6 w-6 text-primary" />
+              <div className="max-w-2xl mx-auto p-10 bg-white/5 border border-primary/20 rounded-3xl flex flex-col items-center gap-6 text-center shadow-xl">
+                <div className="h-14 w-14 rounded-full bg-primary/20 flex items-center justify-center border border-primary/40 text-primary">
+                  <UserCheck className="h-7 w-7" />
                 </div>
-                <div className="space-y-2">
-                  <p className="text-[10px] text-primary/40 font-mono uppercase tracking-[0.3em]">AI_PERSONALIZED_GREETING</p>
-                  <p className="text-xs md:text-sm text-muted-foreground font-mono leading-relaxed italic">
+                <div className="space-y-3">
+                  <p className="text-[10px] text-primary font-mono uppercase tracking-[0.4em]">Personalized_Neuro_Greeting</p>
+                  <p className="text-sm md:text-base text-muted-foreground font-mono leading-relaxed italic opacity-80">
                     "{greeting}"
                   </p>
                 </div>
@@ -518,7 +494,62 @@ export default function TicketHub() {
             )}
           </div>
           
-          <MatrixTerminalFooter />
+          {/* Admin Registry Grid */}
+          <AdminTiltGrid />
+
+          {/* Support Terminal */}
+          <footer className="w-full max-w-5xl mx-auto pb-24 space-y-12">
+             <div className="bg-black/80 border border-primary/30 p-12 rounded-3xl cyber-scanline relative overflow-hidden shadow-[0_0_60px_rgba(255,0,0,0.1)]">
+                <div className="flex items-center gap-4 mb-10 text-primary">
+                  <Terminal className="h-6 w-6 animate-pulse" />
+                  <span className="font-mono text-sm tracking-tighter uppercase font-bold">[SUPPORT_&_INQUIRY_TERMINAL_v2.0]</span>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 font-mono">
+                  <div className="space-y-4">
+                    <a href="mailto:support@madmatrix.site" className="flex items-center gap-5 p-5 bg-white/5 rounded-xl border border-white/5 hover:border-primary/40 transition-all group">
+                      <Mail className="h-6 w-6 text-primary group-hover:scale-110 transition-transform" />
+                      <div>
+                        <p className="text-primary uppercase text-[10px] font-bold mb-1 tracking-widest">HELP_DESK</p>
+                        <p className="text-white text-sm">support@madmatrix.site</p>
+                      </div>
+                    </a>
+                    <a href="mailto:organizer@madmatrix.site" className="flex items-center gap-5 p-5 bg-white/5 rounded-xl border border-white/5 hover:border-primary/40 transition-all group">
+                      <MessageSquare className="h-6 w-6 text-primary group-hover:scale-110 transition-transform" />
+                      <div>
+                        <p className="text-primary uppercase text-[10px] font-bold mb-1 tracking-widest">SPONSOR_ENQUIRY</p>
+                        <p className="text-white text-sm">organizer@madmatrix.site</p>
+                      </div>
+                    </a>
+                  </div>
+                  <div className="space-y-4">
+                    <a href="mailto:madmatrix2026@gmail.com" className="flex items-center gap-5 p-5 bg-white/5 rounded-xl border border-white/5 hover:border-primary/40 transition-all group">
+                      <Cpu className="h-6 w-6 text-primary group-hover:scale-110 transition-transform" />
+                      <div>
+                        <p className="text-primary uppercase text-[10px] font-bold mb-1 tracking-widest">PRIMARY_NODE</p>
+                        <p className="text-white text-sm">madmatrix2026@gmail.com</p>
+                      </div>
+                    </a>
+                    <a href="https://www.madmatrix.site" target="_blank" className="flex items-center gap-5 p-5 bg-white/5 rounded-xl border border-white/5 hover:border-primary/40 transition-all group">
+                      <Globe className="h-6 w-6 text-primary group-hover:scale-110 transition-transform" />
+                      <div>
+                        <p className="text-primary uppercase text-[10px] font-bold mb-1 tracking-widest">OFFICIAL_UPLINK</p>
+                        <span className="text-white text-sm hover:text-primary transition-colors underline underline-offset-4">www.madmatrix.site</span>
+                      </div>
+                    </a>
+                  </div>
+                </div>
+
+                <div className="mt-16 text-center border-t border-primary/10 pt-10">
+                  <p className="text-[10px] font-mono text-primary/30 tracking-[1.5em] uppercase">
+                    &copy; 2026_ESTABLISHMENT_NODE // MAD_MATRIX_ROOT
+                  </p>
+                  <p className="text-[8px] font-mono text-primary/20 mt-4 uppercase">
+                    Conducted by: Dept. of Pure & Applied Mathematics | SIMATS Engineering
+                  </p>
+                </div>
+              </div>
+          </footer>
         </div>
       )}
     </div>
