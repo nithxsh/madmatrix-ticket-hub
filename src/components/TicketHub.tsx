@@ -1,8 +1,7 @@
-
 "use client";
 
-import React, { useState, useRef } from "react";
-import { Search, Terminal, Loader2, Download, Share2, UserCheck, ShieldCheck, MapPin, Calendar, Info } from "lucide-react";
+import React, { useState, useRef, useEffect } from "react";
+import { Search, Terminal, Loader2, Download, Share2, UserCheck, ShieldCheck, Phone, Globe, User, Cpu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -12,6 +11,7 @@ import { generateCyberpunkGreeting } from "@/ai/flows/generate-cyberpunk-greetin
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
+import { cn } from "@/lib/utils";
 
 interface Attendee {
   Name: string;
@@ -19,6 +19,127 @@ interface Attendee {
   email: string;
   Dept: string;
 }
+
+const DecryptText = ({ text, delay = 0 }: { text: string; delay?: number }) => {
+  const [displayText, setDisplayText] = useState("");
+  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*";
+
+  useEffect(() => {
+    let iteration = 0;
+    let interval: NodeJS.Timeout;
+
+    const timeout = setTimeout(() => {
+      interval = setInterval(() => {
+        setDisplayText(
+          text
+            .split("")
+            .map((char, index) => {
+              if (index < iteration) {
+                return text[index];
+              }
+              return characters[Math.floor(Math.random() * characters.length)];
+            })
+            .join("")
+        );
+
+        if (iteration >= text.length) {
+          clearInterval(interval);
+        }
+
+        iteration += 1 / 3;
+      }, 30);
+    }, delay);
+
+    return () => {
+      clearTimeout(timeout);
+      clearInterval(interval);
+    };
+  }, [text, delay]);
+
+  return <span className="font-mono">{displayText}</span>;
+};
+
+const MatrixTerminalFooter = () => {
+  return (
+    <footer className="w-full max-w-4xl mx-auto pt-12 pb-12 border-t border-primary/20 mt-20">
+      <div className="bg-black/80 border border-primary/30 p-8 rounded-lg cyber-scanline shadow-[0_0_30px_rgba(255,0,0,0.1)]">
+        <div className="flex items-center gap-3 mb-6 text-primary">
+          <Terminal className="h-5 w-5 animate-pulse" />
+          <span className="font-mono text-sm tracking-tighter uppercase">[SYSTEM_DECRYPTION_ACTIVE]</span>
+        </div>
+
+        <div className="space-y-6 font-mono text-xs md:text-sm">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <p className="text-primary/60"><span className="text-primary">[SYMPOSIUM_ID]:</span> <DecryptText text="MADMATRIX_2026" delay={200} /></p>
+              <p className="text-primary/60 leading-relaxed">
+                <span className="text-primary">[CONDUCTED_BY]:</span> <br />
+                <DecryptText text="DEPT_OF_PURE_AND_APPLIED_MATHEMATICS // SIMATS_ENGINEERING" delay={400} />
+              </p>
+            </div>
+            <div className="space-y-2">
+              <p className="text-primary/60 leading-relaxed italic">
+                <span className="text-primary">[MISSION_LOG]:</span> <br />
+                <DecryptText text="A flagship National Level Technical Symposium engineered to bridge the gap between theoretical mathematics and high-speed innovation." delay={600} />
+              </p>
+            </div>
+          </div>
+
+          <div className="pt-6 border-t border-primary/10">
+            <div className="flex items-center gap-2 mb-4 text-primary">
+              <Cpu className="h-4 w-4" />
+              <span className="uppercase tracking-widest text-[10px]">Coordination Command Center</span>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="flex flex-col space-y-1">
+                <span className="text-[10px] text-primary/40 uppercase">System Admin</span>
+                <div className="flex items-center gap-2 text-white">
+                  <User className="h-3 w-3 text-primary" />
+                  <span className="font-bold tracking-wider underline decoration-primary/30">NITHISHWARAN</span>
+                </div>
+              </div>
+
+              <div className="flex flex-col space-y-2">
+                <span className="text-[10px] text-primary/40 uppercase">Uplink Path</span>
+                <a 
+                  href="tel:+918754330333" 
+                  className="group flex items-center justify-between px-4 py-2 border border-primary/20 bg-primary/5 hover:bg-primary/20 transition-all rounded cyber-glitch"
+                >
+                  <div className="flex items-center gap-2">
+                    <Phone className="h-3 w-3 text-primary group-hover:scale-110 transition-transform" />
+                    <span className="text-xs font-bold text-white">+91 87543 30333</span>
+                  </div>
+                </a>
+              </div>
+
+              <div className="flex flex-col space-y-2">
+                <span className="text-[10px] text-primary/40 uppercase">Digital Node</span>
+                <a 
+                  href="https://www.madmatrix.site" 
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex items-center justify-between px-4 py-2 border border-primary/20 bg-primary/5 hover:bg-primary/20 transition-all rounded cyber-glitch"
+                >
+                  <div className="flex items-center gap-2">
+                    <Globe className="h-3 w-3 text-primary group-hover:scale-110 transition-transform" />
+                    <span className="text-xs font-bold text-white">WWW.MADMATRIX.SITE</span>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-8 text-center border-t border-primary/5 pt-4">
+          <p className="text-[9px] font-mono text-primary/30 tracking-[0.5em] uppercase">
+            &copy; 2026_ESTABLISHMENT_NODE // MAD_MATRIX_ROOT
+          </p>
+        </div>
+      </div>
+    </footer>
+  );
+};
 
 export default function TicketHub() {
   const [step, setStep] = useState<1 | 2>(1);
@@ -101,10 +222,8 @@ export default function TicketHub() {
 
     setDownloading(true);
     try {
-      // 1. Wait for Fonts to be fully active
       await document.fonts.ready;
       
-      // 2. Pre-decode images to prevent InvalidStateError
       const images = Array.from(ticketRef.current.querySelectorAll('img'));
       await Promise.all(images.map(img => {
         return new Promise((resolve) => {
@@ -119,10 +238,8 @@ export default function TicketHub() {
         });
       }));
 
-      // 3. Stabilization Buffer for final paint
       await new Promise(r => setTimeout(r, 600));
 
-      // 4. Capture with Strict Viewport Alignment
       const canvas = await html2canvas(ticketRef.current, {
         useCORS: true,
         scale: 3, 
@@ -292,48 +409,8 @@ export default function TicketHub() {
               </div>
             )}
           </div>
-
-          <footer className="w-full max-w-4xl mx-auto pt-12 border-t border-primary/10">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 text-muted-foreground">
-              <div className="space-y-4">
-                <div className="flex items-center gap-2 text-white">
-                  <Info className="h-4 w-4 text-primary" />
-                  <h3 className="font-black uppercase tracking-widest text-sm">About MadMatrix '26</h3>
-                </div>
-                <p className="text-xs leading-relaxed">
-                  MadMatrix is a National Level Technical Symposium conducted annually by the 
-                  <span className="text-white"> Department of Pure and Applied Mathematics </span> 
-                  at SIMATS Engineering. It serves as a flagship platform for innovative minds to 
-                  compete and showcase technical prowess.
-                </p>
-              </div>
-              <div className="space-y-4">
-                <div className="flex items-center gap-2 text-white">
-                  <MapPin className="h-4 w-4 text-primary" />
-                  <h3 className="font-black uppercase tracking-widest text-sm">Coordination Control</h3>
-                </div>
-                <div className="space-y-2 text-xs">
-                  <div className="flex justify-between">
-                    <span>Student Coordinator</span>
-                    <span className="text-white font-bold">Nithishwaran</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Direct Uplink</span>
-                    <span className="text-primary font-bold">+91 87543 30333</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Digital Node</span>
-                    <a href="https://www.madmatrix.site" className="text-primary hover:underline font-mono">www.madmatrix.site</a>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="mt-12 text-center opacity-30">
-              <p className="text-[9px] font-mono text-primary tracking-[0.4em] uppercase">
-                &copy; 2026 MADMATRIX SYMPOSIUM | SIMATS ENGINEERING CAMPUS
-              </p>
-            </div>
-          </footer>
+          
+          <MatrixTerminalFooter />
         </div>
       )}
     </div>
