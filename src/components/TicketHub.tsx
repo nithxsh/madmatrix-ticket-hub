@@ -36,7 +36,7 @@ export default function TicketHub() {
     setAttendee(null);
     setGreeting("");
 
-    // Updated endpoints with requested lowercase onstage/offstage sheets
+    // Finalized endpoints with lowercase onstage/offstage targets
     const endpoints = [
       "https://sheetdb.io/api/v1/06ca0hvc7hw5j",
       "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=track%201.0",
@@ -65,7 +65,7 @@ export default function TicketHub() {
 
             if (foundRow) {
               foundAttendee = {
-                Name: foundRow.Name || foundRow.name || foundRow.NAME || foundRow['Name'] || "WELCOME MADMATRIX !",
+                Name: foundRow.Name || foundRow.name || foundRow.NAME || foundRow['Name'] || foundRow['Name'] || "WELCOME MADMATRIX !",
                 RegNo: foundRow.RegNo || foundRow.regno || foundRow.REGNO || foundRow['Reg No'] || foundRow['RegNo'] || "VERIFIED",
                 email: sanitizedEmail,
               };
@@ -108,7 +108,7 @@ export default function TicketHub() {
 
     setIsCapturing(true);
     try {
-      // PRE-LOAD VALIDATION: Ensure all images have natural dimensions
+      // FIX: Robust image validation loop to prevent InvalidStateError
       const images = Array.from(ticketRef.current.getElementsByTagName('img'));
       await Promise.all(
         images.map(img => {
@@ -118,20 +118,20 @@ export default function TicketHub() {
             } else {
               img.onload = () => resolve(img.naturalWidth > 0);
               img.onerror = () => resolve(false);
-              // Fallback for cached images that might not fire onload
-              setTimeout(() => resolve(img.naturalWidth > 0), 1000);
+              // Fail-safe timeout
+              setTimeout(() => resolve(img.naturalWidth > 0), 2000);
             }
           });
         })
       );
 
-      // Stabilization delay to allow layout engine to finalize
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Brief pause for browser rendering thread to catch up
+      await new Promise(resolve => setTimeout(resolve, 500));
 
       const canvas = await html2canvas(ticketRef.current, {
         useCORS: true,
         allowTaint: false,
-        scale: 3, // Higher scale for better print quality
+        scale: 2, // Use 2 for reliable performance
         backgroundColor: "#000000",
         logging: false,
         width: 850,
@@ -139,9 +139,8 @@ export default function TicketHub() {
         onclone: (clonedDoc) => {
           const clonedTicket = clonedDoc.getElementById("madmatrix-ticket");
           if (clonedTicket) {
-            // Force reset styles to prevent zero-size canvas errors during pattern creation
+            // Force a stable state for capture
             clonedTicket.style.transform = "none";
-            clonedTicket.style.animation = "none";
             clonedTicket.style.transition = "none";
             clonedTicket.style.display = "flex";
             clonedTicket.style.visibility = "visible";
@@ -165,7 +164,7 @@ export default function TicketHub() {
       console.error("Capture Error:", error);
       toast({
         title: "Download Failed",
-        description: "Could not generate permit image due to a rendering timeout. Please try again.",
+        description: "Rendering error. Please ensure the ticket is fully visible and try again.",
         variant: "destructive",
       });
     } finally {
