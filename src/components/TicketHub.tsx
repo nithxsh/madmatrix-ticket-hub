@@ -2,14 +2,12 @@
 "use client";
 
 import React, { useState, useRef } from "react";
-import { Search, FileDown, Terminal, Loader2, AlertTriangle } from "lucide-react";
+import { Search, Terminal, Loader2, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Ticket } from "@/components/Ticket";
 import { useToast } from "@/hooks/use-toast";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
 import { generateCyberpunkGreeting } from "@/ai/flows/generate-cyberpunk-greeting";
 
 interface Attendee {
@@ -23,7 +21,6 @@ export default function TicketHub() {
   const [loading, setLoading] = useState(false);
   const [attendee, setAttendee] = useState<Attendee | null>(null);
   const [greeting, setGreeting] = useState<string>("");
-  const [isCapturing, setIsCapturing] = useState(false);
   const ticketRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
@@ -83,7 +80,7 @@ export default function TicketHub() {
           const aiResult = await generateCyberpunkGreeting({ attendeeName: foundAttendee.Name });
           setGreeting(aiResult.greeting);
         } catch (error) {
-          setGreeting("Authorized entry permit generated.");
+          setGreeting("Authorized entry permit retrieved.");
         }
       } else {
         toast({
@@ -100,103 +97,6 @@ export default function TicketHub() {
       });
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleDownload = async () => {
-    if (!ticketRef.current || isCapturing) return;
-
-    setIsCapturing(true);
-    try {
-      // DEEP STABILIZATION: Validate all image assets before capture
-      const images = Array.from(ticketRef.current.getElementsByTagName('img'));
-      
-      // Phase 1: Ensure all images are decoded and have non-zero dimensions
-      await Promise.all(
-        images.map(async (img) => {
-          // Force crossOrigin to ensure CORS compliance for capture
-          if (!img.crossOrigin) img.crossOrigin = "anonymous";
-          
-          if ('decode' in img) {
-            await img.decode().catch(() => {}); 
-          }
-          
-          // Poll for dimensions if they are zero (resolves InvalidStateError)
-          let attempts = 0;
-          while ((img.naturalWidth === 0 || img.naturalHeight === 0) && attempts < 50) {
-            await new Promise(resolve => setTimeout(resolve, 50));
-            attempts++;
-          }
-
-          if (img.naturalWidth === 0) {
-             throw new Error("Image asset failed to load dimensions.");
-          }
-        })
-      );
-
-      // Brief settling time for browser layout engine
-      await new Promise(resolve => setTimeout(resolve, 800));
-
-      // Phase 2: Capture with Explicit Dimension Enforcement
-      const canvas = await html2canvas(ticketRef.current, {
-        useCORS: true,
-        allowTaint: false,
-        scale: 3, // High resolution for professional PDF
-        backgroundColor: "#000000",
-        logging: false,
-        width: 850,
-        height: 480,
-        scrollX: 0,
-        scrollY: 0,
-        onclone: (clonedDoc, element) => {
-          // Stabilization: Force dimensions in the cloned document
-          element.style.transform = "none";
-          element.style.transition = "none";
-          element.style.display = "flex";
-          element.style.visibility = "visible";
-          element.style.position = "fixed";
-          element.style.top = "0";
-          element.style.left = "0";
-          element.style.width = "850px";
-          element.style.height = "480px";
-          element.style.minWidth = "850px";
-          element.style.minHeight = "480px";
-          element.style.margin = "0";
-          element.style.padding = "0";
-          
-          // Ensure inner background container is also correctly sized
-          const bgContainer = element.querySelector('.absolute.inset-0');
-          if (bgContainer instanceof HTMLElement) {
-            bgContainer.style.width = "850px";
-            bgContainer.style.height = "480px";
-          }
-        }
-      });
-      
-      // Phase 3: PDF Generation
-      const imgData = canvas.toDataURL("image/png", 1.0);
-      const pdf = new jsPDF({
-        orientation: "landscape",
-        unit: "px",
-        format: [850, 480]
-      });
-      
-      pdf.addImage(imgData, 'PNG', 0, 0, 850, 480);
-      pdf.save(`MadMatrix_Entry_Permit_${attendee?.RegNo || "2026"}.pdf`);
-      
-      toast({
-        title: "Download Successful",
-        description: "Your digital entry permit has been saved as PDF.",
-      });
-    } catch (error) {
-      console.error("Capture Deep Error:", error);
-      toast({
-        title: "Download Error",
-        description: "Rendering error detected. Please try once more.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsCapturing(false);
     }
   };
 
@@ -262,25 +162,6 @@ export default function TicketHub() {
                 />
               </div>
             </div>
-            
-            <Button 
-              onClick={handleDownload}
-              disabled={isCapturing}
-              size="lg"
-              className="bg-white text-black hover:bg-white/90 font-black tracking-widest uppercase shadow-[0_0_30px_rgba(255,255,255,0.2)] h-16 px-16 text-lg"
-            >
-              {isCapturing ? (
-                <>
-                  <Loader2 className="mr-2 h-6 w-6 animate-spin" />
-                  GENERATING PDF...
-                </>
-              ) : (
-                <>
-                  <FileDown className="mr-2 h-6 w-6" />
-                  DOWNLOAD ENTRY PDF
-                </>
-              )}
-            </Button>
           </div>
           
           {greeting && (
