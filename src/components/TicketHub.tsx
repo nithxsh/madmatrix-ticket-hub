@@ -36,13 +36,13 @@ export default function TicketHub() {
     setAttendee(null);
     setGreeting("");
 
-    // List of all 5 API endpoints to search across different sheets
+    // Updated API endpoints with correct URL encoding for spaces and special characters
     const endpoints = [
       "https://sheetdb.io/api/v1/06ca0hvc7hw5j",
-      "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=MOBILE GAMES %26 mad sports",
-      "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=OFF STAGE",
-      "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=ON STAGE",
-      "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=SPORTS FORM"
+      "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=MOBILE%20GAMES%20%26%20mad%20sports",
+      "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=OFF%20STAGE",
+      "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=ON%20STAGE",
+      "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=SPORTS%20FORM"
     ];
 
     try {
