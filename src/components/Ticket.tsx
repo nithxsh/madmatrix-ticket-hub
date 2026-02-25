@@ -12,7 +12,6 @@ interface TicketProps {
 
 export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
   ({ name, regNo, id }, ref) => {
-    // QR code points to official symposium URL
     const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent("https://www.madmatrix.site/")}&size=250x250&color=000000&bgcolor=ffffff`;
     
     const bgImage = PlaceHolderImages.find(img => img.id === "ticket-template")?.imageUrl || "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=1080";
@@ -21,126 +20,151 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
       <div
         ref={ref}
         id={id}
-        className="relative flex flex-col overflow-hidden bg-black select-none border border-white/10"
+        className="relative overflow-hidden bg-black select-none border border-white/10"
         style={{ 
           width: "850px", 
           height: "330px", 
           minWidth: "850px", 
           minHeight: "330px",
-          fontFamily: "'Inter', sans-serif"
+          fontFamily: "'Inter', sans-serif",
+          boxSizing: "border-box"
         }}
       >
-        {/* Background Image Container */}
-        <div className="absolute inset-0 z-0 pointer-events-none w-[850px] h-[330px] bg-black">
+        {/* Background Layer */}
+        <div className="absolute inset-0 z-0 pointer-events-none" style={{ width: "850px", height: "330px" }}>
           <img 
             src={bgImage} 
             alt="" 
             className="w-full h-full object-cover opacity-20"
             crossOrigin="anonymous"
+            style={{ width: "100%", height: "100%" }}
           />
-          <div className="absolute inset-0 bg-black/30" />
         </div>
 
-        {/* Header - Rigid Grid Layout */}
-        <div className="relative h-[65px] bg-white z-30 flex items-center px-10 border-b-2 border-[#ff0000] justify-between">
-          {/* Left Side: SIMATS ENGINEERING */}
-          <div className="flex flex-col items-start justify-center">
-            <span className="text-[#0a2e5c] font-black text-2xl tracking-tighter leading-none">SIMATS</span>
-            <span className="text-[#0a2e5c] text-[9px] font-extrabold tracking-[0.2em] uppercase leading-none mt-0.5">ENGINEERING</span>
-          </div>
+        {/* Header - Using Table for Hard-Lock Alignment */}
+        <table 
+          style={{ 
+            width: "100%", 
+            height: "65px", 
+            background: "white", 
+            borderBottom: "2px solid #ff0000",
+            borderCollapse: "collapse",
+            position: "relative",
+            zIndex: 50
+          }}
+        >
+          <tbody>
+            <tr>
+              <td style={{ textAlign: "left", paddingLeft: "40px", verticalAlign: "middle", width: "50%" }}>
+                <div style={{ display: "flex", flexDirection: "column" }}>
+                  <span style={{ color: "#0a2e5c", fontWeight: 900, fontSize: "24px", letterSpacing: "-0.05em", lineHeight: 1 }}>SIMATS</span>
+                  <span style={{ color: "#0a2e5c", fontSize: "9px", fontWeight: 800, letterSpacing: "0.2em", textTransform: "uppercase", marginTop: "2px" }}>ENGINEERING</span>
+                </div>
+              </td>
+              <td style={{ textAlign: "right", paddingRight: "40px", verticalAlign: "middle", width: "50%" }}>
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
+                  <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
+                    <span style={{ color: "#0a2e5c", fontWeight: 900, fontSize: "24px", letterSpacing: "-0.05em", lineHeight: 1 }}>SIMATS</span>
+                    <span style={{ color: "#0a2e5c", fontSize: "8px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "2px" }}>DEEMED TO BE UNIVERSITY</span>
+                  </div>
+                  <span style={{ color: "#0a2e5c", fontSize: "5.5px", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0", opacity: 0.9 }}>
+                    SAVEETHA INSTITUTE OF MEDICAL AND TECHNICAL SCIENCES
+                  </span>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
 
-          {/* Right Side: SIMATS Deemed to be University */}
-          <div className="flex flex-col items-end text-right justify-center">
-            <div className="flex flex-col items-end">
-              <span className="text-[#0a2e5c] font-black text-2xl tracking-tighter leading-none">SIMATS</span>
-              <span className="text-[#0a2e5c] text-[8px] font-bold uppercase tracking-[0.05em] leading-none mb-1">DEEMED TO BE UNIVERSITY</span>
-            </div>
-            <span className="text-[#0a2e5c] text-[5.5px] font-semibold uppercase tracking-tight opacity-90 leading-none">
-              SAVEETHA INSTITUTE OF MEDICAL AND TECHNICAL SCIENCES
-            </span>
-          </div>
-        </div>
-
-        {/* Ticket Body - Grid Main + Stub */}
-        <div className="relative z-10 flex h-[265px] w-[850px]">
-          {/* Main Section - Center Aligned Container */}
-          <div className="w-[600px] h-full flex flex-col items-center justify-between py-6 px-10">
-            <div className="text-center w-full">
-               <h3 className="text-primary font-black text-6xl tracking-tighter uppercase italic leading-none drop-shadow-md">
+        {/* Ticket Content Container */}
+        <div className="relative" style={{ height: "265px", width: "850px", display: "flex" }}>
+          
+          {/* Main Section */}
+          <div style={{ width: "600px", height: "100%", position: "relative", zIndex: 10 }}>
+            
+            {/* Logo Center */}
+            <div style={{ position: "absolute", top: "30px", left: "0", right: "0", textAlign: "center" }}>
+               <h3 style={{ color: "hsl(var(--primary))", fontWeight: 900, fontSize: "60px", letterSpacing: "-0.05em", textTransform: "uppercase", fontStyle: "italic", margin: 0, lineHeight: 1 }}>
                  MADMATRIX
                </h3>
-               <p className="text-white font-bold text-[8px] tracking-[0.5em] uppercase opacity-60 mt-2">NATIONAL LEVEL SYMPOSIUM</p>
+               <p style={{ color: "rgba(255,255,255,0.6)", fontWeight: 700, fontSize: "8px", letterSpacing: "0.5em", textTransform: "uppercase", margin: "8px 0 0 0" }}>NATIONAL LEVEL SYMPOSIUM</p>
             </div>
 
-            {/* Personnel Container - Fixed Positioning */}
-            <div className="w-full flex flex-col items-center justify-center">
-               <span className="text-white/40 font-mono text-[7px] tracking-[0.3em] uppercase mb-2">AUTHORIZED PERSON</span>
-               <div className="w-24 h-[1px] bg-white/10 mb-3"></div>
-               <span className="text-white font-black text-3xl tracking-tight uppercase leading-none text-center max-w-[500px] truncate">
-                 {name || "WELCOME MADMATRIX !"}
-               </span>
-               <div className="w-24 h-[1px] bg-white/10 mt-4"></div>
+            {/* Personnel - Forced Display Block and High Z-Index */}
+            <div style={{ 
+              position: "absolute", 
+              top: "120px", 
+              left: "0", 
+              right: "0", 
+              textAlign: "center",
+              display: "block",
+              zIndex: 999 
+            }}>
+               <span style={{ color: "rgba(255,255,255,0.4)", fontFamily: "monospace", fontSize: "7px", letterSpacing: "0.3em", textTransform: "uppercase" }}>AUTHORIZED PERSON</span>
+               <div style={{ width: "100px", height: "1px", background: "rgba(255,255,255,0.1)", margin: "8px auto" }}></div>
+               <div style={{ width: "500px", margin: "0 auto", height: "40px", display: "flex", alignItems: "center", justifyItems: "center" }}>
+                 <span style={{ color: "white", fontWeight: 900, fontSize: "32px", letterSpacing: "-0.02em", textTransform: "uppercase", lineHeight: 1, width: "100%", textAlign: "center" }}>
+                   {name || "WELCOME MADMATRIX !"}
+                 </span>
+               </div>
+               <div style={{ width: "100px", height: "1px", background: "rgba(255,255,255,0.1)", margin: "8px auto" }}></div>
             </div>
 
-            {/* Info Grid */}
-            <div className="w-full flex items-center justify-center gap-16 text-white">
-              <div className="flex flex-col items-center">
-                <span className="font-black text-2xl tracking-tighter">MAR 13-14</span>
-                <span className="text-[7px] font-bold uppercase opacity-50 tracking-widest">EVENT DATES</span>
-              </div>
-              <div className="w-[1px] h-10 bg-white/10"></div>
-              <div className="flex flex-col items-center">
-                <span className="font-black text-2xl tracking-tighter uppercase">SIMATS</span>
-                <span className="text-[7px] font-bold uppercase opacity-50 tracking-widest">LOCATION</span>
-              </div>
+            {/* Absolute Positioned Labels */}
+            <div style={{ position: "absolute", bottom: "45px", left: "120px", textAlign: "center", color: "white" }}>
+               <span style={{ fontWeight: 900, fontSize: "24px", letterSpacing: "-0.05em", lineHeight: 1 }}>MAR 13-14</span>
+               <br />
+               <span style={{ fontSize: "7px", fontWeight: 700, textTransform: "uppercase", opacity: 0.5, letterSpacing: "0.2em" }}>EVENT DATES</span>
             </div>
 
-            <div className="text-center">
-               <p className="text-primary font-black text-[10px] tracking-[0.25em] uppercase">
+            <div style={{ position: "absolute", bottom: "45px", right: "120px", textAlign: "center", color: "white" }}>
+               <span style={{ fontWeight: 900, fontSize: "24px", letterSpacing: "-0.05em", lineHeight: 1, textTransform: "uppercase" }}>SIMATS</span>
+               <br />
+               <span style={{ fontSize: "7px", fontWeight: 700, textTransform: "uppercase", opacity: 0.5, letterSpacing: "0.2em" }}>LOCATION</span>
+            </div>
+
+            <div style={{ position: "absolute", bottom: "15px", left: "0", right: "0", textAlign: "center" }}>
+               <p style={{ color: "hsl(var(--primary))", fontWeight: 900, fontSize: "10px", letterSpacing: "0.25em", textTransform: "uppercase", margin: 0 }}>
                  SIMATS ENGINEERING CAMPUS, CHENNAI
                </p>
             </div>
           </div>
 
-          {/* Vertical Divider - Perforated Look */}
-          <div className="w-[2px] h-full flex flex-col justify-between py-2">
-            <div className="flex-1 border-l-2 border-dashed border-white/20"></div>
-          </div>
+          {/* Vertical Divider */}
+          <div style={{ width: "2px", height: "100%", borderLeft: "2px dashed rgba(255,255,255,0.2)" }}></div>
 
           {/* Stub Section */}
-          <div className="w-[248px] h-full bg-black/40 flex flex-col items-center pt-8 pb-4 px-6">
-            <div className="text-center mb-6">
-              <p className="text-white font-black text-[7px] uppercase tracking-tighter opacity-40">SIMATS ENGINEERING</p>
-              <p className="text-primary font-black text-[11px] uppercase tracking-tight">MARCH 13-14, 2026</p>
+          <div style={{ width: "248px", height: "100%", background: "rgba(0,0,0,0.4)", position: "relative", zIndex: 10 }}>
+            <div style={{ textAlign: "center", marginTop: "30px" }}>
+              <p style={{ color: "rgba(255,255,255,0.4)", fontWeight: 900, fontSize: "7px", textTransform: "uppercase", margin: 0 }}>SIMATS ENGINEERING</p>
+              <p style={{ color: "hsl(var(--primary))", fontWeight: 900, fontSize: "11px", textTransform: "uppercase", margin: "2px 0 0 0" }}>MARCH 13-14, 2026</p>
             </div>
 
-            {/* QR Container - Standard Centering */}
-            <div className="bg-white p-2 rounded-sm shadow-2xl mb-6">
+            <div style={{ background: "white", padding: "8px", borderRadius: "2px", margin: "24px auto", width: "80px", height: "80px" }}>
                <img 
                 src={qrUrl} 
-                alt="QR_VERIFY" 
-                className="w-20 h-20 block"
+                alt="QR" 
                 crossOrigin="anonymous"
-                width="80"
-                height="80"
+                style={{ width: "80px", height: "80px", display: "block" }}
               />
             </div>
 
-            <div className="text-center space-y-1 mb-6">
-               <p className="text-[9px] text-white font-black uppercase leading-tight tracking-widest">
+            <div style={{ textAlign: "center", marginBottom: "20px" }}>
+               <p style={{ fontSize: "9px", color: "white", fontWeight: 900, textTransform: "uppercase", margin: 0, letterSpacing: "0.1em" }}>
                  ENTRY GRANTED
                </p>
-               <span className="text-primary font-black tracking-[0.15em] text-[10px] uppercase">GET INTO MATRIX !</span>
+               <span style={{ color: "hsl(var(--primary))", fontWeight: 900, fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.15em" }}>GET INTO MATRIX !</span>
             </div>
 
-            <div className="text-center mt-auto w-full">
-               <p className="text-sm text-primary font-black font-mono tracking-tighter leading-none">{regNo}</p>
-               <div className="flex items-center justify-center gap-1.5 mt-2">
-                 <div className="h-1.5 w-1.5 rounded-full bg-[#22c55e]"></div>
-                 <p className="text-[7px] text-[#22c55e] font-black uppercase tracking-tighter">SECURED_CREDENTIAL</p>
+            <div style={{ position: "absolute", bottom: "20px", left: "0", right: "0", textAlign: "center" }}>
+               <p style={{ fontSize: "14px", color: "hsl(var(--primary))", fontWeight: 900, fontFamily: "monospace", margin: 0 }}>{regNo}</p>
+               <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "6px", marginTop: "4px" }}>
+                 <div style={{ height: "6px", width: "6px", borderRadius: "50%", background: "#22c55e" }}></div>
+                 <p style={{ fontSize: "7px", color: "#22c55e", fontWeight: 900, textTransform: "uppercase", margin: 0 }}>SECURED_CREDENTIAL</p>
                </div>
             </div>
           </div>
+
         </div>
       </div>
     );

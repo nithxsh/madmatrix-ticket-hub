@@ -29,7 +29,6 @@ export default function TicketHub() {
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     const sanitizedEmail = email.trim().toLowerCase();
     if (!sanitizedEmail) return;
 
@@ -37,9 +36,8 @@ export default function TicketHub() {
     setAttendee(null);
     setGreeting("");
 
-    // Official registry endpoints for MadMatrix '26
     const endpoints = [
-      "https://sheetdb.io/api/v1/06ca0hvc7hw5j", // Main
+      "https://sheetdb.io/api/v1/06ca0hvc7hw5j",
       "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=onstage",
       "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=offstage",
       "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=MOBILE%20GAMES%20%26%20mad%20sports",
@@ -48,32 +46,22 @@ export default function TicketHub() {
 
     try {
       let foundAttendee: Attendee | null = null;
-
       for (const url of endpoints) {
-        try {
-          const response = await fetch(url);
-          if (!response.ok) continue;
-          
-          const data = await response.json();
-
-          if (Array.isArray(data)) {
-            const foundRow = data.find((row: any) => {
-              return Object.values(row).some((value) => {
-                return value !== undefined && value !== null && String(value).trim().toLowerCase() === sanitizedEmail;
-              });
-            });
-
-            if (foundRow) {
-              foundAttendee = {
-                Name: foundRow.Name || foundRow.name || foundRow.NAME || "WELCOME MADMATRIX !",
-                RegNo: foundRow.RegNo || foundRow.regno || foundRow.REGNO || "VERIFIED_USER",
-                email: sanitizedEmail,
-              };
-              break;
-            }
+        const response = await fetch(url);
+        if (!response.ok) continue;
+        const data = await response.json();
+        if (Array.isArray(data)) {
+          const foundRow = data.find((row: any) => {
+            return Object.values(row).some(v => v && String(v).trim().toLowerCase() === sanitizedEmail);
+          });
+          if (foundRow) {
+            foundAttendee = {
+              Name: foundRow.Name || foundRow.name || foundRow.NAME || "WELCOME MADMATRIX !",
+              RegNo: foundRow.RegNo || foundRow.regno || foundRow.REGNO || "VERIFIED_USER",
+              email: sanitizedEmail,
+            };
+            break;
           }
-        } catch (err) {
-          console.error(`Registry access error:`, err);
         }
       }
 
@@ -88,14 +76,14 @@ export default function TicketHub() {
       } else {
         toast({
           title: "Registry Mismatch",
-          description: `Email "${sanitizedEmail}" not found in any event registries.`,
+          description: `Email "${sanitizedEmail}" not found in registries.`,
           variant: "destructive",
         });
       }
     } catch (error) {
       toast({
         title: "Registry Offline",
-        description: "Could not connect to database services. Check your connection.",
+        description: "Could not connect to database services.",
         variant: "destructive",
       });
     } finally {
@@ -108,10 +96,12 @@ export default function TicketHub() {
 
     setDownloading(true);
     try {
-      // 1. Recursive Asset Verification Logic
-      const validateImages = async () => {
+      // Hard-Lock Phase 1: Wait for Fonts
+      await document.fonts.ready;
+
+      // Hard-Lock Phase 2: Asset Dimension Verification
+      const validateAssets = async () => {
         const images = Array.from(ticketRef.current!.querySelectorAll('img'));
-        
         await Promise.all(images.map(img => {
           return new Promise((resolve) => {
             const check = () => {
@@ -120,30 +110,30 @@ export default function TicketHub() {
               } else {
                 img.onload = () => resolve(true);
                 img.onerror = () => resolve(true);
-                // Fallback polling for layout registration
-                setTimeout(check, 100);
+                setTimeout(check, 50);
               }
             };
             check();
           });
         }));
-
-        // Stability decoding
+        
+        // Ensure image decoding for pattern generation stability
         await Promise.all(images.map(img => {
           if ('decode' in img) return (img as any).decode().catch(() => {});
           return Promise.resolve();
         }));
       };
 
-      await validateImages();
+      await validateAssets();
       
-      // Forced layout stabilization delay
-      await new Promise(r => setTimeout(r, 1200));
+      // Hard-Lock Phase 3: Forced Stabilization Timeout
+      await new Promise(r => setTimeout(r, 600));
 
+      // Hard-Lock Phase 4: Capture with High-Precision Settings
       const canvas = await html2canvas(ticketRef.current, {
         useCORS: true,
         allowTaint: false,
-        scale: 3, 
+        scale: 2, 
         backgroundColor: "#000000",
         logging: false,
         width: 850,
@@ -154,9 +144,8 @@ export default function TicketHub() {
             clonedTicket.style.position = "fixed";
             clonedTicket.style.top = "0";
             clonedTicket.style.left = "0";
-            clonedTicket.style.transform = "none";
             clonedTicket.style.margin = "0";
-            clonedTicket.style.border = "none";
+            clonedTicket.style.transform = "none";
           }
         }
       });
@@ -176,10 +165,9 @@ export default function TicketHub() {
         description: "Your official entry permit has been downloaded.",
       });
     } catch (error: any) {
-      console.error("Capture Error:", error);
       toast({
         title: "Rendering Error",
-        description: "System failed to capture high-res ticket. Please try again.",
+        description: "Failed to capture ticket. Please reload and try again.",
         variant: "destructive",
       });
     } finally {
@@ -226,14 +214,7 @@ export default function TicketHub() {
               disabled={loading || !email}
               className="h-14 px-10 bg-primary text-white font-bold hover:bg-red-700 transition-all rounded-md shadow-lg disabled:opacity-50 text-sm tracking-widest uppercase flex items-center justify-center"
             >
-              {loading ? (
-                <Loader2 className="h-5 w-5 animate-spin" />
-              ) : (
-                <>
-                  <Search className="mr-2 h-5 w-5" />
-                  AUTH_SEARCH
-                </>
-              )}
+              {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <><Search className="mr-2 h-5 w-5" />AUTH_SEARCH</>}
             </button>
           </form>
         </CardContent>
@@ -259,24 +240,13 @@ export default function TicketHub() {
                 disabled={downloading}
                 className="flex-1 min-w-[200px] h-14 bg-primary text-white font-bold hover:bg-red-700 shadow-lg"
               >
-                {downloading ? (
-                  <>
-                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                    PREPARING PDF...
-                  </>
-                ) : (
-                  <>
-                    <Download className="mr-2 h-5 w-5" />
-                    DOWNLOAD PERMIT
-                  </>
-                )}
+                {downloading ? <><Loader2 className="mr-2 h-5 w-5 animate-spin" />PREPARING PDF...</> : <><Download className="mr-2 h-5 w-5" />DOWNLOAD PERMIT</>}
               </Button>
               <Button
                 onClick={handleShareWhatsApp}
                 className="flex-1 min-w-[200px] h-14 bg-[#25D366] text-white font-bold hover:bg-[#128C7E] shadow-lg"
               >
-                <Share2 className="mr-2 h-5 w-5" />
-                WHATSAPP SHARE
+                <Share2 className="mr-2 h-5 w-5" />WHATSAPP SHARE
               </Button>
             </div>
           </div>
