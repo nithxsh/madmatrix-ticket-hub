@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { Search, Terminal, Loader2, Download, Share2, UserCheck, ShieldCheck, Phone, Globe, User, Cpu, Activity, Zap, ShieldAlert } from "lucide-react";
+import { Search, Terminal, Loader2, Download, Share2, UserCheck, ShieldCheck, Phone, Globe, User, Cpu, Activity, Zap, ShieldAlert, Mail, MessageSquare, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -62,34 +62,88 @@ const DecryptText = ({ text, delay = 0, className = "" }: { text: string; delay?
 };
 
 const MatrixTerminalFooter = () => {
-  return (
-    <footer className="w-full max-w-4xl mx-auto pt-12 pb-12 border-t border-primary/20 mt-20">
-      <div className="bg-black/80 border border-primary/30 p-8 rounded-lg cyber-scanline shadow-[0_0_30px_rgba(255,0,0,0.1)]">
-        <div className="flex items-center gap-3 mb-6 text-primary">
-          <Terminal className="h-5 w-5 animate-pulse" />
-          <span className="font-mono text-sm tracking-tighter uppercase">[SYSTEM_DECRYPTION_ACTIVE]</span>
-        </div>
+  const coordinators = [
+    { name: "Dhanush R", phone: "9025718226" },
+    { name: "Kevin Mathew", phone: "8610871590" },
+    { name: "Infant A", phone: "7548855208" },
+    { name: "Prasithi Kumaran", phone: "8248372122" },
+    { name: "Vivaa", phone: "9363315750" },
+    { name: "K L Dinesh Eswar", phone: "7200295986" },
+    { name: "Sugantharaj", phone: "9150184324" }
+  ];
 
-        <div className="space-y-6 font-mono text-xs md:text-sm">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <p className="text-primary/60"><span className="text-primary">[SYMPOSIUM_ID]:</span> <DecryptText text="MADMATRIX_2026" delay={200} /></p>
-              <p className="text-primary/60 leading-relaxed">
-                <span className="text-primary">[CONDUCTED_BY]:</span> <br />
-                <DecryptText text="DEPT_OF_PURE_AND_APPLIED_MATHEMATICS // SIMATS_ENGINEERING" delay={400} />
+  return (
+    <footer className="w-full max-w-5xl mx-auto pt-12 pb-24 space-y-12">
+      {/* System Admin Registry */}
+      <div className="space-y-6">
+        <div className="flex items-center gap-3 text-primary">
+          <ShieldCheck className="h-5 w-5 animate-pulse" />
+          <span className="font-mono text-sm tracking-widest uppercase">[SYSTEM_ADMIN_REGISTRY]</span>
+        </div>
+        
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {coordinators.map((coord, idx) => (
+            <div key={idx} className="group relative bg-black/40 border border-primary/20 p-4 rounded-lg backdrop-blur-md hover:border-primary/50 transition-all overflow-hidden">
+              <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
+              <p className="text-[10px] font-mono text-primary/40 uppercase mb-1">NODE_{idx + 1}</p>
+              <h4 className="text-white font-bold uppercase tracking-tight group-hover:cyber-glitch">{coord.name}</h4>
+              <p className="text-primary/60 font-mono text-xs mt-2 group-hover:text-primary transition-colors">
+                UPLINK: {coord.phone}
               </p>
             </div>
-            <div className="space-y-2">
-              <p className="text-primary/60 leading-relaxed italic">
-                <span className="text-primary">[MISSION_LOG]:</span> <br />
-                <DecryptText text="A flagship National Level Technical Symposium engineered to bridge the gap between theoretical mathematics and high-speed innovation." delay={600} />
-              </p>
+          ))}
+          <div className="group relative bg-primary/10 border-2 border-primary/40 p-4 rounded-lg backdrop-blur-md">
+             <p className="text-[10px] font-mono text-primary uppercase mb-1">FACULTY_CONVENOR</p>
+             <h4 className="text-white font-bold uppercase tracking-tight">Dr. K. Sudar Mozhi</h4>
+             <p className="text-primary font-mono text-xs mt-2">UPLINK: 9080730749</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Support & Inquiry Terminal */}
+      <div className="bg-black/80 border border-primary/30 p-8 rounded-lg cyber-scanline relative overflow-hidden shadow-[0_0_50px_rgba(255,0,0,0.1)]">
+        <div className="flex items-center gap-3 mb-8 text-primary">
+          <Terminal className="h-5 w-5 animate-pulse" />
+          <span className="font-mono text-sm tracking-tighter uppercase">[SUPPORT_&_INQUIRY_TERMINAL]</span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 font-mono text-xs md:text-sm">
+          <div className="space-y-4">
+            <div className="flex items-start gap-4 p-4 bg-white/5 rounded border border-white/5 hover:border-primary/20 transition-all">
+              <Mail className="h-5 w-5 text-primary shrink-0" />
+              <div>
+                <p className="text-primary uppercase text-[10px] font-bold mb-1">HELP_DESK</p>
+                <p className="text-white">support@madmatrix.site</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-4 p-4 bg-white/5 rounded border border-white/5 hover:border-primary/20 transition-all">
+              <MessageSquare className="h-5 w-5 text-primary shrink-0" />
+              <div>
+                <p className="text-primary uppercase text-[10px] font-bold mb-1">SPONSOR_ENQUIRY</p>
+                <p className="text-white">organizer@madmatrix.site</p>
+              </div>
+            </div>
+          </div>
+          <div className="space-y-4">
+            <div className="flex items-start gap-4 p-4 bg-white/5 rounded border border-white/5 hover:border-primary/20 transition-all">
+              <Cpu className="h-5 w-5 text-primary shrink-0" />
+              <div>
+                <p className="text-primary uppercase text-[10px] font-bold mb-1">PRIMARY_NODE</p>
+                <p className="text-white">madmatrix2026@gmail.com</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-4 p-4 bg-white/5 rounded border border-white/5 hover:border-primary/20 transition-all">
+              <Globe className="h-5 w-5 text-primary shrink-0" />
+              <div>
+                <p className="text-primary uppercase text-[10px] font-bold mb-1">OFFICIAL_UPLINK</p>
+                <a href="https://www.madmatrix.site" className="text-white hover:text-primary transition-colors underline underline-offset-4">www.madmatrix.site</a>
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="mt-8 text-center border-t border-primary/5 pt-4">
-          <p className="text-[9px] font-mono text-primary/30 tracking-[0.5em] uppercase">
+        <div className="mt-12 text-center border-t border-primary/10 pt-6">
+          <p className="text-[9px] font-mono text-primary/30 tracking-[1em] uppercase">
             &copy; 2026_ESTABLISHMENT_NODE // MAD_MATRIX_ROOT
           </p>
         </div>
@@ -121,11 +175,11 @@ export default function TicketHub() {
     setGreeting("");
 
     const endpoints = [
-      { url: "https://sheetdb.io/api/v1/06ca0hvc7hw5j", name: "MAIN_VAULT" },
-      { url: "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=onstage", name: "ONSTAGE_EVENTS" },
-      { url: "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=offstage", name: "OFFSTAGE_EVENTS" },
-      { url: "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=MOBILE%20GAMES%20%26%20mad%20sports", name: "SPORTS_GAMES" },
-      { url: "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=SPORTS%20FORM", name: "SPORTS_REGISTRY" }
+      { url: "https://sheetdb.io/api/v1/06ca0hvc7hw5j", name: "MAIN VAULT" },
+      { url: "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=onstage", name: "ONSTAGE EVENTS" },
+      { url: "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=offstage", name: "OFFSTAGE EVENTS" },
+      { url: "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=MOBILE%20GAMES%20%26%20mad%20sports", name: "MOBILE GAMES" },
+      { url: "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=SPORTS%20FORM", name: "SPORTS FORM" }
     ];
 
     try {
@@ -148,7 +202,7 @@ export default function TicketHub() {
               RegNo: foundRow.RegNo || foundRow.regno || foundRow.REGNO || "VERIFIED_USER",
               email: sanitizedEmail,
               Dept: foundRow.Department || foundRow.dept || foundRow.DEPT || "SIMATS ENGINEERING",
-              Event: endpoints[i].name.replace("_", " "),
+              Event: endpoints[i].name,
               Status: "AUTHORIZED_ENTRY"
             };
             break;
@@ -167,7 +221,7 @@ export default function TicketHub() {
             const aiResult = await generateCyberpunkGreeting({ attendeeName: foundAttendee!.Name });
             setGreeting(aiResult.greeting);
           } catch (error) {
-            setGreeting("Authorized entry permit retrieved. Welcome to the Matrix.");
+            setGreeting("Access permit retrieved. Welcome to the Matrix.");
           }
         }, 1500);
       } else {
@@ -332,59 +386,59 @@ export default function TicketHub() {
 
       {step === 2 && attendee && (
         <div className="w-full space-y-12 animate-in slide-in-from-bottom-8 duration-700">
-          {/* Cyber Terminal Dashboard Tiles */}
+          {/* Identity Node Dashboard */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto w-full">
-            <Card className="bg-white/5 border-primary/30 backdrop-blur-xl hover:bg-white/10 transition-all group overflow-hidden relative cyber-scanline">
+            <Card className="bg-white/5 border-primary/30 backdrop-blur-xl hover:bg-white/10 transition-all group overflow-hidden relative cyber-scanline shadow-[0_0_20px_rgba(255,0,0,0.1)]">
               <div className="absolute top-0 left-0 w-1 h-full bg-primary" />
               <CardContent className="p-6">
                 <div className="flex items-center gap-2 text-primary/60 font-mono text-[10px] mb-4 uppercase tracking-widest">
-                  <User className="h-3 w-3" /> [IDENTITY_NODE]
+                  <User className="h-3 w-3" /> [IDENTITY]
                 </div>
                 <div className="space-y-1">
-                  <p className="text-[10px] text-primary font-bold uppercase">ATTENDEE</p>
                   <h3 className="text-xl font-black text-white uppercase tracking-tighter cyber-glitch">
                     <DecryptText text={attendee.Name} delay={100} />
                   </h3>
+                  <p className="text-[10px] text-primary/60 font-mono uppercase">{attendee.RegNo}</p>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="bg-white/5 border-primary/30 backdrop-blur-xl hover:bg-white/10 transition-all group overflow-hidden relative">
+            <Card className="bg-white/5 border-primary/30 backdrop-blur-xl hover:bg-white/10 transition-all group overflow-hidden relative shadow-[0_0_20px_rgba(255,0,0,0.1)]">
+              <div className="absolute top-0 left-0 w-1 h-full bg-blue-500" />
+              <CardContent className="p-6">
+                <div className="flex items-center gap-2 text-blue-500/60 font-mono text-[10px] mb-4 uppercase tracking-widest">
+                  <Zap className="h-3 w-3" /> [ASSIGNED_EVENT]
+                </div>
+                <div className="space-y-1">
+                  <h3 className="text-xl font-black text-white uppercase tracking-tighter">
+                    {attendee.Event || "MAIN SYMPOSIUM"}
+                  </h3>
+                  <p className="text-[10px] text-blue-500/60 font-mono uppercase">{attendee.Dept}</p>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-white/5 border-primary/30 backdrop-blur-xl hover:bg-white/10 transition-all group overflow-hidden relative shadow-[0_0_20px_rgba(255,0,0,0.1)]">
               <div className="absolute top-0 left-0 w-1 h-full bg-green-500" />
               <CardContent className="p-6">
                 <div className="flex items-center gap-2 text-green-500/60 font-mono text-[10px] mb-4 uppercase tracking-widest">
-                  <Activity className="h-3 w-3" /> [SYSTEM_STATUS]
+                  <ShieldCheck className="h-3 w-3" /> [CLEARANCE]
                 </div>
                 <div className="space-y-1">
-                  <p className="text-[10px] text-green-500 font-bold uppercase">SYSTEM_ROLE</p>
                   <div className="flex items-center gap-2">
                     <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_8px_#22c55e]" />
                     <h3 className="text-xl font-black text-white uppercase tracking-tighter">
                       {attendee.Status}
                     </h3>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-white/5 border-primary/30 backdrop-blur-xl hover:bg-white/10 transition-all group overflow-hidden relative">
-              <div className="absolute top-0 left-0 w-1 h-full bg-blue-500" />
-              <CardContent className="p-6">
-                <div className="flex items-center gap-2 text-blue-500/60 font-mono text-[10px] mb-4 uppercase tracking-widest">
-                  <Zap className="h-3 w-3" /> [MISSION_ASSIGNMENT]
-                </div>
-                <div className="space-y-1">
-                  <p className="text-[10px] text-blue-500 font-bold uppercase">ASSIGNED_EVENT</p>
-                  <h3 className="text-xl font-black text-white uppercase tracking-tighter">
-                    {attendee.Event || "MAIN SYMPOSIUM"}
-                  </h3>
+                  <p className="text-[10px] text-green-500/60 font-mono uppercase">VERIFIED_CREDENTIALS</p>
                 </div>
               </CardContent>
             </Card>
           </div>
 
           {/* Ticket Section */}
-          <div className="w-full flex flex-col items-center space-y-12">
+          <div className="w-full flex flex-col items-center space-y-12 pt-8">
             <div className="p-8 bg-white/5 rounded-2xl border border-white/10 overflow-x-auto w-full flex justify-center shadow-2xl backdrop-blur-md relative">
               <div className="absolute top-4 left-4 flex items-center gap-2 text-[8px] font-mono text-primary/40 uppercase">
                 <ShieldAlert className="h-2 w-2 animate-pulse" /> LIVE_PREVIEW_MODE
@@ -427,7 +481,7 @@ export default function TicketHub() {
             </div>
 
             {greeting && (
-              <div className="max-w-2xl mx-auto p-8 bg-primary/5 border border-primary/20 rounded-2xl flex flex-col items-center gap-6 text-center relative cyber-scanline">
+              <div className="max-w-2xl mx-auto p-8 bg-primary/5 border border-primary/20 rounded-2xl flex flex-col items-center gap-6 text-center relative cyber-scanline shadow-[0_0_30px_rgba(255,0,0,0.05)]">
                 <div className="h-12 w-12 rounded-full bg-primary/20 flex items-center justify-center border border-primary/40">
                   <UserCheck className="h-6 w-6 text-primary" />
                 </div>
