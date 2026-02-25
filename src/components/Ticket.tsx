@@ -52,7 +52,7 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
           />
         </div>
 
-        {/* 2. Absolute Header Bar */}
+        {/* 2. Absolute Header Bar - Locked Sides */}
         <div 
           style={{ 
             position: "absolute", 
@@ -62,7 +62,9 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
             height: "65px", 
             backgroundColor: "white", 
             borderBottom: "2px solid #ff0000",
-            zIndex: 10
+            zIndex: 10,
+            padding: "0 40px",
+            boxSizing: "border-box"
           }}
         >
           {/* Left Branding - SIMATS Engineering */}
@@ -131,13 +133,13 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
            </div>
         </div>
 
-        {/* 5. Bottom Info Pinned Coordinates */}
-        <div style={{ position: "absolute", bottom: "40px", left: "120px", width: "150px", textAlign: "center", color: "white", zIndex: 15 }}>
+        {/* 5. Bottom Info - Fixed Percentage Positioning */}
+        <div style={{ position: "absolute", bottom: "40px", left: "20%", width: "150px", textAlign: "center", color: "white", zIndex: 15 }}>
            <span style={{ fontWeight: 900, fontSize: "24px", letterSpacing: "-0.05em", lineHeight: 1, display: "block" }}>MAR 13-14</span>
            <span style={{ fontSize: "7px", fontWeight: 700, textTransform: "uppercase", opacity: 0.5, letterSpacing: "0.2em", display: "block" }}>EVENT DATES</span>
         </div>
 
-        <div style={{ position: "absolute", bottom: "40px", left: "330px", width: "150px", textAlign: "center", color: "white", zIndex: 15 }}>
+        <div style={{ position: "absolute", bottom: "40px", left: "55%", width: "150px", textAlign: "center", color: "white", zIndex: 15 }}>
            <span style={{ fontWeight: 900, fontSize: "24px", letterSpacing: "-0.05em", lineHeight: 1, textTransform: "uppercase", display: "block" }}>SIMATS</span>
            <span style={{ fontSize: "7px", fontWeight: 700, textTransform: "uppercase", opacity: 0.5, letterSpacing: "0.2em", display: "block" }}>LOCATION</span>
         </div>
@@ -164,13 +166,18 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
             zIndex: 20
           }}
         >
-          {/* QR Code with Fixed Size */}
+          {/* QR Code with Sharp Rendering */}
           <div style={{ background: "white", padding: "10px", borderRadius: "4px", margin: "0 auto", width: "150px", height: "150px", boxShadow: "0 10px 30px rgba(0,0,0,0.5)" }}>
              <img 
               src={qrUrl} 
               alt="QR" 
               crossOrigin="anonymous"
-              style={{ width: "130px", height: "130px", display: "block" }}
+              style={{ 
+                width: "130px", 
+                height: "130px", 
+                display: "block",
+                imageRendering: "pixelated"
+              }}
             />
           </div>
 

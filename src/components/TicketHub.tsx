@@ -95,8 +95,10 @@ export default function TicketHub() {
 
     setDownloading(true);
     try {
-      // 1. Mandatory Readiness Check
+      // 1. Mandatory readiness checks
       await document.fonts.ready;
+      // Force load the specific font weight used for names
+      await document.fonts.load('900 32px Inter');
 
       // 2. Rigid Image Asset Validation
       const images = Array.from(ticketRef.current.querySelectorAll('img'));
@@ -114,14 +116,14 @@ export default function TicketHub() {
         });
       }));
 
-      // 3. Stabilization Buffer - Force browser to paint all layers
-      await new Promise(r => setTimeout(r, 600));
+      // 3. Stabilization Buffer - High-precision wait for painting
+      await new Promise(r => setTimeout(r, 800));
 
-      // 4. Precision Capture with Virtual Viewport
+      // 4. Precision Capture with 3x Scale for QR Clarity
       const canvas = await html2canvas(ticketRef.current, {
         useCORS: true,
         allowTaint: false,
-        scale: 3, // High-quality print resolution
+        scale: 3, 
         backgroundColor: "#000000",
         width: 850,
         height: 330,
@@ -130,11 +132,12 @@ export default function TicketHub() {
         windowWidth: 850,
         windowHeight: 330,
         logging: true,
-        letterRendering: true
+        letterRendering: true,
+        imageTimeout: 15000
       });
 
       // 5. Final PDF Assembly
-      const imgData = canvas.toDataURL("image/jpeg", 0.95);
+      const imgData = canvas.toDataURL("image/jpeg", 0.98);
       const pdf = new jsPDF({
         orientation: "landscape",
         unit: "px",
@@ -152,7 +155,7 @@ export default function TicketHub() {
       console.error("Capture Error:", error);
       toast({
         title: "Download Interrupted",
-        description: "Rendering error detected. Please try refreshing the portal.",
+        description: "Asset rendering timeout. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -225,7 +228,7 @@ export default function TicketHub() {
                 disabled={downloading}
                 className="flex-1 min-w-[200px] h-14 bg-primary text-white font-bold hover:bg-red-700 shadow-lg uppercase tracking-widest text-xs"
               >
-                {downloading ? <><Loader2 className="mr-2 h-5 w-5 animate-spin" />VERIFYING_ASSETS...</> : <><Download className="mr-2 h-5 w-5" />DOWNLOAD PDF PERMIT</>}
+                {downloading ? <><Loader2 className="mr-2 h-5 w-5 animate-spin" />SHARPENING_ASSETS...</> : <><Download className="mr-2 h-5 w-5" />DOWNLOAD PDF PERMIT</>}
               </Button>
               <Button
                 onClick={handleShareWhatsApp}
