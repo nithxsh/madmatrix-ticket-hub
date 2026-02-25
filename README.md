@@ -4,7 +4,7 @@ Authorized ticket retrieval portal for MadMatrix 2026. This application is built
 
 ## Deployment & Version Control
 
-To push this project to GitHub, execute the following commands in your terminal:
+To push this project to your GitHub repository, execute the following commands in your terminal:
 
 ### 1. Initialize Git
 ```bash
@@ -18,10 +18,9 @@ git commit -m "Initial commit: MadMatrix 2026 Portal"
 ```
 
 ### 3. Connect to GitHub
-Create a repository on GitHub and then run:
 ```bash
 git branch -M main
-git remote add origin <YOUR_GITHUB_REPOSITORY_URL>
+git remote add origin https://github.com/nithxsh/madmatrix-ticket-hub.git
 ```
 
 ### 4. Push to Cloud
