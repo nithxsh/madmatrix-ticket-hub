@@ -36,12 +36,13 @@ export default function TicketHub() {
     setAttendee(null);
     setGreeting("");
 
+    // Consolidating all requested SheetDB endpoints
     const endpoints = [
       "https://sheetdb.io/api/v1/06ca0hvc7hw5j",
       "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=track%201.0",
       "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=MOBILE%20GAMES%20%26%20mad%20sports",
-      "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=offstage",
       "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=onstage",
+      "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=offstage",
       "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=SPORTS%20FORM"
     ];
 
@@ -56,6 +57,7 @@ export default function TicketHub() {
           const data = await response.json();
 
           if (Array.isArray(data)) {
+            // Robust search across every cell in the row
             const foundRow = data.find((row: any) => {
               return Object.values(row).some((value) => {
                 return typeof value !== 'undefined' && String(value).trim().toLowerCase() === sanitizedEmail;
@@ -107,11 +109,11 @@ export default function TicketHub() {
 
     setIsCapturing(true);
     try {
-      // Ensure all images are pre-loaded for capture
+      // Robust image pre-loading check
       const images = Array.from(ticketRef.current.getElementsByTagName('img'));
       await Promise.all(
         images.map(img => {
-          if (img.complete) return Promise.resolve();
+          if (img.complete && img.naturalWidth !== 0) return Promise.resolve();
           return new Promise((resolve) => {
             img.onload = resolve;
             img.onerror = resolve;
@@ -119,8 +121,8 @@ export default function TicketHub() {
         })
       );
 
-      // Stabilization delay to avoid CanvasRenderingContext2D issues during layout calculation
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Stabilization delay to avoid CanvasRenderingContext2D issues
+      await new Promise(resolve => setTimeout(resolve, 1500));
 
       const canvas = await html2canvas(ticketRef.current, {
         useCORS: true,
@@ -131,19 +133,21 @@ export default function TicketHub() {
         width: 850,
         height: 480,
         onclone: (clonedDoc) => {
-          // Force elements to be visible and stable in the cloned document
+          // Absolute stabilization of elements in the cloned capture document
           const clonedTicket = clonedDoc.getElementById("madmatrix-ticket");
           if (clonedTicket) {
             clonedTicket.style.transform = "none";
             clonedTicket.style.animation = "none";
             clonedTicket.style.transition = "none";
+            clonedTicket.style.display = "flex";
+            clonedTicket.style.visibility = "visible";
           }
         }
       });
       
       const link = document.createElement("a");
       link.download = `MadMatrix_Permit_${attendee?.RegNo || "2026"}.png`;
-      link.href = canvas.toDataURL("image/png", 0.95);
+      link.href = canvas.toDataURL("image/png", 1.0);
       link.click();
       
       toast({
