@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { Search, Terminal, Loader2, Download, Share2, UserCheck, ShieldCheck, Phone, Globe, User, Cpu } from "lucide-react";
+import { Search, Terminal, Loader2, Download, Share2, UserCheck, ShieldCheck, Phone, Globe, User, Cpu, Activity, Zap, ShieldAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -10,7 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { generateCyberpunkGreeting } from "@/ai/flows/generate-cyberpunk-greeting";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
-import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
+import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 
 interface Attendee {
@@ -18,9 +18,11 @@ interface Attendee {
   RegNo: string;
   email: string;
   Dept: string;
+  Event?: string;
+  Status?: string;
 }
 
-const DecryptText = ({ text, delay = 0 }: { text: string; delay?: number }) => {
+const DecryptText = ({ text, delay = 0, className = "" }: { text: string; delay?: number; className?: string }) => {
   const [displayText, setDisplayText] = useState("");
   const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*";
 
@@ -56,7 +58,7 @@ const DecryptText = ({ text, delay = 0 }: { text: string; delay?: number }) => {
     };
   }, [text, delay]);
 
-  return <span className="font-mono">{displayText}</span>;
+  return <span className={cn("font-mono", className)}>{displayText}</span>;
 };
 
 const MatrixTerminalFooter = () => {
@@ -84,51 +86,6 @@ const MatrixTerminalFooter = () => {
               </p>
             </div>
           </div>
-
-          <div className="pt-6 border-t border-primary/10">
-            <div className="flex items-center gap-2 mb-4 text-primary">
-              <Cpu className="h-4 w-4" />
-              <span className="uppercase tracking-widest text-[10px]">Coordination Command Center</span>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="flex flex-col space-y-1">
-                <span className="text-[10px] text-primary/40 uppercase">System Admin</span>
-                <div className="flex items-center gap-2 text-white">
-                  <User className="h-3 w-3 text-primary" />
-                  <span className="font-bold tracking-wider underline decoration-primary/30">NITHISHWARAN</span>
-                </div>
-              </div>
-
-              <div className="flex flex-col space-y-2">
-                <span className="text-[10px] text-primary/40 uppercase">Uplink Path</span>
-                <a 
-                  href="tel:+918754330333" 
-                  className="group flex items-center justify-between px-4 py-2 border border-primary/20 bg-primary/5 hover:bg-primary/20 transition-all rounded cyber-glitch"
-                >
-                  <div className="flex items-center gap-2">
-                    <Phone className="h-3 w-3 text-primary group-hover:scale-110 transition-transform" />
-                    <span className="text-xs font-bold text-white">+91 87543 30333</span>
-                  </div>
-                </a>
-              </div>
-
-              <div className="flex flex-col space-y-2">
-                <span className="text-[10px] text-primary/40 uppercase">Digital Node</span>
-                <a 
-                  href="https://www.madmatrix.site" 
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group flex items-center justify-between px-4 py-2 border border-primary/20 bg-primary/5 hover:bg-primary/20 transition-all rounded cyber-glitch"
-                >
-                  <div className="flex items-center gap-2">
-                    <Globe className="h-3 w-3 text-primary group-hover:scale-110 transition-transform" />
-                    <span className="text-xs font-bold text-white">WWW.MADMATRIX.SITE</span>
-                  </div>
-                </a>
-              </div>
-            </div>
-          </div>
         </div>
 
         <div className="mt-8 text-center border-t border-primary/5 pt-4">
@@ -145,6 +102,8 @@ export default function TicketHub() {
   const [step, setStep] = useState<1 | 2>(1);
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
+  const [loadingProgress, setLoadingProgress] = useState(0);
+  const [isDecypting, setIsDecrypting] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const [attendee, setAttendee] = useState<Attendee | null>(null);
   const [greeting, setGreeting] = useState<string>("");
@@ -157,33 +116,40 @@ export default function TicketHub() {
     if (!sanitizedEmail) return;
 
     setLoading(true);
+    setLoadingProgress(0);
     setAttendee(null);
     setGreeting("");
 
     const endpoints = [
-      "https://sheetdb.io/api/v1/06ca0hvc7hw5j",
-      "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=onstage",
-      "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=offstage",
-      "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=MOBILE%20GAMES%20%26%20mad%20sports",
-      "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=SPORTS%20FORM"
+      { url: "https://sheetdb.io/api/v1/06ca0hvc7hw5j", name: "MAIN_VAULT" },
+      { url: "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=onstage", name: "ONSTAGE_EVENTS" },
+      { url: "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=offstage", name: "OFFSTAGE_EVENTS" },
+      { url: "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=MOBILE%20GAMES%20%26%20mad%20sports", name: "SPORTS_GAMES" },
+      { url: "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=SPORTS%20FORM", name: "SPORTS_REGISTRY" }
     ];
 
     try {
       let foundAttendee: Attendee | null = null;
-      for (const url of endpoints) {
-        const response = await fetch(url);
+      
+      for (let i = 0; i < endpoints.length; i++) {
+        setLoadingProgress(Math.floor((i / endpoints.length) * 100));
+        const response = await fetch(endpoints[i].url);
         if (!response.ok) continue;
         const data = await response.json();
+        
         if (Array.isArray(data)) {
           const foundRow = data.find((row: any) => {
             return Object.values(row).some(v => v && String(v).trim().toLowerCase() === sanitizedEmail);
           });
+          
           if (foundRow) {
             foundAttendee = {
               Name: foundRow.Name || foundRow.name || foundRow.NAME || "VALID_ATTENDEE",
               RegNo: foundRow.RegNo || foundRow.regno || foundRow.REGNO || "VERIFIED_USER",
               email: sanitizedEmail,
               Dept: foundRow.Department || foundRow.dept || foundRow.DEPT || "SIMATS ENGINEERING",
+              Event: endpoints[i].name.replace("_", " "),
+              Status: "AUTHORIZED_ENTRY"
             };
             break;
           }
@@ -191,14 +157,19 @@ export default function TicketHub() {
       }
 
       if (foundAttendee) {
-        setAttendee(foundAttendee);
-        setStep(2);
-        try {
-          const aiResult = await generateCyberpunkGreeting({ attendeeName: foundAttendee.Name });
-          setGreeting(aiResult.greeting);
-        } catch (error) {
-          setGreeting("Authorized entry permit retrieved. Welcome to the Matrix.");
-        }
+        setLoadingProgress(100);
+        setIsDecrypting(true);
+        setTimeout(async () => {
+          setAttendee(foundAttendee);
+          setStep(2);
+          setIsDecrypting(false);
+          try {
+            const aiResult = await generateCyberpunkGreeting({ attendeeName: foundAttendee!.Name });
+            setGreeting(aiResult.greeting);
+          } catch (error) {
+            setGreeting("Authorized entry permit retrieved. Welcome to the Matrix.");
+          }
+        }, 1500);
       } else {
         toast({
           title: "Registry Mismatch",
@@ -213,7 +184,7 @@ export default function TicketHub() {
         variant: "destructive",
       });
     } finally {
-      setLoading(false);
+      if (!foundAttendee) setLoading(false);
     }
   };
 
@@ -227,14 +198,11 @@ export default function TicketHub() {
       const images = Array.from(ticketRef.current.querySelectorAll('img'));
       await Promise.all(images.map(img => {
         return new Promise((resolve) => {
-          if (img.complete) resolve(true);
+          if (img.complete && img.naturalWidth > 0) resolve(true);
           else {
             img.onload = () => resolve(true);
             img.onerror = () => resolve(true);
           }
-        }).then(() => {
-          if ('decode' in img) return (img as any).decode().catch(() => {});
-          return Promise.resolve();
         });
       }));
 
@@ -246,8 +214,8 @@ export default function TicketHub() {
         backgroundColor: "#000000",
         width: 1000,
         height: 400,
-        windowWidth: 1000,
-        logging: false,
+        windowWidth: 1200,
+        logging: true,
         letterRendering: true,
       });
 
@@ -286,10 +254,25 @@ export default function TicketHub() {
     setStep(1);
     setEmail("");
     setAttendee(null);
+    setLoading(false);
+    setLoadingProgress(0);
   };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[90vh] p-4 max-w-6xl mx-auto space-y-12">
+      {/* Help Uplink FAB */}
+      <div className="fixed bottom-6 right-6 z-[100] group">
+        <div className="absolute -top-12 right-0 bg-primary/90 text-white text-[10px] px-3 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity font-mono whitespace-nowrap">
+          [SYSTEM_ADMIN]: NITHISHWARAN
+        </div>
+        <a 
+          href="tel:+918754330333"
+          className="h-14 w-14 bg-primary flex items-center justify-center rounded-full shadow-[0_0_20px_rgba(255,0,0,0.5)] hover:scale-110 transition-transform active:scale-95 border border-white/20"
+        >
+          <Phone className="h-6 w-6 text-white" />
+        </a>
+      </div>
+
       {step === 1 && (
         <div className="w-full flex flex-col items-center space-y-8 animate-in fade-in zoom-in duration-500">
           <div className="text-center space-y-4">
@@ -301,31 +284,47 @@ export default function TicketHub() {
               MadMatrix<span className="text-primary">'26</span>
             </h1>
             <p className="text-muted-foreground font-body text-sm max-w-md mx-auto">
-              Authorized portal for digital entry permits. Please enter your registered email.
+              Secure access portal for digital permits. Verification via registered encryption node required.
             </p>
           </div>
 
           <Card className="w-full max-w-2xl bg-black/60 border-primary/30 backdrop-blur-xl shadow-xl overflow-hidden cyber-scanline">
             <CardContent className="p-8">
-              <form onSubmit={handleSearch} className="flex flex-col md:flex-row gap-4">
-                <div className="relative flex-1">
-                  <Terminal className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-primary opacity-50" />
-                  <Input
-                    type="email"
-                    placeholder="REGISTERED_EMAIL_ID"
-                    className="pl-10 h-14 bg-black/40 border-primary/20 text-primary placeholder:text-primary/30 font-mono focus-visible:ring-primary text-lg uppercase"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
+              {!loading ? (
+                <form onSubmit={handleSearch} className="flex flex-col md:flex-row gap-4">
+                  <div className="relative flex-1">
+                    <Terminal className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-primary opacity-50" />
+                    <Input
+                      type="email"
+                      placeholder="REGISTERED_EMAIL_ID"
+                      className="pl-10 h-14 bg-black/40 border-primary/20 text-primary placeholder:text-primary/30 font-mono focus-visible:ring-primary text-lg uppercase"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
+                  </div>
+                  <button 
+                    type="submit" 
+                    disabled={!email}
+                    className="h-14 px-10 bg-primary text-white font-bold hover:bg-red-700 transition-all rounded-md shadow-lg disabled:opacity-50 text-sm tracking-widest uppercase flex items-center justify-center"
+                  >
+                    <Search className="mr-2 h-5 w-5" />VERIFY_ACCESS
+                  </button>
+                </form>
+              ) : (
+                <div className="space-y-6 py-4">
+                  <div className="flex justify-between items-center text-xs font-mono text-primary/80 uppercase">
+                    <span>[RETRIVING_DATA_FROM_EXCEL_DATABASE...]</span>
+                    <span>{loadingProgress}%</span>
+                  </div>
+                  <Progress value={loadingProgress} className="h-2 bg-primary/10" />
+                  {isDecypting && (
+                    <div className="flex items-center justify-center gap-2 text-green-500 font-mono text-sm animate-pulse">
+                      <ShieldCheck className="h-4 w-4" />
+                      [ACCESS_GRANTED]
+                    </div>
+                  )}
                 </div>
-                <button 
-                  type="submit" 
-                  disabled={loading || !email}
-                  className="h-14 px-10 bg-primary text-white font-bold hover:bg-red-700 transition-all rounded-md shadow-lg disabled:opacity-50 text-sm tracking-widest uppercase flex items-center justify-center"
-                >
-                  {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <><Search className="mr-2 h-5 w-5" />VERIFY_ACCESS</>}
-                </button>
-              </form>
+              )}
             </CardContent>
           </Card>
         </div>
@@ -333,41 +332,64 @@ export default function TicketHub() {
 
       {step === 2 && attendee && (
         <div className="w-full space-y-12 animate-in slide-in-from-bottom-8 duration-700">
-          <div className="max-w-4xl mx-auto w-full space-y-6">
-            <div className="flex items-center gap-4 text-primary mb-2">
-              <ShieldCheck className="h-6 w-6" />
-              <h2 className="text-2xl font-black uppercase tracking-tighter">Credential Verification</h2>
-            </div>
-            <Card className="bg-black/40 border-primary/20 backdrop-blur-lg overflow-hidden">
-              <Table>
-                <TableBody>
-                  <TableRow className="border-primary/10 hover:bg-white/5">
-                    <TableCell className="font-mono text-primary/60 text-xs w-1/3">ATTENDEE_NAME</TableCell>
-                    <TableCell className="font-black text-white uppercase">{attendee.Name}</TableCell>
-                  </TableRow>
-                  <TableRow className="border-primary/10 hover:bg-white/5">
-                    <TableCell className="font-mono text-primary/60 text-xs">REGISTER_NUMBER</TableCell>
-                    <TableCell className="font-bold text-white/90">{attendee.RegNo}</TableCell>
-                  </TableRow>
-                  <TableRow className="border-primary/10 hover:bg-white/5">
-                    <TableCell className="font-mono text-primary/60 text-xs">DEPARTMENT</TableCell>
-                    <TableCell className="font-bold text-primary">{attendee.Dept}</TableCell>
-                  </TableRow>
-                  <TableRow className="border-transparent hover:bg-white/5">
-                    <TableCell className="font-mono text-primary/60 text-xs">STATUS</TableCell>
-                    <TableCell className="text-green-500 font-bold flex items-center gap-2">
-                      <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-                      AUTHORIZED_ENTRY
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
+          {/* Cyber Terminal Dashboard Tiles */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto w-full">
+            <Card className="bg-white/5 border-primary/30 backdrop-blur-xl hover:bg-white/10 transition-all group overflow-hidden relative cyber-scanline">
+              <div className="absolute top-0 left-0 w-1 h-full bg-primary" />
+              <CardContent className="p-6">
+                <div className="flex items-center gap-2 text-primary/60 font-mono text-[10px] mb-4 uppercase tracking-widest">
+                  <User className="h-3 w-3" /> [IDENTITY_NODE]
+                </div>
+                <div className="space-y-1">
+                  <p className="text-[10px] text-primary font-bold uppercase">ATTENDEE</p>
+                  <h3 className="text-xl font-black text-white uppercase tracking-tighter cyber-glitch">
+                    <DecryptText text={attendee.Name} delay={100} />
+                  </h3>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-white/5 border-primary/30 backdrop-blur-xl hover:bg-white/10 transition-all group overflow-hidden relative">
+              <div className="absolute top-0 left-0 w-1 h-full bg-green-500" />
+              <CardContent className="p-6">
+                <div className="flex items-center gap-2 text-green-500/60 font-mono text-[10px] mb-4 uppercase tracking-widest">
+                  <Activity className="h-3 w-3" /> [SYSTEM_STATUS]
+                </div>
+                <div className="space-y-1">
+                  <p className="text-[10px] text-green-500 font-bold uppercase">SYSTEM_ROLE</p>
+                  <div className="flex items-center gap-2">
+                    <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_8px_#22c55e]" />
+                    <h3 className="text-xl font-black text-white uppercase tracking-tighter">
+                      {attendee.Status}
+                    </h3>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-white/5 border-primary/30 backdrop-blur-xl hover:bg-white/10 transition-all group overflow-hidden relative">
+              <div className="absolute top-0 left-0 w-1 h-full bg-blue-500" />
+              <CardContent className="p-6">
+                <div className="flex items-center gap-2 text-blue-500/60 font-mono text-[10px] mb-4 uppercase tracking-widest">
+                  <Zap className="h-3 w-3" /> [MISSION_ASSIGNMENT]
+                </div>
+                <div className="space-y-1">
+                  <p className="text-[10px] text-blue-500 font-bold uppercase">ASSIGNED_EVENT</p>
+                  <h3 className="text-xl font-black text-white uppercase tracking-tighter">
+                    {attendee.Event || "MAIN SYMPOSIUM"}
+                  </h3>
+                </div>
+              </CardContent>
             </Card>
           </div>
 
-          <div className="w-full flex flex-col items-center space-y-8">
-            <div className="p-6 bg-white/5 rounded-xl border border-white/10 overflow-x-auto w-full flex justify-center shadow-2xl backdrop-blur-sm">
-              <div className="p-2">
+          {/* Ticket Section */}
+          <div className="w-full flex flex-col items-center space-y-12">
+            <div className="p-8 bg-white/5 rounded-2xl border border-white/10 overflow-x-auto w-full flex justify-center shadow-2xl backdrop-blur-md relative">
+              <div className="absolute top-4 left-4 flex items-center gap-2 text-[8px] font-mono text-primary/40 uppercase">
+                <ShieldAlert className="h-2 w-2 animate-pulse" /> LIVE_PREVIEW_MODE
+              </div>
+              <div className="p-4 bg-black/40 rounded-lg">
                 <Ticket
                   ref={ticketRef}
                   id="madmatrix-ticket"
@@ -377,35 +399,44 @@ export default function TicketHub() {
               </div>
             </div>
 
-            <div className="flex flex-wrap items-center justify-center gap-4 w-full max-w-2xl">
+            <div className="flex flex-wrap items-center justify-center gap-4 w-full max-w-3xl">
               <Button
                 onClick={handleDownload}
                 disabled={downloading}
-                className="flex-1 min-w-[200px] h-14 bg-primary text-white font-bold hover:bg-red-700 shadow-lg uppercase tracking-widest text-xs"
+                className="flex-1 min-w-[220px] h-16 bg-primary text-white font-black hover:bg-red-700 shadow-[0_0_20px_rgba(255,0,0,0.3)] uppercase tracking-[0.2em] text-xs transition-all active:scale-95"
               >
-                {downloading ? <><Loader2 className="mr-2 h-5 w-5 animate-spin" />RENDERING_ASSETS...</> : <><Download className="mr-2 h-5 w-5" />DOWNLOAD HD TICKET (SCALE_3X)</>}
+                {downloading ? (
+                  <><Loader2 className="mr-2 h-5 w-5 animate-spin" />RENDERING_ASSETS_3X...</>
+                ) : (
+                  <><Download className="mr-2 h-5 w-5" />DOWNLOAD HD_PERMIT</>
+                )}
               </Button>
               <Button
                 onClick={handleShareWhatsApp}
-                className="flex-1 min-w-[200px] h-14 bg-[#25D366] text-white font-bold hover:bg-[#128C7E] shadow-lg uppercase tracking-widest text-xs"
+                className="flex-1 min-w-[220px] h-16 bg-[#25D366] text-white font-black hover:bg-[#128C7E] shadow-[0_0_20px_rgba(37,211,102,0.3)] uppercase tracking-[0.2em] text-xs transition-all active:scale-95"
               >
-                <Share2 className="mr-2 h-5 w-5" />WHATSAPP SHARE
+                <Share2 className="mr-2 h-5 w-5" />UPLINK_TO_WHATSAPP
               </Button>
               <Button
                 variant="outline"
                 onClick={resetPortal}
-                className="w-full h-12 border-primary/20 text-primary/60 hover:text-primary hover:border-primary/40 uppercase tracking-widest text-[10px]"
+                className="w-full h-12 border-primary/20 text-primary/60 hover:text-primary hover:border-primary/40 hover:bg-primary/5 uppercase tracking-[0.4em] text-[10px] font-mono"
               >
-                Return to Search
+                [RESET_SYSTEM_NODE]
               </Button>
             </div>
 
             {greeting && (
-              <div className="max-w-md mx-auto p-6 bg-primary/5 border border-primary/20 rounded-xl flex flex-col items-center gap-4 text-center">
-                <div className="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center">
-                  <UserCheck className="h-5 w-5 text-primary" />
+              <div className="max-w-2xl mx-auto p-8 bg-primary/5 border border-primary/20 rounded-2xl flex flex-col items-center gap-6 text-center relative cyber-scanline">
+                <div className="h-12 w-12 rounded-full bg-primary/20 flex items-center justify-center border border-primary/40">
+                  <UserCheck className="h-6 w-6 text-primary" />
                 </div>
-                <p className="text-[10px] text-muted-foreground font-mono uppercase italic leading-relaxed">{greeting}</p>
+                <div className="space-y-2">
+                  <p className="text-[10px] text-primary/40 font-mono uppercase tracking-[0.3em]">AI_PERSONALIZED_GREETING</p>
+                  <p className="text-xs md:text-sm text-muted-foreground font-mono leading-relaxed italic">
+                    "{greeting}"
+                  </p>
+                </div>
               </div>
             )}
           </div>
