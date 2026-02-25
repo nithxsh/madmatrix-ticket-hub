@@ -101,9 +101,11 @@ export default function TicketHub() {
 
     setDownloading(true);
     try {
+      // 1. Precise Font Loading
       await document.fonts.ready;
       await document.fonts.load('900 32px Inter');
 
+      // 2. Asset Decoding Buffer
       const images = Array.from(ticketRef.current.querySelectorAll('img'));
       await Promise.all(images.map(img => {
         return new Promise((resolve) => {
@@ -118,16 +120,18 @@ export default function TicketHub() {
         });
       }));
 
-      // High-precision stabilization buffer
+      // 3. Stabilization Delay
       await new Promise(r => setTimeout(r, 600));
 
+      // 4. Capture with Virtual Window Stabilization
       const canvas = await html2canvas(ticketRef.current, {
         useCORS: true,
         scale: 3, 
         backgroundColor: "#000000",
         width: 850,
         height: 330,
-        logging: false,
+        windowWidth: 1200, // Ensuring wide virtual browser for spacing
+        logging: true,
         letterRendering: true,
       });
 
@@ -170,7 +174,6 @@ export default function TicketHub() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[90vh] p-4 max-w-6xl mx-auto space-y-12">
-      {/* Stage 1: Email Entry */}
       {step === 1 && (
         <div className="w-full flex flex-col items-center space-y-8 animate-in fade-in zoom-in duration-500">
           <div className="text-center space-y-4">
@@ -212,10 +215,8 @@ export default function TicketHub() {
         </div>
       )}
 
-      {/* Stage 2-5: Results & Footer */}
       {step === 2 && attendee && (
         <div className="w-full space-y-12 animate-in slide-in-from-bottom-8 duration-700">
-          {/* Stage 2: Data Preview Table */}
           <div className="max-w-4xl mx-auto w-full space-y-6">
             <div className="flex items-center gap-4 text-primary mb-2">
               <ShieldCheck className="h-6 w-6" />
@@ -248,7 +249,6 @@ export default function TicketHub() {
             </Card>
           </div>
 
-          {/* Stage 3: Ticket Generation */}
           <div className="w-full flex flex-col items-center space-y-8">
             <div className="p-4 bg-white/5 rounded-lg border border-white/10 overflow-x-auto w-full flex justify-center shadow-2xl">
               <div className="p-2">
@@ -261,7 +261,6 @@ export default function TicketHub() {
               </div>
             </div>
 
-            {/* Stage 4: Download Action */}
             <div className="flex flex-wrap items-center justify-center gap-4 w-full max-w-2xl">
               <Button
                 onClick={handleDownload}
@@ -295,7 +294,6 @@ export default function TicketHub() {
             )}
           </div>
 
-          {/* Stage 5: Footer Info */}
           <footer className="w-full max-w-4xl mx-auto pt-12 border-t border-primary/10">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 text-muted-foreground">
               <div className="space-y-4">
@@ -342,4 +340,3 @@ export default function TicketHub() {
     </div>
   );
 }
-

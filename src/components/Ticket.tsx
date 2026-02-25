@@ -53,7 +53,7 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
           />
         </div>
 
-        {/* 2. Absolute Header - Hard Locked Pinned Sides */}
+        {/* 2. Absolute Header - Edge-Lock */}
         <div 
           style={{ 
             position: "absolute", 
@@ -64,7 +64,6 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
             backgroundColor: "white", 
             borderBottom: "2px solid #ff0000",
             zIndex: 10,
-            padding: "0 40px",
             boxSizing: "border-box"
           }}
         >
@@ -72,7 +71,7 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
           <div 
             style={{ 
               position: "absolute", 
-              left: "40px", 
+              left: "30px", 
               top: "15px", 
               textAlign: "left" 
             }}
@@ -85,7 +84,7 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
           <div 
             style={{ 
               position: "absolute", 
-              right: "40px", 
+              right: "30px", 
               top: "15px", 
               textAlign: "right" 
             }}
@@ -117,14 +116,14 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
            <p style={{ color: "rgba(255,255,255,0.6)", fontWeight: 700, fontSize: "8px", letterSpacing: "0.5em", textTransform: "uppercase", margin: "8px 0 0 0" }}>NATIONAL LEVEL SYMPOSIUM</p>
         </div>
 
-        {/* 4. Name Layer - High Z-Index Center Pin */}
+        {/* 4. Name Layer - Center-Lock */}
         <div style={{ 
           position: "absolute", 
-          top: "190px", 
-          left: "0", 
-          width: "600px", 
+          top: "60%", 
+          left: 0, 
+          width: "100%", 
           textAlign: "center",
-          zIndex: 999 
+          zIndex: 50 
         }}>
            <span style={{ color: "rgba(255,255,255,0.4)", fontFamily: "monospace", fontSize: "7px", letterSpacing: "0.3em", textTransform: "uppercase", display: "block" }}>AUTHORIZED PERSON</span>
            <div style={{ height: "45px", display: "flex", alignItems: "center", justifyContent: "center", marginTop: "5px" }}>
@@ -134,35 +133,45 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
            </div>
         </div>
 
-        {/* 5. Bottom Info - Fixed Pixel Percentage Positioning */}
-        <div style={{ position: "absolute", bottom: "40px", left: "20%", width: "150px", textAlign: "center", color: "white", zIndex: 15 }}>
+        {/* 5. Bottom Info - Split-Lock Fixed Percentage Anchors */}
+        <div style={{ 
+          position: "absolute", 
+          left: "10%", 
+          bottom: "15%", 
+          width: "30%", 
+          textAlign: "center", 
+          color: "white", 
+          zIndex: 15 
+        }}>
            <span style={{ fontWeight: 900, fontSize: "24px", letterSpacing: "-0.05em", lineHeight: 1, display: "block" }}>MAR 13-14</span>
            <span style={{ fontSize: "7px", fontWeight: 700, textTransform: "uppercase", opacity: 0.5, letterSpacing: "0.2em", display: "block" }}>EVENT DATES</span>
         </div>
 
-        <div style={{ position: "absolute", bottom: "40px", left: "55%", width: "150px", textAlign: "center", color: "white", zIndex: 15 }}>
+        <div style={{ 
+          position: "absolute", 
+          left: "40%", 
+          bottom: "15%", 
+          width: "30%", 
+          textAlign: "center", 
+          color: "white", 
+          zIndex: 15 
+        }}>
            <span style={{ fontWeight: 900, fontSize: "24px", letterSpacing: "-0.05em", lineHeight: 1, textTransform: "uppercase", display: "block" }}>SIMATS</span>
            <span style={{ fontSize: "7px", fontWeight: 700, textTransform: "uppercase", opacity: 0.5, letterSpacing: "0.2em", display: "block" }}>LOCATION</span>
-        </div>
-
-        <div style={{ position: "absolute", bottom: "15px", left: "0", width: "600px", textAlign: "center", zIndex: 15 }}>
-           <p style={{ color: "hsl(var(--primary))", fontWeight: 900, fontSize: "10px", letterSpacing: "0.25em", textTransform: "uppercase", margin: 0 }}>
-             SIMATS ENGINEERING CAMPUS, CHENNAI
-           </p>
         </div>
 
         {/* 6. Vertical Dashed Divider */}
         <div style={{ position: "absolute", left: "600px", top: "65px", width: "2px", height: "265px", borderLeft: "2px dashed rgba(255,255,255,0.2)", zIndex: 10 }}></div>
 
-        {/* 7. Right Panel (QR Stub) - Absolute Unit Lock */}
+        {/* 7. Right Panel (QR Stub) - Side-Lock Unit */}
         <div 
           id="qr-panel"
           style={{ 
             position: "absolute", 
-            right: "40px", 
+            right: "5%", 
             top: "50%", 
             transform: "translateY(-30%)", 
-            width: "200px", 
+            width: "20%", 
             textAlign: "center",
             zIndex: 20
           }}
