@@ -36,8 +36,6 @@ export default function TicketHub() {
     setAttendee(null);
     setGreeting("");
 
-    // Precisely encoded endpoints for all registry sheets
-    // Updated ON STAGE and OFF STAGE to lowercase as requested
     const endpoints = [
       "https://sheetdb.io/api/v1/06ca0hvc7hw5j",
       "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=track%201.0",
@@ -109,29 +107,38 @@ export default function TicketHub() {
 
     setIsCapturing(true);
     try {
-      // Robustly ensure all images are pre-loaded for capture
+      // Ensure all images are pre-loaded for capture
       const images = Array.from(ticketRef.current.getElementsByTagName('img'));
       await Promise.all(
         images.map(img => {
           if (img.complete) return Promise.resolve();
           return new Promise((resolve) => {
             img.onload = resolve;
-            img.onerror = resolve; // Continue even if one fails
+            img.onerror = resolve;
           });
         })
       );
 
-      // Necessary stabilization delay for browser layout engine
-      await new Promise(resolve => setTimeout(resolve, 800));
+      // Stabilization delay to avoid CanvasRenderingContext2D issues during layout calculation
+      await new Promise(resolve => setTimeout(resolve, 1000));
 
       const canvas = await html2canvas(ticketRef.current, {
         useCORS: true,
         allowTaint: false,
-        scale: 2, // Optimized scale for reliability
+        scale: 2,
         backgroundColor: "#000000",
         logging: false,
         width: 850,
         height: 480,
+        onclone: (clonedDoc) => {
+          // Force elements to be visible and stable in the cloned document
+          const clonedTicket = clonedDoc.getElementById("madmatrix-ticket");
+          if (clonedTicket) {
+            clonedTicket.style.transform = "none";
+            clonedTicket.style.animation = "none";
+            clonedTicket.style.transition = "none";
+          }
+        }
       });
       
       const link = document.createElement("a");
