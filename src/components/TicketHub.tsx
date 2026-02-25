@@ -37,12 +37,13 @@ export default function TicketHub() {
     setGreeting("");
 
     // Precisely encoded endpoints for all registry sheets
+    // Updated ON STAGE and OFF STAGE to lowercase as requested
     const endpoints = [
       "https://sheetdb.io/api/v1/06ca0hvc7hw5j",
       "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=track%201.0",
       "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=MOBILE%20GAMES%20%26%20mad%20sports",
-      "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=OFF%20STAGE",
-      "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=ON%20STAGE",
+      "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=offstage",
+      "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=onstage",
       "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=SPORTS%20FORM"
     ];
 
@@ -88,7 +89,7 @@ export default function TicketHub() {
       } else {
         toast({
           title: "Registry Mismatch",
-          description: `Email "${sanitizedEmail}" not found in any of the 5 registries.`,
+          description: `Email "${sanitizedEmail}" not found in any of the registries.`,
           variant: "destructive",
         });
       }
@@ -165,7 +166,7 @@ export default function TicketHub() {
           MadMatrix<span className="text-primary">'26</span>
         </h1>
         <p className="text-muted-foreground font-body text-sm md:text-base max-w-md mx-auto">
-          Searching across all registry sheets including MOBILE GAMES, OFF STAGE, ON STAGE, and SPORTS.
+          Authorized digital entry permits for SIMATS Engineering national symposium.
         </p>
       </div>
 
