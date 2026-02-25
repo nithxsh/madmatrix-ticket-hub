@@ -37,7 +37,7 @@ export default function TicketHub() {
     setGreeting("");
 
     try {
-      const apiUrl = `https://sheetdb.io/api/v1/m4xm36b3182sq`;
+      const apiUrl = `https://sheetdb.io/api/v1/06ca0hvc7hw5j`;
       const response = await fetch(apiUrl);
       const data = await response.json();
 
