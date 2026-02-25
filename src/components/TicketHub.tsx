@@ -36,7 +36,6 @@ export default function TicketHub() {
     setAttendee(null);
     setGreeting("");
 
-    // Updated API endpoints with correct URL encoding for spaces and special characters
     const endpoints = [
       "https://sheetdb.io/api/v1/06ca0hvc7hw5j",
       "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=MOBILE%20GAMES%20%26%20mad%20sports",
@@ -48,14 +47,12 @@ export default function TicketHub() {
     try {
       let foundAttendee: Attendee | null = null;
 
-      // Iterate through endpoints until a match is found
       for (const url of endpoints) {
         try {
           const response = await fetch(url);
           const data = await response.json();
 
           if (Array.isArray(data)) {
-            // Robust search: Check every value in every row for a match with the email
             const foundRow = data.find((row: any) => {
               return Object.values(row).some((value) => {
                 return typeof value === 'string' && value.trim().toLowerCase() === sanitizedEmail;
@@ -64,12 +61,11 @@ export default function TicketHub() {
 
             if (foundRow) {
               foundAttendee = {
-                // Use a fallback if the name or regNo columns have different titles in different sheets
                 Name: foundRow.Name || foundRow.name || foundRow.NAME || foundRow['Name'] || "WELCOME MADMATRIX !",
                 RegNo: foundRow.RegNo || foundRow.regno || foundRow.REGNO || foundRow['Reg No'] || foundRow['RegNo'] || "VERIFIED",
                 email: sanitizedEmail,
               };
-              break; // Stop searching if found
+              break;
             }
           }
         } catch (err) {
@@ -88,7 +84,7 @@ export default function TicketHub() {
       } else {
         toast({
           title: "Registry Mismatch",
-          description: `Email "${sanitizedEmail}" not found in any registry. Please check your credentials.`,
+          description: `Email "${sanitizedEmail}" not found in any registry.`,
           variant: "destructive",
         });
       }
@@ -109,15 +105,19 @@ export default function TicketHub() {
     setIsCapturing(true);
     try {
       // Small delay to ensure rendering is complete
-      await new Promise(resolve => setTimeout(resolve, 300));
+      await new Promise(resolve => setTimeout(resolve, 500));
 
       const canvas = await html2canvas(ticketRef.current, {
         useCORS: true,
-        scale: 3, // High quality but balanced for file size
-        backgroundColor: "#050000",
+        scale: 2, // Use 2 for high quality without excessive file size
+        backgroundColor: "#000000",
         logging: false,
-        width: 800,
-        height: 380,
+        width: 850,
+        height: 480,
+        scrollX: 0,
+        scrollY: -window.scrollY, // Correct offset for viewport position
+        windowWidth: document.documentElement.offsetWidth,
+        windowHeight: document.documentElement.offsetHeight,
       });
       
       const link = document.createElement("a");
@@ -141,7 +141,7 @@ export default function TicketHub() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[80vh] p-4 max-w-5xl mx-auto space-y-12">
+    <div className="flex flex-col items-center justify-center min-h-[80vh] p-4 max-w-6xl mx-auto space-y-12">
       <div className="text-center space-y-4">
         <div className="flex items-center justify-center gap-2 mb-2">
           <div className="h-2 w-2 rounded-full bg-primary animate-pulse" />
@@ -155,7 +155,7 @@ export default function TicketHub() {
         </p>
       </div>
 
-      <Card className="w-full bg-black/60 border-primary/30 backdrop-blur-xl shadow-[0_0_30px_rgba(255,0,0,0.1)] overflow-hidden cyber-scanline">
+      <Card className="w-full max-w-2xl bg-black/60 border-primary/30 backdrop-blur-xl shadow-[0_0_30px_rgba(255,0,0,0.1)] overflow-hidden cyber-scanline">
         <CardContent className="p-8">
           <form onSubmit={handleSearch} className="flex flex-col md:flex-row gap-4">
             <div className="relative flex-1">
@@ -193,13 +193,15 @@ export default function TicketHub() {
         <div className="w-full space-y-10 animate-in zoom-in-95 duration-700">
           <div className="flex flex-col items-center space-y-8">
             <div className="p-4 bg-white/5 rounded-lg border border-white/10 shadow-2xl overflow-x-auto w-full flex justify-center">
-              <Ticket
-                ref={ticketRef}
-                id="madmatrix-ticket"
-                name={attendee.Name}
-                regNo={attendee.RegNo}
-                greeting={greeting}
-              />
+              <div className="p-2">
+                <Ticket
+                  ref={ticketRef}
+                  id="madmatrix-ticket"
+                  name={attendee.Name}
+                  regNo={attendee.RegNo}
+                  greeting={greeting}
+                />
+              </div>
             </div>
             
             <Button 
