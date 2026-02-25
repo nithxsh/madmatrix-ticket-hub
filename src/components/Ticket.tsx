@@ -41,29 +41,28 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
           <div className="absolute inset-0 bg-black/40" />
         </div>
 
-        {/* Header - Minimized Height 60px with Absolute Corner Positioning */}
-        <div className="relative h-[60px] bg-white z-30 overflow-hidden">
-          {/* Left Side Branding - SIMATS Engineering */}
-          <div className="absolute left-8 top-1/2 -translate-y-1/2 flex flex-col items-start">
-            <span className="text-[#0a2e5c] font-black text-xl tracking-tighter leading-none mb-0.5">SIMATS</span>
-            <span className="text-[#0a2e5c] text-[8px] font-bold tracking-[0.2em] uppercase leading-none opacity-90">ENGINEERING</span>
+        {/* Header - Recreated based on reference image */}
+        <div className="relative h-[65px] bg-white z-30 overflow-hidden flex items-center px-8 border-b-2 border-[#ff0000]">
+          {/* Left Side: SIMATS ENGINEERING */}
+          <div className="flex flex-col items-start">
+            <span className="text-[#0a2e5c] font-black text-2xl tracking-tighter leading-none">SIMATS</span>
+            <span className="text-[#0a2e5c] text-[9px] font-bold tracking-[0.2em] uppercase leading-none mt-0.5">ENGINEERING</span>
           </div>
 
-          {/* Right Side Branding - SIMATS University */}
-          <div className="absolute right-8 top-1/2 -translate-y-1/2 flex flex-col items-end text-right">
-            <span className="text-[#0a2e5c] font-black text-xl tracking-tighter leading-none mb-0.5">SIMATS</span>
-            <span className="text-[#0a2e5c] text-[7px] font-bold uppercase tracking-[0.05em] leading-none mb-1">DEEMED TO BE UNIVERSITY</span>
-            <span className="text-[#0a2e5c] text-[5px] font-medium uppercase tracking-tight opacity-70 leading-none">
+          <div className="flex-1"></div>
+
+          {/* Right Side: SIMATS Deemed to be University */}
+          <div className="flex flex-col items-end text-right">
+            <span className="text-[#0a2e5c] font-black text-2xl tracking-tighter leading-none">SIMATS</span>
+            <span className="text-[#0a2e5c] text-[8px] font-bold uppercase tracking-[0.05em] leading-none mb-1">DEEMED TO BE UNIVERSITY</span>
+            <span className="text-[#0a2e5c] text-[5.5px] font-medium uppercase tracking-tight opacity-80 leading-none">
               SAVEETHA INSTITUTE OF MEDICAL AND TECHNICAL SCIENCES
             </span>
           </div>
         </div>
 
-        {/* Red Separator Bar - Height 4px */}
-        <div className="h-[4px] w-full bg-[#ff0000] z-30"></div>
-
-        {/* Ticket Body - Remaining height 266px */}
-        <div className="relative z-10 flex h-[266px] w-[850px]">
+        {/* Ticket Body - Remaining height 265px */}
+        <div className="relative z-10 flex h-[265px] w-[850px]">
           {/* Main Section - 600px width */}
           <div className="w-[600px] h-full flex flex-col items-center justify-between py-6 px-8">
             <div className="text-center">
@@ -73,11 +72,11 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
                <p className="text-white font-bold text-[8px] tracking-[0.4em] uppercase opacity-70 mt-1">NATIONAL LEVEL SYMPOSIUM</p>
             </div>
 
-            {/* Name and Authorized Person Label - Absolute stability */}
+            {/* Name and Authorized Person Label */}
             <div className="w-full flex flex-col items-center">
                <span className="text-white/40 font-mono text-[8px] tracking-[0.2em] uppercase mb-1">AUTHORIZED PERSON</span>
                <div className="w-32 h-[1px] bg-white/20 mb-2"></div>
-               <span className="text-white font-black text-3xl tracking-tight uppercase leading-none text-center px-4">
+               <span className="text-white font-black text-3xl tracking-tight uppercase leading-none text-center px-4 break-words">
                  {name || "WELCOME MADMATRIX !"}
                </span>
                <div className="w-32 h-[1px] bg-white/20 mt-3"></div>

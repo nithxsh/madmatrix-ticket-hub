@@ -109,6 +109,7 @@ export default function TicketHub() {
     setDownloading(true);
     try {
       // 1. Rigorous Asset Validation to eliminate InvalidStateError
+      // We check for naturalWidth to ensure the image is NOT 0x0
       const images = Array.from(ticketRef.current.querySelectorAll('img'));
       
       const validateAssets = async () => {
@@ -142,13 +143,13 @@ export default function TicketHub() {
 
       await validateAssets();
       
-      // 2. Delay for browser layout stabilization
-      await new Promise(r => setTimeout(r, 800));
+      // 2. Extra delay for browser layout stabilization
+      await new Promise(r => setTimeout(r, 1000));
 
       const canvas = await html2canvas(ticketRef.current, {
         useCORS: true,
         allowTaint: false,
-        scale: 3, // High DPI for PDF
+        scale: 3, 
         backgroundColor: "#000000",
         logging: false,
         width: 850,
@@ -158,13 +159,17 @@ export default function TicketHub() {
         onclone: (clonedDoc) => {
           const clonedTicket = clonedDoc.getElementById("madmatrix-ticket");
           if (clonedTicket) {
-            // Force absolute static position for the cloned capture element
             clonedTicket.style.transform = "none";
             clonedTicket.style.position = "fixed";
             clonedTicket.style.top = "0";
             clonedTicket.style.left = "0";
             clonedTicket.style.margin = "0";
             clonedTicket.style.border = "none";
+            // Ensure child visibility
+            Array.from(clonedTicket.querySelectorAll('*')).forEach((el: any) => {
+                el.style.visibility = 'visible';
+                el.style.opacity = '1';
+            });
           }
         }
       });
@@ -181,13 +186,13 @@ export default function TicketHub() {
 
       toast({
         title: "Download Successful",
-        description: "Your official entry permit has been saved.",
+        description: "Your official entry permit has been saved as PDF.",
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error("PDF Capture Error:", error);
       toast({
-        title: "Capture Stabilization Issue",
-        description: "The system encountered a rendering error. Please try again.",
+        title: "Download Error",
+        description: error.message || "System encountered a rendering error. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -270,7 +275,7 @@ export default function TicketHub() {
                 {downloading ? (
                   <>
                     <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                    GENERATING PERMIT...
+                    GENERATING PDF...
                   </>
                 ) : (
                   <>
