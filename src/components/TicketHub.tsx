@@ -5,7 +5,7 @@ import React, { useState, useRef } from "react";
 import { Search, Terminal, Loader2, Download, Share2, UserCheck, ShieldCheck, MapPin, Calendar, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Ticket } from "@/components/Ticket";
 import { useToast } from "@/hooks/use-toast";
 import { generateCyberpunkGreeting } from "@/ai/flows/generate-cyberpunk-greeting";
@@ -101,15 +101,14 @@ export default function TicketHub() {
 
     setDownloading(true);
     try {
-      // 1. Precise Font Loading
+      // 1. Wait for Fonts to be fully active
       await document.fonts.ready;
-      await document.fonts.load('900 32px Inter');
-
-      // 2. Asset Decoding Buffer
+      
+      // 2. Pre-decode images to prevent InvalidStateError
       const images = Array.from(ticketRef.current.querySelectorAll('img'));
       await Promise.all(images.map(img => {
         return new Promise((resolve) => {
-          if (img.complete && img.naturalWidth > 0) resolve(true);
+          if (img.complete) resolve(true);
           else {
             img.onload = () => resolve(true);
             img.onerror = () => resolve(true);
@@ -120,18 +119,18 @@ export default function TicketHub() {
         });
       }));
 
-      // 3. Stabilization Delay
+      // 3. Stabilization Buffer for final paint
       await new Promise(r => setTimeout(r, 600));
 
-      // 4. Capture with Virtual Window Stabilization
+      // 4. Capture with Strict Viewport Alignment
       const canvas = await html2canvas(ticketRef.current, {
         useCORS: true,
         scale: 3, 
         backgroundColor: "#000000",
-        width: 850,
-        height: 330,
-        windowWidth: 1200, // Ensuring wide virtual browser for spacing
-        logging: true,
+        width: 1000,
+        height: 400,
+        windowWidth: 1000,
+        logging: false,
         letterRendering: true,
       });
 
@@ -139,10 +138,10 @@ export default function TicketHub() {
       const pdf = new jsPDF({
         orientation: "landscape",
         unit: "px",
-        format: [850, 330]
+        format: [1000, 400]
       });
 
-      pdf.addImage(imgData, "JPEG", 0, 0, 850, 330);
+      pdf.addImage(imgData, "JPEG", 0, 0, 1000, 400);
       pdf.save(`MadMatrix_Permit_${attendee.RegNo}.pdf`);
 
       toast({
@@ -152,7 +151,7 @@ export default function TicketHub() {
     } catch (error) {
       toast({
         title: "Download Interrupted",
-        description: "Rendering timeout. Please try again.",
+        description: "Layout stabilization failed. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -250,7 +249,7 @@ export default function TicketHub() {
           </div>
 
           <div className="w-full flex flex-col items-center space-y-8">
-            <div className="p-4 bg-white/5 rounded-lg border border-white/10 overflow-x-auto w-full flex justify-center shadow-2xl">
+            <div className="p-6 bg-white/5 rounded-xl border border-white/10 overflow-x-auto w-full flex justify-center shadow-2xl backdrop-blur-sm">
               <div className="p-2">
                 <Ticket
                   ref={ticketRef}
@@ -267,7 +266,7 @@ export default function TicketHub() {
                 disabled={downloading}
                 className="flex-1 min-w-[200px] h-14 bg-primary text-white font-bold hover:bg-red-700 shadow-lg uppercase tracking-widest text-xs"
               >
-                {downloading ? <><Loader2 className="mr-2 h-5 w-5 animate-spin" />RENDERING_HD_ASSETS...</> : <><Download className="mr-2 h-5 w-5" />DOWNLOAD TICKET (SCALE_3X)</>}
+                {downloading ? <><Loader2 className="mr-2 h-5 w-5 animate-spin" />RENDERING_ASSETS...</> : <><Download className="mr-2 h-5 w-5" />DOWNLOAD HD TICKET (SCALE_3X)</>}
               </Button>
               <Button
                 onClick={handleShareWhatsApp}
