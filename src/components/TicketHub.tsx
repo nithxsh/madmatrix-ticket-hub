@@ -36,8 +36,9 @@ export default function TicketHub() {
     setAttendee(null);
     setGreeting("");
 
-    // Precisely encoded endpoints for all 5 sheets
+    // Precisely encoded endpoints for all registry sheets
     const endpoints = [
+      "https://sheetdb.io/api/v1/06ca0hvc7hw5j",
       "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=track%201.0",
       "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=MOBILE%20GAMES%20%26%20mad%20sports",
       "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=OFF%20STAGE",
@@ -51,12 +52,14 @@ export default function TicketHub() {
       for (const url of endpoints) {
         try {
           const response = await fetch(url);
+          if (!response.ok) continue;
+          
           const data = await response.json();
 
           if (Array.isArray(data)) {
             const foundRow = data.find((row: any) => {
               return Object.values(row).some((value) => {
-                return typeof value === 'string' && value.trim().toLowerCase() === sanitizedEmail;
+                return typeof value !== 'undefined' && String(value).trim().toLowerCase() === sanitizedEmail;
               });
             });
 
@@ -70,7 +73,7 @@ export default function TicketHub() {
             }
           }
         } catch (err) {
-          console.error(`Error searching in sheet:`, err);
+          console.error(`Error searching in sheet at ${url}:`, err);
         }
       }
 
@@ -105,28 +108,34 @@ export default function TicketHub() {
 
     setIsCapturing(true);
     try {
-      // Small delay to ensure rendering is complete
-      await new Promise(resolve => setTimeout(resolve, 300));
+      // Robustly ensure all images are pre-loaded for capture
+      const images = Array.from(ticketRef.current.getElementsByTagName('img'));
+      await Promise.all(
+        images.map(img => {
+          if (img.complete) return Promise.resolve();
+          return new Promise((resolve) => {
+            img.onload = resolve;
+            img.onerror = resolve; // Continue even if one fails
+          });
+        })
+      );
+
+      // Necessary stabilization delay for browser layout engine
+      await new Promise(resolve => setTimeout(resolve, 800));
 
       const canvas = await html2canvas(ticketRef.current, {
         useCORS: true,
-        scale: 3, // High quality
+        allowTaint: false,
+        scale: 2, // Optimized scale for reliability
         backgroundColor: "#000000",
         logging: false,
         width: 850,
         height: 480,
-        onclone: (clonedDoc) => {
-          const element = clonedDoc.getElementById("madmatrix-ticket");
-          if (element) {
-            element.style.transform = "none";
-            element.style.position = "relative";
-          }
-        }
       });
       
       const link = document.createElement("a");
       link.download = `MadMatrix_Permit_${attendee?.RegNo || "2026"}.png`;
-      link.href = canvas.toDataURL("image/png", 1.0);
+      link.href = canvas.toDataURL("image/png", 0.95);
       link.click();
       
       toast({
@@ -134,9 +143,10 @@ export default function TicketHub() {
         description: "Your digital permit has been saved.",
       });
     } catch (error) {
+      console.error("Download Error:", error);
       toast({
         title: "Download Failed",
-        description: "Could not generate permit image.",
+        description: "Could not generate permit image. Please refresh and try again.",
         variant: "destructive",
       });
     } finally {
@@ -155,7 +165,7 @@ export default function TicketHub() {
           MadMatrix<span className="text-primary">'26</span>
         </h1>
         <p className="text-muted-foreground font-body text-sm md:text-base max-w-md mx-auto">
-          Searching across 5 Registry Sheets: track 1.0, MOBILE GAMES, OFF STAGE, ON STAGE, SPORTS.
+          Searching across all registry sheets including MOBILE GAMES, OFF STAGE, ON STAGE, and SPORTS.
         </p>
       </div>
 

@@ -2,6 +2,7 @@
 "use client";
 
 import React from "react";
+import { PlaceHolderImages } from "@/lib/placeholder-images";
 
 interface TicketProps {
   name: string;
@@ -14,8 +15,8 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
     // QR points to the official site
     const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent("https://www.madmatrix.site/")}&size=250x250&color=000000&bgcolor=ffffff`;
     
-    // Official branding assets
-    const campusBgUrl = "https://www.saveetha.ac.in/images/saveetha/saveetha-engineering-college.jpg";
+    // Using a reliable Unsplash background from our list for better CORS support during download
+    const bgImage = PlaceHolderImages.find(img => img.id === "ticket-template")?.imageUrl || "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=1080";
 
     return (
       <div
@@ -27,15 +28,15 @@ export const Ticket = React.forwardRef<HTMLDivElement, TicketProps>(
         {/* Campus Background Image */}
         <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
           <img 
-            src={campusBgUrl} 
-            alt="Campus Background" 
+            src={bgImage} 
+            alt="Ticket Background" 
             className="w-full h-full object-cover opacity-30"
             crossOrigin="anonymous"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/40 to-black/90" />
         </div>
 
-        {/* Header Branding Bar - Text moved to corners, no logos */}
+        {/* Header Branding Bar - Clean text-only corners */}
         <div className="relative h-[95px] bg-white z-30 flex items-center justify-between px-10">
           <div className="flex flex-col">
             <span className="text-[#0a2e5c] font-black text-2xl tracking-tighter leading-none">SIMATS</span>
