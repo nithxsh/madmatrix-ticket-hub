@@ -36,10 +36,9 @@ export default function TicketHub() {
     setAttendee(null);
     setGreeting("");
 
-    // Finalized endpoints targeting all 5 registry sheets
+    // Consolidated 5 primary registry sheet endpoints
     const endpoints = [
       "https://sheetdb.io/api/v1/06ca0hvc7hw5j",
-      "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=track%201.0",
       "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=MOBILE%20GAMES%20%26%20mad%20sports",
       "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=onstage",
       "https://sheetdb.io/api/v1/06ca0hvc7hw5j?sheet=offstage",
@@ -88,7 +87,7 @@ export default function TicketHub() {
       } else {
         toast({
           title: "Registry Mismatch",
-          description: `Email "${sanitizedEmail}" not found in any of the registries.`,
+          description: `Email "${sanitizedEmail}" not found in any of the 5 event registries.`,
           variant: "destructive",
         });
       }
@@ -108,26 +107,28 @@ export default function TicketHub() {
 
     setIsCapturing(true);
     try {
-      // PHASE 1: Asset Validation & Decoding to prevent InvalidStateError
+      // PHASE 1: Deep Asset Validation
+      // Ensure all images are fully decoded and have non-zero dimensions
       const images = Array.from(ticketRef.current.getElementsByTagName('img'));
       await Promise.all(
         images.map(async (img) => {
-          try {
-            if ('decode' in img) {
-              await img.decode();
-            }
-            // Strict dimension check
-            if (img.naturalWidth === 0 || img.naturalHeight === 0) {
-              throw new Error("Asset has zero dimensions");
-            }
-          } catch (e) {
-            console.warn("Asset validation warning:", e);
+          if ('decode' in img) {
+            await img.decode();
+          }
+          // Explicitly wait if the layout hasn't calculated dimensions yet
+          let attempts = 0;
+          while ((img.naturalWidth === 0 || img.naturalHeight === 0) && attempts < 20) {
+            await new Promise(resolve => setTimeout(resolve, 50));
+            attempts++;
+          }
+          if (img.naturalWidth === 0) {
+            throw new Error(`Asset ${img.src} has zero dimensions`);
           }
         })
       );
 
-      // Brief pause for browser layout engine to settle
-      await new Promise(resolve => setTimeout(resolve, 800));
+      // Brief layout settling time
+      await new Promise(resolve => setTimeout(resolve, 500));
 
       // PHASE 2: Stabilized Capture
       const canvas = await html2canvas(ticketRef.current, {
@@ -138,18 +139,24 @@ export default function TicketHub() {
         logging: false,
         width: 850,
         height: 480,
-        onclone: (clonedDoc) => {
-          // Force layout stability in the clone
-          const clonedTicket = clonedDoc.getElementById("madmatrix-ticket");
-          if (clonedTicket) {
-            clonedTicket.style.transform = "none";
-            clonedTicket.style.transition = "none";
-            clonedTicket.style.display = "flex";
-            clonedTicket.style.visibility = "visible";
-            clonedTicket.style.position = "static";
-            clonedTicket.style.width = "850px";
-            clonedTicket.style.height = "480px";
-            clonedTicket.style.opacity = "1";
+        onclone: (clonedDoc, element) => {
+          // Deep stabilization: Pin the element to a clean viewport
+          element.style.transform = "none";
+          element.style.transition = "none";
+          element.style.display = "flex";
+          element.style.visibility = "visible";
+          element.style.position = "fixed";
+          element.style.top = "0";
+          element.style.left = "0";
+          element.style.margin = "0";
+          element.style.zIndex = "99999";
+          element.style.opacity = "1";
+          
+          // Ensure background container isn't clipping
+          const bgContainer = element.querySelector('.absolute.inset-0');
+          if (bgContainer instanceof HTMLElement) {
+            bgContainer.style.width = "850px";
+            bgContainer.style.height = "480px";
           }
         }
       });
